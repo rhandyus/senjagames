@@ -1,0 +1,382 @@
+<div class="searchBarContainer fully-loaded">
+  <form action="" method="GET" id="searchForm">
+    <div class="filterContainer">
+      <div class="filterColumn">
+        <select
+          style="margin-right: 5px"
+          class="inputFilter select2-hidden-accessible"
+          id="subscription"
+          name="subscription[]"
+          multiple=""
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="chatgptplusplan">ChatGPT Plus</option>
+          <option value="chatgptpro">ChatGPT Pro</option>
+          <option value="chatgptenterpriseplan">ChatGPT Enterprise</option>
+          <option value="chatgptteamplan">ChatGPT Team</option>
+          <option value="chatgpteduplan">ChatGPT Edu</option>
+          <option value="chatgptquorumplan">ChatGPT Quorum</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Plan name"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div class="splitFilter" style="margin-top: 10px">
+          <input
+            min="1"
+            class="inputFilter"
+            type="number"
+            name="subscription_length"
+            placeholder="Duration"
+            value=""
+          />
+          <select
+            style="width: 46%"
+            class="inputFilter select2-hidden-accessible"
+            id="subscription_period"
+            name="subscription_period"
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="day">Days</option>
+            <option value="month">Months</option>
+            <option value="year">Years</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: 46%"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--single"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="0"
+                aria-labelledby="select2-subscription_period-container"
+                ><span
+                  class="select2-selection__rendered"
+                  id="select2-subscription_period-container"
+                  title="Days"
+                  ><span class="select2-selection__placeholder">Days</span></span
+                ><span class="select2-selection__arrow" role="presentation"
+                  ><b role="presentation"></b></span></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+        </div>
+
+        <div class="connected">
+          <label for="autorenewal">Auto-renew Subscription</label>
+          <div class="switch-selector">
+            <input type="radio" name="autorenewal" value="" id="autorenewal_nomatter" checked="" />
+            <label for="autorenewal_nomatter">Any</label>
+            <input type="radio" name="autorenewal" value="yes" id="autorenewal_yes" />
+            <label for="autorenewal_yes">Yes</label>
+            <input type="radio" name="autorenewal" value="no" id="autorenewal_no" />
+            <label for="autorenewal_no">No</label>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px"></div>
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="origin"
+          name="origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="not_origin"
+          name="not_origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Exclude Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+      </div>
+
+      <div class="filterColumn">
+        <div class="connected" style="margin-top: 10px; margin-bottom: 0px">
+          <label for="reg" style="margin-right: 10px">Registered ago</label>
+          <div class="splitFilter">
+            <input
+              min="1"
+              class="inputFilter"
+              type="number"
+              name="reg"
+              placeholder="X..."
+              value=""
+            />
+            <select
+              style="width: 46%"
+              class="inputFilter select2-hidden-accessible"
+              id="reg_period"
+              name="reg_period"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="year">years ago</option>
+              <option value="month">months ago</option>
+              <option value="day">days ago</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: 46%"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-reg_period-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-reg_period-container"
+                    title="years ago"
+                    ><span class="select2-selection__placeholder">years ago</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+          </div>
+        </div>
+
+        <div class="splitFilter">
+          <label for="openai_balance_min" style="margin-right: 10px">OpenAI</label>
+          <input
+            class="inputFilter"
+            min="1"
+            type="number"
+            name="openai_balance_min"
+            placeholder="Min Balance"
+            value=""
+          />
+          <input
+            class="inputFilter"
+            min="1"
+            type="number"
+            name="openai_balance_max"
+            placeholder="up to"
+            value=""
+          />
+        </div>
+
+        <select
+          style="margin-right: 5px"
+          class="inputFilter select2-hidden-accessible"
+          id="openai_tier"
+          name="openai_tier[]"
+          multiple=""
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="tier1">Tier 1</option>
+          <option value="tier2">Tier 2</option>
+          <option value="tier3">Tier 3</option>
+          <option value="tier4">Tier 4</option>
+          <option value="tier5">Tier 5</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Tier"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+      </div>
+
+      <div class="filterColumn">
+        <div class="connected">
+          <label for="tel">Phone linked</label>
+          <div class="switch-selector">
+            <input type="radio" name="tel" value="" id="tel_nomatter" checked="" />
+            <label for="tel_nomatter">Any</label>
+            <input type="radio" name="tel" value="yes" id="tel_yes" />
+            <label for="tel_yes">Yes</label>
+            <input type="radio" name="tel" value="no" id="tel_no" />
+            <label for="tel_no">No</label>
+          </div>
+        </div>
+
+        <div class="connected">
+          <label for="transactions">With purchase history</label>
+          <div class="switch-selector">
+            <input
+              type="radio"
+              name="transactions"
+              value=""
+              id="transactions_nomatter"
+              checked=""
+            />
+            <label for="transactions_nomatter">Any</label>
+            <input type="radio" name="transactions" value="yes" id="transactions_yes" />
+            <label for="transactions_yes">Yes</label>
+            <input type="radio" name="transactions" value="no" id="transactions_no" />
+            <label for="transactions_no">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sortButtons">
+      <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+      <input type="hidden" name="page" value="1" id="pageInput" />
+      <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+      <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+      <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+      <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+    </div>
+
+    <div class="BottomFilter">
+      <button
+        class="updateButton fitlerButs"
+        type="submit"
+        id="searchButton"
+        data-xf-init="tooltip"
+        data-original-title="Update account results"
+      >
+        Update Results
+      </button>
+
+      <a
+        href="javascript:;"
+        class="button fitlerButs saveSearch"
+        data-search-id=""
+        data-xf-init="tooltip"
+        data-original-title="Save Search"
+        id="js-XFUniqueId27"
+      >
+        Save Search
+      </a>
+
+      <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+    </div>
+  </form>
+</div>

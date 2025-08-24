@@ -1,0 +1,246 @@
+<div class="searchBarContainer fully-loaded">
+  <form action="" method="GET" id="searchForm">
+    <div class="filterContainer">
+      <div class="filterColumn">
+        <select
+          style="max-width: inherit"
+          class="inputFilter select2-hidden-accessible"
+          id="service"
+          name="service[]"
+          multiple=""
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="AdguardVPN">AdGuard VPN</option>
+          <option value="PIAVPN">PIA VPN</option>
+          <option value="cyberghostVPN">Cyberghost Premium</option>
+          <option value="hotspotShieldVPN">Hotspot Shield VPN</option>
+          <option value="mullvadVPN">Mullvad VPN</option>
+          <option value="pureVPN">Pure VPN</option>
+          <option value="tunnelbearVPN">TunnelBear VPN</option>
+          <option value="ultraVPN">UltraVPN</option>
+          <option value="vanishVPN">IPVanish VPN</option>
+          <option value="vyprVPN">VyprVPN</option>
+          <option value="windscribeVPN">Windscribe VPN Pro</option>
+          <option value="planetVPN">Planet VPN Premium</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="VPN Service"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="origin"
+          name="origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="not_origin"
+          name="not_origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Exclude Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+      </div>
+
+      <div class="filterColumn">
+        <div class="splitFilter">
+          <input
+            min="1"
+            class="inputFilter"
+            type="number"
+            name="subscription_length"
+            placeholder="Duration"
+            value=""
+          />
+          <select
+            style="width: 46%"
+            class="inputFilter select2-hidden-accessible"
+            id="subscription_period"
+            name="subscription_period"
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="day">Days</option>
+            <option value="month">Months</option>
+            <option value="year">Years</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: 46%"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--single"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="0"
+                aria-labelledby="select2-subscription_period-container"
+                ><span
+                  class="select2-selection__rendered"
+                  id="select2-subscription_period-container"
+                  title="Days"
+                  ><span class="select2-selection__placeholder">Days</span></span
+                ><span class="select2-selection__arrow" role="presentation"
+                  ><b role="presentation"></b></span></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+        </div>
+      </div>
+
+      <div class="filterColumn">
+        <div class="connected">
+          <label for="autorenewal">Auto-renew Subscription</label>
+          <div class="switch-selector">
+            <input type="radio" name="autorenewal" value="" id="autorenewal_nomatter" checked="" />
+            <label for="autorenewal_nomatter">Any</label>
+            <input type="radio" name="autorenewal" value="yes" id="autorenewal_yes" />
+            <label for="autorenewal_yes">Yes</label>
+            <input type="radio" name="autorenewal" value="no" id="autorenewal_no" />
+            <label for="autorenewal_no">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sortButtons">
+      <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+      <input type="hidden" name="page" value="1" id="pageInput" />
+      <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+      <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+      <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+      <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+    </div>
+
+    <div class="BottomFilter">
+      <button
+        class="updateButton fitlerButs"
+        type="submit"
+        id="searchButton"
+        data-xf-init="tooltip"
+        data-original-title="Update account results"
+      >
+        Update Results
+      </button>
+
+      <a
+        href="javascript:;"
+        class="button fitlerButs saveSearch"
+        data-search-id=""
+        data-xf-init="tooltip"
+        data-original-title="Save Search"
+        id="js-XFUniqueId27"
+      >
+        Save Search
+      </a>
+
+      <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+    </div>
+  </form>
+</div>

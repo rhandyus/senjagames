@@ -1,0 +1,1161 @@
+<form action="" method="GET" id="searchForm">
+  <div class="filterContainer">
+    <div class="filterColumn">
+      <div>
+        <div class="connected">
+          <label for="email_type">Mail Access</label>
+          <div class="switch-selector">
+            <input type="radio" name="email_type[]" value="" id="email_type_all" checked="" />
+            <label for="email_type_all">Any</label>
+            <input type="radio" name="email_type[]" value="autoreg" id="email_type_yes" />
+            <label for="email_type_yes">Yes</label>
+            <input type="radio" name="email_type[]" value="no" id="email_type_no" />
+            <label for="email_type_no">No</label>
+          </div>
+        </div>
+
+        <div class="connected">
+          <label for="xbox_connected">Xbox Connected</label>
+          <div class="switch-selector">
+            <input type="radio" name="xbox_connected" value="" id="xbox_nomatter" checked="" />
+            <label for="xbox_nomatter">Any</label>
+            <input type="radio" name="xbox_connected" value="yes" id="xbox_yes" />
+            <label for="xbox_yes">Yes</label>
+            <input type="radio" name="xbox_connected" value="no" id="xbox_no" />
+            <label for="xbox_no">No</label>
+          </div>
+        </div>
+
+        <div class="connected">
+          <label for="steam_connected">Steam Connected</label>
+          <div class="switch-selector">
+            <input type="radio" name="steam_connected" value="" id="steam_nomatter" checked="" />
+            <label for="steam_nomatter">Any</label>
+            <input type="radio" name="steam_connected" value="yes" id="steam_yes" />
+            <label for="steam_yes">Yes</label>
+            <input type="radio" name="steam_connected" value="no" id="steam_no" />
+            <label for="steam_no">No</label>
+          </div>
+        </div>
+
+        <div class="connected">
+          <label for="psn_connected">PSN Connected</label>
+          <div class="switch-selector">
+            <input type="radio" name="psn_connected" value="" id="psn_nomatter" checked="" />
+            <label for="psn_nomatter">Any</label>
+            <input type="radio" name="psn_connected" value="yes" id="psn_yes" />
+            <label for="psn_yes">Yes</label>
+            <input type="radio" name="psn_connected" value="no" id="psn_no" />
+            <label for="psn_no">No</label>
+          </div>
+        </div>
+
+        <div style="margin-top: 10px"></div>
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="origin"
+          name="origin[]"
+          multiple=""
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="not_origin"
+          name="not_origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Exclude Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+
+        <a style="text-decoration: none" href="/threads/108/">
+          <div
+            style="padding: 9px 15px; text-align: center; width: 100%"
+            class="button secondButton"
+          >
+            How to find a DLC ?
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="filterColumn">
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="game"
+        name="game[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      ></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Select a game"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div class="splitFilter" style="margin-top: 10px">
+        <input
+          class="inputFilter"
+          min="1"
+          type="number"
+          name="gmin"
+          placeholder="Games from"
+          value=""
+        />
+        <input class="inputFilter" min="1" type="number" name="gmax" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          min="1"
+          type="number"
+          name="balance_min"
+          placeholder="Balance from"
+          value=""
+        />
+        <input
+          class="inputFilter"
+          min="1"
+          type="number"
+          name="balance_max"
+          placeholder="up to"
+          value=""
+        />
+      </div>
+
+      <input
+        class="inputFilter"
+        type="number"
+        name="daybreak"
+        placeholder="Days Inactive"
+        value=""
+      />
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="country"
+        name="country[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="">Country</option>
+        <option value="AF">Afghanistan</option>
+        <option value="AL">Albania</option>
+        <option value="DZ">Algeria</option>
+        <option value="AD">Andorra</option>
+        <option value="AO">Angola</option>
+        <option value="AG">Antigua and Barbuda</option>
+        <option value="AR">Argentina</option>
+        <option value="AM">Armenia</option>
+        <option value="AU">Australia</option>
+        <option value="AT">Austria</option>
+        <option value="AZ">Azerbaijan</option>
+        <option value="BS">Bahamas</option>
+        <option value="BH">Bahrain</option>
+        <option value="BD">Bangladesh</option>
+        <option value="BB">Barbados</option>
+        <option value="BY">Belarus</option>
+        <option value="BE">Belgium</option>
+        <option value="BZ">Belize</option>
+        <option value="BJ">Benin</option>
+        <option value="BT">Bhutan</option>
+        <option value="BO">Bolivia</option>
+        <option value="BA">Bosnia and Herzegovina</option>
+        <option value="BW">Botswana</option>
+        <option value="BR">Brazil</option>
+        <option value="BN">Brunei</option>
+        <option value="BG">Bulgaria</option>
+        <option value="BF">Burkina Faso</option>
+        <option value="BI">Burundi</option>
+        <option value="CV">Cabo Verde</option>
+        <option value="KH">Cambodia</option>
+        <option value="CM">Cameroon</option>
+        <option value="CA">Canada</option>
+        <option value="CF">Central African Republic</option>
+        <option value="TD">Chad</option>
+        <option value="CL">Chile</option>
+        <option value="CN">China</option>
+        <option value="CO">Colombia</option>
+        <option value="KM">Comoros</option>
+        <option value="CD">Congo (Congo-Kinshasa)</option>
+        <option value="CG">Congo (Congo-Brazzaville)</option>
+        <option value="CR">Costa Rica</option>
+        <option value="CI">Côte d'Ivoire</option>
+        <option value="HR">Croatia</option>
+        <option value="CU">Cuba</option>
+        <option value="CY">Cyprus</option>
+        <option value="CZ">Czech Republic (Czechia)</option>
+        <option value="DK">Denmark</option>
+        <option value="DJ">Djibouti</option>
+        <option value="DM">Dominica</option>
+        <option value="DO">Dominican Republic</option>
+        <option value="TL">East Timor (Timor-Leste)</option>
+        <option value="EC">Ecuador</option>
+        <option value="EG">Egypt</option>
+        <option value="SV">El Salvador</option>
+        <option value="GQ">Equatorial Guinea</option>
+        <option value="ER">Eritrea</option>
+        <option value="EE">Estonia</option>
+        <option value="SZ">Eswatini (fmr. "Swaziland")</option>
+        <option value="ET">Ethiopia</option>
+        <option value="FJ">Fiji</option>
+        <option value="FI">Finland</option>
+        <option value="FR">France</option>
+        <option value="GA">Gabon</option>
+        <option value="GM">Gambia</option>
+        <option value="GE">Georgia</option>
+        <option value="DE">Germany</option>
+        <option value="GH">Ghana</option>
+        <option value="GR">Greece</option>
+        <option value="GD">Grenada</option>
+        <option value="GT">Guatemala</option>
+        <option value="GN">Guinea</option>
+        <option value="GW">Guinea-Bissau</option>
+        <option value="GY">Guyana</option>
+        <option value="HT">Haiti</option>
+        <option value="HN">Honduras</option>
+        <option value="HU">Hungary</option>
+        <option value="IS">Iceland</option>
+        <option value="IN">India</option>
+        <option value="ID">Indonesia</option>
+        <option value="IR">Iran</option>
+        <option value="IQ">Iraq</option>
+        <option value="IE">Ireland</option>
+        <option value="IL">Israel</option>
+        <option value="IT">Italy</option>
+        <option value="JM">Jamaica</option>
+        <option value="JP">Japan</option>
+        <option value="JO">Jordan</option>
+        <option value="KZ">Kazakhstan</option>
+        <option value="KE">Kenya</option>
+        <option value="KI">Kiribati</option>
+        <option value="KP">Korea, North</option>
+        <option value="KR">Korea, South</option>
+        <option value="XK">Kosovo</option>
+        <option value="KW">Kuwait</option>
+        <option value="KG">Kyrgyzstan</option>
+        <option value="LA">Laos</option>
+        <option value="LV">Latvia</option>
+        <option value="LB">Lebanon</option>
+        <option value="LS">Lesotho</option>
+        <option value="LR">Liberia</option>
+        <option value="LY">Libya</option>
+        <option value="LI">Liechtenstein</option>
+        <option value="LT">Lithuania</option>
+        <option value="LU">Luxembourg</option>
+        <option value="MG">Madagascar</option>
+        <option value="MW">Malawi</option>
+        <option value="MY">Malaysia</option>
+        <option value="MV">Maldives</option>
+        <option value="ML">Mali</option>
+        <option value="MT">Malta</option>
+        <option value="MH">Marshall Islands</option>
+        <option value="MR">Mauritania</option>
+        <option value="MU">Mauritius</option>
+        <option value="MX">Mexico</option>
+        <option value="FM">Micronesia</option>
+        <option value="MD">Moldova</option>
+        <option value="MC">Monaco</option>
+        <option value="MN">Mongolia</option>
+        <option value="ME">Montenegro</option>
+        <option value="MA">Morocco</option>
+        <option value="MZ">Mozambique</option>
+        <option value="MM">Myanmar (formerly Burma)</option>
+        <option value="NA">Namibia</option>
+        <option value="NR">Nauru</option>
+        <option value="NP">Nepal</option>
+        <option value="NL">Netherlands</option>
+        <option value="NZ">New Zealand</option>
+        <option value="NI">Nicaragua</option>
+        <option value="NE">Niger</option>
+        <option value="NG">Nigeria</option>
+        <option value="MK">North Macedonia (formerly Macedonia)</option>
+        <option value="NO">Norway</option>
+        <option value="OM">Oman</option>
+        <option value="PK">Pakistan</option>
+        <option value="PW">Palau</option>
+        <option value="PA">Panama</option>
+        <option value="PG">Papua New Guinea</option>
+        <option value="PY">Paraguay</option>
+        <option value="PE">Peru</option>
+        <option value="PH">Philippines</option>
+        <option value="PL">Poland</option>
+        <option value="PT">Portugal</option>
+        <option value="QA">Qatar</option>
+        <option value="RO">Romania</option>
+        <option value="RU">Russia</option>
+        <option value="RW">Rwanda</option>
+        <option value="KN">Saint Kitts and Nevis</option>
+        <option value="LC">Saint Lucia</option>
+        <option value="VC">Saint Vincent and the Grenadines</option>
+        <option value="WS">Samoa</option>
+        <option value="SM">San Marino</option>
+        <option value="ST">Sao Tome and Principe</option>
+        <option value="SA">Saudi Arabia</option>
+        <option value="SN">Senegal</option>
+        <option value="RS">Serbia</option>
+        <option value="SC">Seychelles</option>
+        <option value="SL">Sierra Leone</option>
+        <option value="SG">Singapore</option>
+        <option value="SK">Slovakia</option>
+        <option value="SI">Slovenia</option>
+        <option value="SB">Solomon Islands</option>
+        <option value="SO">Somalia</option>
+        <option value="ZA">South Africa</option>
+        <option value="SS">South Sudan</option>
+        <option value="ES">Spain</option>
+        <option value="LK">Sri Lanka</option>
+        <option value="SD">Sudan</option>
+        <option value="SR">Suriname</option>
+        <option value="SE">Sweden</option>
+        <option value="CH">Switzerland</option>
+        <option value="SY">Syria</option>
+        <option value="TW">Taiwan</option>
+        <option value="TJ">Tajikistan</option>
+        <option value="TZ">Tanzania</option>
+        <option value="TH">Thailand</option>
+        <option value="TG">Togo</option>
+        <option value="TO">Tonga</option>
+        <option value="TT">Trinidad and Tobago</option>
+        <option value="TN">Tunisia</option>
+        <option value="TR">Turkey</option>
+        <option value="TM">Turkmenistan</option>
+        <option value="TV">Tuvalu</option>
+        <option value="UG">Uganda</option>
+        <option value="UA">Ukraine</option>
+        <option value="AE">United Arab Emirates</option>
+        <option value="GB">United Kingdom</option>
+        <option value="US">United States</option>
+        <option value="UY">Uruguay</option>
+        <option value="UZ">Uzbekistan</option>
+        <option value="VU">Vanuatu</option>
+        <option value="VA">Vatican City (Holy See)</option>
+        <option value="VE">Venezuela</option>
+        <option value="VN">Vietnam</option>
+        <option value="YE">Yemen</option>
+        <option value="ZM">Zambia</option>
+        <option value="ZW">Zimbabwe</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: 249.906px"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Country"
+                  style="width: 249.906px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="not_country"
+        name="not_country[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="">Exclude Country</option>
+        <option value="AF">Afghanistan</option>
+        <option value="AL">Albania</option>
+        <option value="DZ">Algeria</option>
+        <option value="AD">Andorra</option>
+        <option value="AO">Angola</option>
+        <option value="AG">Antigua and Barbuda</option>
+        <option value="AR">Argentina</option>
+        <option value="AM">Armenia</option>
+        <option value="AU">Australia</option>
+        <option value="AT">Austria</option>
+        <option value="AZ">Azerbaijan</option>
+        <option value="BS">Bahamas</option>
+        <option value="BH">Bahrain</option>
+        <option value="BD">Bangladesh</option>
+        <option value="BB">Barbados</option>
+        <option value="BY">Belarus</option>
+        <option value="BE">Belgium</option>
+        <option value="BZ">Belize</option>
+        <option value="BJ">Benin</option>
+        <option value="BT">Bhutan</option>
+        <option value="BO">Bolivia</option>
+        <option value="BA">Bosnia and Herzegovina</option>
+        <option value="BW">Botswana</option>
+        <option value="BR">Brazil</option>
+        <option value="BN">Brunei</option>
+        <option value="BG">Bulgaria</option>
+        <option value="BF">Burkina Faso</option>
+        <option value="BI">Burundi</option>
+        <option value="CV">Cabo Verde</option>
+        <option value="KH">Cambodia</option>
+        <option value="CM">Cameroon</option>
+        <option value="CA">Canada</option>
+        <option value="CF">Central African Republic</option>
+        <option value="TD">Chad</option>
+        <option value="CL">Chile</option>
+        <option value="CN">China</option>
+        <option value="CO">Colombia</option>
+        <option value="KM">Comoros</option>
+        <option value="CD">Congo (Congo-Kinshasa)</option>
+        <option value="CG">Congo (Congo-Brazzaville)</option>
+        <option value="CR">Costa Rica</option>
+        <option value="CI">Côte d'Ivoire</option>
+        <option value="HR">Croatia</option>
+        <option value="CU">Cuba</option>
+        <option value="CY">Cyprus</option>
+        <option value="CZ">Czech Republic (Czechia)</option>
+        <option value="DK">Denmark</option>
+        <option value="DJ">Djibouti</option>
+        <option value="DM">Dominica</option>
+        <option value="DO">Dominican Republic</option>
+        <option value="TL">East Timor (Timor-Leste)</option>
+        <option value="EC">Ecuador</option>
+        <option value="EG">Egypt</option>
+        <option value="SV">El Salvador</option>
+        <option value="GQ">Equatorial Guinea</option>
+        <option value="ER">Eritrea</option>
+        <option value="EE">Estonia</option>
+        <option value="SZ">Eswatini (fmr. "Swaziland")</option>
+        <option value="ET">Ethiopia</option>
+        <option value="FJ">Fiji</option>
+        <option value="FI">Finland</option>
+        <option value="FR">France</option>
+        <option value="GA">Gabon</option>
+        <option value="GM">Gambia</option>
+        <option value="GE">Georgia</option>
+        <option value="DE">Germany</option>
+        <option value="GH">Ghana</option>
+        <option value="GR">Greece</option>
+        <option value="GD">Grenada</option>
+        <option value="GT">Guatemala</option>
+        <option value="GN">Guinea</option>
+        <option value="GW">Guinea-Bissau</option>
+        <option value="GY">Guyana</option>
+        <option value="HT">Haiti</option>
+        <option value="HN">Honduras</option>
+        <option value="HU">Hungary</option>
+        <option value="IS">Iceland</option>
+        <option value="IN">India</option>
+        <option value="ID">Indonesia</option>
+        <option value="IR">Iran</option>
+        <option value="IQ">Iraq</option>
+        <option value="IE">Ireland</option>
+        <option value="IL">Israel</option>
+        <option value="IT">Italy</option>
+        <option value="JM">Jamaica</option>
+        <option value="JP">Japan</option>
+        <option value="JO">Jordan</option>
+        <option value="KZ">Kazakhstan</option>
+        <option value="KE">Kenya</option>
+        <option value="KI">Kiribati</option>
+        <option value="KP">Korea, North</option>
+        <option value="KR">Korea, South</option>
+        <option value="XK">Kosovo</option>
+        <option value="KW">Kuwait</option>
+        <option value="KG">Kyrgyzstan</option>
+        <option value="LA">Laos</option>
+        <option value="LV">Latvia</option>
+        <option value="LB">Lebanon</option>
+        <option value="LS">Lesotho</option>
+        <option value="LR">Liberia</option>
+        <option value="LY">Libya</option>
+        <option value="LI">Liechtenstein</option>
+        <option value="LT">Lithuania</option>
+        <option value="LU">Luxembourg</option>
+        <option value="MG">Madagascar</option>
+        <option value="MW">Malawi</option>
+        <option value="MY">Malaysia</option>
+        <option value="MV">Maldives</option>
+        <option value="ML">Mali</option>
+        <option value="MT">Malta</option>
+        <option value="MH">Marshall Islands</option>
+        <option value="MR">Mauritania</option>
+        <option value="MU">Mauritius</option>
+        <option value="MX">Mexico</option>
+        <option value="FM">Micronesia</option>
+        <option value="MD">Moldova</option>
+        <option value="MC">Monaco</option>
+        <option value="MN">Mongolia</option>
+        <option value="ME">Montenegro</option>
+        <option value="MA">Morocco</option>
+        <option value="MZ">Mozambique</option>
+        <option value="MM">Myanmar (formerly Burma)</option>
+        <option value="NA">Namibia</option>
+        <option value="NR">Nauru</option>
+        <option value="NP">Nepal</option>
+        <option value="NL">Netherlands</option>
+        <option value="NZ">New Zealand</option>
+        <option value="NI">Nicaragua</option>
+        <option value="NE">Niger</option>
+        <option value="NG">Nigeria</option>
+        <option value="MK">North Macedonia (formerly Macedonia)</option>
+        <option value="NO">Norway</option>
+        <option value="OM">Oman</option>
+        <option value="PK">Pakistan</option>
+        <option value="PW">Palau</option>
+        <option value="PA">Panama</option>
+        <option value="PG">Papua New Guinea</option>
+        <option value="PY">Paraguay</option>
+        <option value="PE">Peru</option>
+        <option value="PH">Philippines</option>
+        <option value="PL">Poland</option>
+        <option value="PT">Portugal</option>
+        <option value="QA">Qatar</option>
+        <option value="RO">Romania</option>
+        <option value="RU">Russia</option>
+        <option value="RW">Rwanda</option>
+        <option value="KN">Saint Kitts and Nevis</option>
+        <option value="LC">Saint Lucia</option>
+        <option value="VC">Saint Vincent and the Grenadines</option>
+        <option value="WS">Samoa</option>
+        <option value="SM">San Marino</option>
+        <option value="ST">Sao Tome and Principe</option>
+        <option value="SA">Saudi Arabia</option>
+        <option value="SN">Senegal</option>
+        <option value="RS">Serbia</option>
+        <option value="SC">Seychelles</option>
+        <option value="SL">Sierra Leone</option>
+        <option value="SG">Singapore</option>
+        <option value="SK">Slovakia</option>
+        <option value="SI">Slovenia</option>
+        <option value="SB">Solomon Islands</option>
+        <option value="SO">Somalia</option>
+        <option value="ZA">South Africa</option>
+        <option value="SS">South Sudan</option>
+        <option value="ES">Spain</option>
+        <option value="LK">Sri Lanka</option>
+        <option value="SD">Sudan</option>
+        <option value="SR">Suriname</option>
+        <option value="SE">Sweden</option>
+        <option value="CH">Switzerland</option>
+        <option value="SY">Syria</option>
+        <option value="TW">Taiwan</option>
+        <option value="TJ">Tajikistan</option>
+        <option value="TZ">Tanzania</option>
+        <option value="TH">Thailand</option>
+        <option value="TG">Togo</option>
+        <option value="TO">Tonga</option>
+        <option value="TT">Trinidad and Tobago</option>
+        <option value="TN">Tunisia</option>
+        <option value="TR">Turkey</option>
+        <option value="TM">Turkmenistan</option>
+        <option value="TV">Tuvalu</option>
+        <option value="UG">Uganda</option>
+        <option value="UA">Ukraine</option>
+        <option value="AE">United Arab Emirates</option>
+        <option value="GB">United Kingdom</option>
+        <option value="US">United States</option>
+        <option value="UY">Uruguay</option>
+        <option value="UZ">Uzbekistan</option>
+        <option value="VU">Vanuatu</option>
+        <option value="VA">Vatican City (Holy See)</option>
+        <option value="VE">Venezuela</option>
+        <option value="VN">Vietnam</option>
+        <option value="YE">Yemen</option>
+        <option value="ZM">Zambia</option>
+        <option value="ZW">Zimbabwe</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: 249.906px"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Exclude Country"
+                  style="width: 249.906px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div class="connected" style="margin-top: 10px">
+        <label for="subscription" style="margin-right: 10px">Subscription</label>
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="subscription"
+          name="subscription"
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="premium">Ubisoft+ PC Access</option>
+          <option value="premiumAnywhere">Ubisoft+ Premium</option>
+          <option value="basic">Ubisoft+ Classics</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--single"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="0"
+              aria-labelledby="select2-subscription-container"
+              ><span
+                class="select2-selection__rendered"
+                id="select2-subscription-container"
+                title="Ubisoft+ PC Access"
+                ><span class="select2-selection__placeholder">Type</span></span
+              ><span class="select2-selection__arrow" role="presentation"
+                ><b role="presentation"></b></span></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div class="splitFilter" style="margin-top: 10px">
+          <input
+            min="1"
+            class="inputFilter"
+            type="number"
+            name="subscription_length"
+            placeholder="Duration"
+            value=""
+          />
+          <select
+            style="width: 46%"
+            class="inputFilter select2-hidden-accessible"
+            id="subscription_period"
+            name="subscription_period"
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="day">Days</option>
+            <option value="month">Months</option>
+            <option value="year">Years</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: 46%"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--single"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="0"
+                aria-labelledby="select2-subscription_period-container"
+                ><span
+                  class="select2-selection__rendered"
+                  id="select2-subscription_period-container"
+                  title="Days"
+                  ><span class="select2-selection__placeholder">Days</span></span
+                ><span class="select2-selection__arrow" role="presentation"
+                  ><b role="presentation"></b></span></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filterColumn">
+      <div class="wrapper">
+        <label>Rainbow Six Siege</label>
+
+        <div class="splitFilter">
+          <input
+            class="inputFilter"
+            type="number"
+            name="r6_level_min"
+            min="1"
+            placeholder="Level from"
+            value=""
+          />
+          <input
+            class="inputFilter"
+            type="number"
+            name="r6_level_max"
+            min="1"
+            placeholder="up to"
+            value=""
+          />
+        </div>
+
+        <div class="splitFilter">
+          <input
+            class="inputFilter"
+            type="number"
+            name="r6_operators_min"
+            min="1"
+            placeholder="Operators from"
+            value=""
+          />
+          <input
+            class="inputFilter"
+            type="number"
+            name="r6_operators_max"
+            min="1"
+            placeholder="up to"
+            value=""
+          />
+        </div>
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="r6_operator"
+          name="r6_operator[]"
+          multiple=""
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="Sledge">Sledge</option>
+          <option value="Thatcher">Thatcher</option>
+          <option value="Ash">Ash</option>
+          <option value="Thermite">Thermite</option>
+          <option value="Twitch">Twitch</option>
+          <option value="Montagne">Montagne</option>
+          <option value="Glaz">Glaz</option>
+          <option value="Fuze">Fuze</option>
+          <option value="Blitz">Blitz</option>
+          <option value="IQ">IQ</option>
+          <option value="Buck">Buck</option>
+          <option value="Blackbeard">Blackbeard</option>
+          <option value="Capitao">Capitao</option>
+          <option value="Hibana">Hibana</option>
+          <option value="Jackal">Jackal</option>
+          <option value="Ying">Ying</option>
+          <option value="Zofia">Zofia</option>
+          <option value="Dokkaebi">Dokkaebi</option>
+          <option value="Lion">Lion</option>
+          <option value="Finka">Finka</option>
+          <option value="Maverick">Maverick</option>
+          <option value="Nomad">Nomad</option>
+          <option value="Gridlock">Gridlock</option>
+          <option value="Nokk">Nøkk</option>
+          <option value="Amaru">Amaru</option>
+          <option value="Kali">Kali</option>
+          <option value="Iana">Iana</option>
+          <option value="Ace">Ace</option>
+          <option value="Zero">Zero (Sam Fisher)</option>
+          <option value="Flores">Flores</option>
+          <option value="Osa">Osa</option>
+          <option value="Sens">Sens</option>
+          <option value="Grim">Grim</option>
+          <option value="Brava">Brava</option>
+          <option value="Ram">Ram</option>
+          <option value="Smoke">Smoke</option>
+          <option value="Mute">Mute</option>
+          <option value="Castle">Castle</option>
+          <option value="Pulse">Pulse</option>
+          <option value="Doc">Doc</option>
+          <option value="Rook">Rook</option>
+          <option value="Jager">Jäger</option>
+          <option value="Bandit">Bandit</option>
+          <option value="Tachanka">Tachanka</option>
+          <option value="Kapkan">Kapkan</option>
+          <option value="Frost">Frost</option>
+          <option value="Valkyrie">Valkyrie</option>
+          <option value="Caveira">Caveira</option>
+          <option value="Echo">Echo</option>
+          <option value="Mira">Mira</option>
+          <option value="Lesion">Lesion</option>
+          <option value="Ela">Ela</option>
+          <option value="Vigil">Vigil</option>
+          <option value="Maestro">Maestro</option>
+          <option value="Alibi">Alibi</option>
+          <option value="Clash">Clash</option>
+          <option value="Kaid">Kaid</option>
+          <option value="Mozzie">Mozzie</option>
+          <option value="Warden">Warden</option>
+          <option value="Goyo">Goyo</option>
+          <option value="Wamai">Wamai</option>
+          <option value="Oryx">Oryx</option>
+          <option value="Melusi">Melusi</option>
+          <option value="Aruni">Aruni</option>
+          <option value="Azami">Azami</option>
+          <option value="Solis">Solis</option>
+          <option value="Fenrir">Fenrir</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Select operators"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div class="splitFilter" style="margin-top: 10px">
+          <input
+            class="inputFilter"
+            type="number"
+            name="r6_smin"
+            min="1"
+            placeholder="Skins from"
+            value=""
+          />
+          <input
+            class="inputFilter"
+            type="number"
+            name="r6_smax"
+            min="1"
+            placeholder="up to"
+            value=""
+          />
+        </div>
+
+        <div class="splitFilter">
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="r6_rank_min"
+            name="r6_rank_min"
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="1">Unranked</option>
+            <option value="1001">Copper 5</option>
+            <option value="1100">Copper 4</option>
+            <option value="1200">Copper 3</option>
+            <option value="1300">Copper 2</option>
+            <option value="1400">Copper 1</option>
+            <option value="1500">Bronze 5</option>
+            <option value="1600">Bronze 4</option>
+            <option value="1700">Bronze 3</option>
+            <option value="1800">Bronze 2</option>
+            <option value="1900">Bronze 1</option>
+            <option value="2000">Silver 5</option>
+            <option value="2100">Silver 4</option>
+            <option value="2200">Silver 3</option>
+            <option value="2300">Silver 2</option>
+            <option value="2400">Silver 1</option>
+            <option value="2500">Gold 5</option>
+            <option value="2600">Gold 4</option>
+            <option value="2700">Gold 3</option>
+            <option value="2800">Gold 2</option>
+            <option value="3000">Platinum 5</option>
+            <option value="3100">Platinum 4</option>
+            <option value="3200">Platinum 3</option>
+            <option value="3300">Platinum 2</option>
+            <option value="3400">Platinum 1</option>
+            <option value="3500">Emerald 5</option>
+            <option value="3600">Emerald 4</option>
+            <option value="3700">Emerald 3</option>
+            <option value="3800">Emerald 2</option>
+            <option value="3900">Emerald 1</option>
+            <option value="4000">Diamond 5</option>
+            <option value="4100">Diamond 4</option>
+            <option value="4200">Diamond 3</option>
+            <option value="4300">Diamond 2</option>
+            <option value="4400">Diamond 1</option>
+            <option value="4500">Champions</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--single"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="0"
+                aria-labelledby="select2-r6_rank_min-container"
+                ><span
+                  class="select2-selection__rendered"
+                  id="select2-r6_rank_min-container"
+                  title="Unranked"
+                  ><span class="select2-selection__placeholder">Rank from</span></span
+                ><span class="select2-selection__arrow" role="presentation"
+                  ><b role="presentation"></b></span></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="r6_rank_max"
+            name="r6_rank_max"
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="1">Unranked</option>
+            <option value="1001">Copper 5</option>
+            <option value="1100">Copper 4</option>
+            <option value="1200">Copper 3</option>
+            <option value="1300">Copper 2</option>
+            <option value="1400">Copper 1</option>
+            <option value="1500">Bronze 5</option>
+            <option value="1600">Bronze 4</option>
+            <option value="1700">Bronze 3</option>
+            <option value="1800">Bronze 2</option>
+            <option value="1900">Bronze 1</option>
+            <option value="2000">Silver 5</option>
+            <option value="2100">Silver 4</option>
+            <option value="2200">Silver 3</option>
+            <option value="2300">Silver 2</option>
+            <option value="2400">Silver 1</option>
+            <option value="2500">Gold 5</option>
+            <option value="2600">Gold 4</option>
+            <option value="2700">Gold 3</option>
+            <option value="2800">Gold 2</option>
+            <option value="3000">Platinum 5</option>
+            <option value="3100">Platinum 4</option>
+            <option value="3200">Platinum 3</option>
+            <option value="3300">Platinum 2</option>
+            <option value="3400">Platinum 1</option>
+            <option value="3500">Emerald 5</option>
+            <option value="3600">Emerald 4</option>
+            <option value="3700">Emerald 3</option>
+            <option value="3800">Emerald 2</option>
+            <option value="3900">Emerald 1</option>
+            <option value="4000">Diamond 5</option>
+            <option value="4100">Diamond 4</option>
+            <option value="4200">Diamond 3</option>
+            <option value="4300">Diamond 2</option>
+            <option value="4400">Diamond 1</option>
+            <option value="4500">Champions</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--single"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="0"
+                aria-labelledby="select2-r6_rank_max-container"
+                ><span
+                  class="select2-selection__rendered"
+                  id="select2-r6_rank_max-container"
+                  title="Unranked"
+                  ><span class="select2-selection__placeholder">up to</span></span
+                ><span class="select2-selection__arrow" role="presentation"
+                  ><b role="presentation"></b></span></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+        </div>
+
+        <div class="connected" style="margin-top: 10px">
+          <label for="r6_ban">Has Ban</label>
+          <div class="switch-selector">
+            <input type="radio" name="r6_ban" value="" id="r6_ban_nomatter" checked="" />
+            <label for="r6_ban_nomatter">Any</label>
+            <input type="radio" name="r6_ban" value="yes" id="r6_ban_yes" />
+            <label for="r6_ban_yes">Yes</label>
+            <input type="radio" name="r6_ban" value="no" id="r6_ban_no" />
+            <label for="r6_ban_no">No</label>
+          </div>
+        </div>
+
+        <div class="connected">
+          <label for="transactions">With transaction history</label>
+          <div class="switch-selector">
+            <input
+              type="radio"
+              name="transactions"
+              value=""
+              id="transactions_nomatter"
+              checked=""
+            />
+            <label for="transactions_nomatter">Any</label>
+            <input type="radio" name="transactions" value="yes" id="transactions_yes" />
+            <label for="transactions_yes">Yes</label>
+            <input type="radio" name="legends" value="no" id="transactions_no" />
+            <label for="transactions_no">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sortButtons">
+    <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+    <input type="hidden" name="page" value="1" id="pageInput" />
+    <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+    <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+    <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+    <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+  </div>
+
+  <div class="BottomFilter">
+    <button
+      class="updateButton fitlerButs"
+      type="submit"
+      id="searchButton"
+      data-xf-init="tooltip"
+      data-original-title="Update account results"
+    >
+      Update Results
+    </button>
+
+    <a
+      href="javascript:;"
+      class="button fitlerButs saveSearch"
+      data-search-id=""
+      data-xf-init="tooltip"
+      data-original-title="Save Search"
+      id="js-XFUniqueId27"
+    >
+      Save Search
+    </a>
+
+    <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+  </div>
+</form>

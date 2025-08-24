@@ -1,0 +1,215 @@
+<form action="" method="GET" id="searchForm">
+  <div class="filterContainer">
+    <div class="filterColumn">
+      <div class="connected">
+        <label for="phone">Phone linked</label>
+        <div class="switch-selector">
+          <input type="radio" name="tel" value="" id="phone_all" checked="" />
+          <label for="phone_all">Any</label>
+          <input type="radio" name="tel" value="yes" id="phone_yes" />
+          <label for="phone_yes">Yes</label>
+          <input type="radio" name="tel" value="no" id="phone_no" />
+          <label for="phone_no">No</label>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px"></div>
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="origin"
+        name="origin[]"
+        multiple=""
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="brute">Brute</option>
+        <option value="phishing">Phishing</option>
+        <option value="stealer">Stealer</option>
+        <option value="personal">Personal</option>
+        <option value="resale">Resale</option>
+        <option value="autoreg">Autoreg</option>
+        <option value="dummy">Dummy</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Account origin"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="not_origin"
+        name="not_origin[]"
+        multiple=""
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="brute">Brute</option>
+        <option value="phishing">Phishing</option>
+        <option value="stealer">Stealer</option>
+        <option value="personal">Personal</option>
+        <option value="resale">Resale</option>
+        <option value="autoreg">Autoreg</option>
+        <option value="dummy">Dummy</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Exclude Account origin"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+    </div>
+
+    <div class="filterColumn">
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="followers_min"
+          placeholder="Min followers"
+          value=""
+        />
+        <input
+          class="inputFilter"
+          type="number"
+          name="followers_max"
+          placeholder="up to"
+          value=""
+        />
+      </div>
+
+      <div class="splitFilter">
+        <input class="inputFilter" type="number" name="post_min" placeholder="Min posts" value="" />
+        <input class="inputFilter" type="number" name="post_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input class="inputFilter" type="number" name="like_min" placeholder="Min likes" value="" />
+        <input class="inputFilter" type="number" name="like_max" placeholder="up to" value="" />
+      </div>
+    </div>
+
+    <div class="filterColumn">
+      <div class="connected">
+        <label for="reg" style="margin-right: 10px">Registered ago</label>
+        <div class="splitFilter">
+          <input min="1" class="inputFilter" type="number" name="reg" placeholder="X..." value="" />
+          <select
+            style="width: 46%"
+            class="inputFilter select2-hidden-accessible"
+            id="reg_period"
+            name="reg_period"
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="year">years ago</option>
+            <option value="month">months ago</option>
+            <option value="day">days ago</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: 46%"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--single"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="0"
+                aria-labelledby="select2-reg_period-container"
+                ><span
+                  class="select2-selection__rendered"
+                  id="select2-reg_period-container"
+                  title="years ago"
+                  ><span class="select2-selection__placeholder">years ago</span></span
+                ><span class="select2-selection__arrow" role="presentation"
+                  ><b role="presentation"></b></span></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sortButtons">
+    <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+    <input type="hidden" name="page" value="1" id="pageInput" />
+    <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+    <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+    <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+    <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+  </div>
+
+  <div class="BottomFilter">
+    <button
+      class="updateButton fitlerButs"
+      type="submit"
+      id="searchButton"
+      data-xf-init="tooltip"
+      data-original-title="Update account results"
+    >
+      Update Results
+    </button>
+
+    <a
+      href="javascript:;"
+      class="button fitlerButs saveSearch"
+      data-search-id=""
+      data-xf-init="tooltip"
+      data-original-title="Save Search"
+      id="js-XFUniqueId27"
+    >
+      Save Search
+    </a>
+
+    <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+  </div>
+</form>

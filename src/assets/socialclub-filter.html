@@ -1,0 +1,238 @@
+<form action="" method="GET" id="searchForm">
+  <div class="filterContainer">
+    <div class="filterColumn">
+      <input
+        class="inputFilter"
+        type="number"
+        name="daybreak"
+        min="1"
+        placeholder="Days Inactive"
+        value=""
+      />
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="origin"
+        name="origin[]"
+        multiple=""
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="brute">Brute</option>
+        <option value="phishing">Phishing</option>
+        <option value="stealer">Stealer</option>
+        <option value="personal">Personal</option>
+        <option value="resale">Resale</option>
+        <option value="autoreg">Autoreg</option>
+        <option value="dummy">Dummy</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Account origin"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="not_origin"
+        name="not_origin[]"
+        multiple=""
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="brute">Brute</option>
+        <option value="phishing">Phishing</option>
+        <option value="stealer">Stealer</option>
+        <option value="personal">Personal</option>
+        <option value="resale">Resale</option>
+        <option value="autoreg">Autoreg</option>
+        <option value="dummy">Dummy</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Exclude Account origin"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+    </div>
+
+    <div class="filterColumn">
+      <select
+        class="inputFilter select2-hidden-accessible"
+        name="game[]"
+        id="game"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="gta5">GTA V</option>
+        <option value="rdr2">RDR 2</option>
+
+        <option value="lanoire">L.A. Noire</option>
+
+        <option value="mp3">Max Payne 3</option>
+
+        <option value="gtavcunreal">GTA: Vice City - The Definitive Edition</option>
+
+        <option value="gtasaunreal">GTA: San Andreas - The Definitive Edition</option>
+
+        <option value="gtavc">GTA: Vice City</option>
+
+        <option value="gta4">GTA IV</option>
+
+        <option value="gta3unreal">GTA III - The Definitive Edition</option>
+
+        <option value="gta3">GTA III</option>
+
+        <option value="gtasa">Grand Theft Auto: San Andreas</option>
+
+        <option value="bully">Bully</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Select a game"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+    </div>
+
+    <div class="filterColumn">
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="level_min"
+          placeholder="Min level"
+          value=""
+        />
+        <input class="inputFilter" type="number" name="level_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input class="inputFilter" type="number" name="cash_min" placeholder="Min cash" value="" />
+        <input class="inputFilter" type="number" name="cash_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="bank_cash_min"
+          placeholder="Min bank cash"
+          value=""
+        />
+        <input
+          class="inputFilter"
+          type="number"
+          name="bank_cash_max"
+          placeholder="up to"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="sortButtons">
+    <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+    <input type="hidden" name="page" value="1" id="pageInput" />
+    <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+    <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+    <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+    <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+  </div>
+
+  <div class="BottomFilter">
+    <button
+      class="updateButton fitlerButs"
+      type="submit"
+      id="searchButton"
+      data-xf-init="tooltip"
+      data-original-title="Update account results"
+    >
+      Update Results
+    </button>
+
+    <a
+      href="javascript:;"
+      class="button fitlerButs saveSearch"
+      data-search-id=""
+      data-xf-init="tooltip"
+      data-original-title="Save Search"
+      id="js-XFUniqueId27"
+    >
+      Save Search
+    </a>
+
+    <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+  </div>
+</form>

@@ -1,0 +1,715 @@
+<div class="searchBarContainer fully-loaded">
+  <form action="" method="GET" id="searchForm">
+    <div class="filterContainer">
+      <div class="filterColumn">
+        <div class="connected">
+          <label for="tel">Phone Linked</label>
+          <div class="switch-selector">
+            <input type="radio" name="tel" value="" id="tel_all" checked="" />
+            <label for="tel_all">Any</label>
+            <input type="radio" name="tel" value="yes" id="tel_yes" />
+            <label for="tel_yes">Yes</label>
+            <input type="radio" name="tel" value="no" id="tel_no" />
+            <label for="tel_no">No</label>
+          </div>
+        </div>
+
+        <input
+          style="margin-top: 5px"
+          class="inputFilter"
+          type="number"
+          name="daybreak"
+          placeholder="Days Inactive"
+          value=""
+        />
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="origin"
+          name="origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="not_origin"
+          name="not_origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+              ><ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Exclude Account origin"
+                    style="width: 0px"
+                  />
+                </li></ul></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <label style="margin-top: 10px">Creation year</label>
+
+        <div class="splitFilter">
+          <input
+            class="inputFilter"
+            type="number"
+            name="creation_year_min"
+            min="1"
+            placeholder="Level from"
+            value=""
+          />
+          <input
+            class="inputFilter"
+            type="number"
+            name="creation_year_max"
+            min="1"
+            placeholder="up to"
+            value=""
+          />
+        </div>
+
+        <div style="margin-top: 10px"></div>
+
+        <div class="wrapper">
+          <label>Clash Royale</label>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="royale_level_min"
+              min="1"
+              placeholder="Level from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="royale_level_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="royale_cup_min"
+              min="1"
+              placeholder="Trophies from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="royale_cup_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="royale_wins_min"
+              min="1"
+              placeholder="Wins from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="royale_wins_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="king_level_min"
+              min="1"
+              placeholder="Crown level from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="king_level_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="connected">
+            <label for="royale_pass">Royale Pass</label>
+            <div class="switch-selector">
+              <input type="radio" name="royale_pass" value="" id="royale_pass_all" checked="" />
+              <label for="royale_pass_all">Any</label>
+              <input type="radio" name="royale_pass" value="yes" id="royale_pass_yes" />
+              <label for="royale_pass_yes">Yes</label>
+              <input type="radio" name="royale_pass" value="no" id="royale_pass_no" />
+              <label for="royale_pass_no">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filterColumn">
+        <div class="wrapper">
+          <label>Brawl Stars</label>
+
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="brawler"
+            name="brawler[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="LARRY &amp; LAWRIE">LARRY &amp; LAWRIE</option>
+            <option value="KIT">KIT</option>
+            <option value="MICO">MICO</option>
+            <option value="CHARLIE">CHARLIE</option>
+            <option value="CHUCK">CHUCK</option>
+            <option value="PEARL">PEARL</option>
+            <option value="DOUG">DOUG</option>
+            <option value="CORDELIUS">CORDELIUS</option>
+            <option value="HANK">HANK</option>
+            <option value="MAISIE">MAISIE</option>
+            <option value="WILLOW">WILLOW</option>
+            <option value="R-T">R-T</option>
+            <option value="MANDY">MANDY</option>
+            <option value="GRAY">GRAY</option>
+            <option value="CHESTER">CHESTER</option>
+            <option value="BUSTER">BUSTER</option>
+            <option value="GUS">GUS</option>
+            <option value="SAM">SAM</option>
+            <option value="OTIS">OTIS</option>
+            <option value="BONNIE">BONNIE</option>
+            <option value="JANET">JANET</option>
+            <option value="EVE">EVE</option>
+            <option value="FANG">FANG</option>
+            <option value="LOLA">LOLA</option>
+            <option value="MEG">MEG</option>
+            <option value="ASH">ASH</option>
+            <option value="GRIFF">GRIFF</option>
+            <option value="BUZZ">BUZZ</option>
+            <option value="GROM">GROM</option>
+            <option value="SQUEAK">SQUEAK</option>
+            <option value="BELLE">BELLE</option>
+            <option value="STU">STU</option>
+            <option value="RUFFS">RUFFS</option>
+            <option value="EDGAR">EDGAR</option>
+            <option value="BYRON">BYRON</option>
+            <option value="LOU">LOU</option>
+            <option value="AMBER">AMBER</option>
+            <option value="COLETTE">COLETTE</option>
+            <option value="SURGE">SURGE</option>
+            <option value="SPROUT">SPROUT</option>
+            <option value="NANI">NANI</option>
+            <option value="GALE">GALE</option>
+            <option value="JACKY">JACKY</option>
+            <option value="MAX">MAX</option>
+            <option value="MR. P">MR. P</option>
+            <option value="EMZ">EMZ</option>
+            <option value="BEA">BEA</option>
+            <option value="SANDY">SANDY</option>
+            <option value="8-BIT">8-BIT</option>
+            <option value="BIBI">BIBI</option>
+            <option value="CARL">CARL</option>
+            <option value="ROSA">ROSA</option>
+            <option value="LEON">LEON</option>
+            <option value="TICK">TICK</option>
+            <option value="GENE">GENE</option>
+            <option value="FRANK">FRANK</option>
+            <option value="PENNY">PENNY</option>
+            <option value="DARRYL">DARRYL</option>
+            <option value="TARA">TARA</option>
+            <option value="PAM">PAM</option>
+            <option value="PIPER">PIPER</option>
+            <option value="BO">BO</option>
+            <option value="POCO">POCO</option>
+            <option value="CROW">CROW</option>
+            <option value="MORTIS">MORTIS</option>
+            <option value="EL PRIMO">EL PRIMO</option>
+            <option value="DYNAMIKE">DYNAMIKE</option>
+            <option value="NITA">NITA</option>
+            <option value="JESSIE">JESSIE</option>
+            <option value="BARLEY">BARLEY</option>
+            <option value="SPIKE">SPIKE</option>
+            <option value="RICO">RICO</option>
+            <option value="BROCK">BROCK</option>
+            <option value="BULL">BULL</option>
+            <option value="COLT">COLT</option>
+            <option value="SHELLY">SHELLY</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+                ><ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Brawlers"
+                      style="width: 0px"
+                    />
+                  </li></ul></span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div class="splitFilter" style="margin-top: 10px">
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawl_level_min"
+              min="1"
+              placeholder="Level from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawl_level_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawl_cup_min"
+              min="1"
+              placeholder="Trophies from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawl_cup_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawl_wins_min"
+              min="1"
+              placeholder="Wins from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawl_wins_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawlers_min"
+              min="1"
+              placeholder="Brawlers from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="brawlers_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <label>Legendary brawlers</label>
+            <input
+              class="inputFilter"
+              type="number"
+              name="legendary_brawlers_min"
+              min="1"
+              placeholder="From"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="legendary_brawlers_max"
+              min="1"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="connected">
+            <label for="brawl_pass">Brawl Pass</label>
+            <div class="switch-selector">
+              <input type="radio" name="brawl_pass" value="" id="brawl_pass_all" checked="" />
+              <label for="brawl_pass_all">Any</label>
+              <input type="radio" name="brawl_pass" value="yes" id="brawl_pass_yes" />
+              <label for="brawl_pass_yes">Yes</label>
+              <input type="radio" name="brawl_pass" value="no" id="brawl_pass_no" />
+              <label for="brawl_pass_no">No</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filterColumn">
+        <div class="wrapper">
+          <label>Clash of Clans</label>
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="clash_level_min"
+              placeholder="Level from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="clash_level_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="clash_cup_min"
+              placeholder="Trophies from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="clash_cup_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="builder_hall_cup_min"
+              placeholder="Builder Cups from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="builder_hall_cup_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="clash_wins_min"
+              placeholder="Wins from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="clash_wins_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="town_hall_level_min"
+              placeholder="Town Hall from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="town_hall_level_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="builder_hall_level_min"
+              placeholder="Builder Hall from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="builder_hall_level_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="connected">
+            <label for="clash_pass">Gold Pass</label>
+            <div class="switch-selector">
+              <input type="radio" name="clash_pass" value="" id="clash_pass_all" checked="" />
+              <label for="clash_pass_all">Any</label>
+              <input type="radio" name="clash_pass" value="yes" id="clash_pass_yes" />
+              <label for="clash_pass_yes">Yes</label>
+              <input type="radio" name="clash_pass" value="no" id="clash_pass_no" />
+              <label for="clash_pass_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="wrapper">
+          <div class="filter-header">
+            <label class="dropdownFilter">Clash of Clans Levels</label
+            ><i class="fas fa-angle-down toggle-arrow"></i>
+          </div>
+          <div class="filter-section" style="display: none">
+            <label>Total hero level</label>
+            <div class="splitFilter">
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_heroes_level_min"
+                placeholder="From"
+                value=""
+              />
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_heroes_level_max"
+                placeholder="up to"
+                value=""
+              />
+            </div>
+
+            <label>Total troop level</label>
+            <div class="splitFilter">
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_troops_level_min"
+                placeholder="From"
+                value=""
+              />
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_troops_level_max"
+                placeholder="up to"
+                value=""
+              />
+            </div>
+
+            <label>Total spell level</label>
+            <div class="splitFilter">
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_spells_level_min"
+                placeholder="From"
+                value=""
+              />
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_spells_level_max"
+                placeholder="up to"
+                value=""
+              />
+            </div>
+
+            <label>Total builder hero level</label>
+            <div class="splitFilter">
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_builder_heroes_level_min"
+                placeholder="From"
+                value=""
+              />
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_builder_heroes_level_max"
+                placeholder="up to"
+                value=""
+              />
+            </div>
+
+            <label>Total builder troop level</label>
+            <div class="splitFilter">
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_builder_troops_level_min"
+                placeholder="From"
+                value=""
+              />
+              <input
+                class="inputFilter"
+                type="number"
+                name="total_builder_troops_level_max"
+                placeholder="up to"
+                value=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sortButtons">
+      <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+      <input type="hidden" name="page" value="1" id="pageInput" />
+      <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+      <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+      <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+      <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+    </div>
+
+    <div class="BottomFilter">
+      <button
+        class="updateButton fitlerButs"
+        type="submit"
+        id="searchButton"
+        data-xf-init="tooltip"
+        data-original-title="Update account results"
+      >
+        Update Results
+      </button>
+
+      <a
+        href="javascript:;"
+        class="button fitlerButs saveSearch"
+        data-search-id=""
+        data-xf-init="tooltip"
+        data-original-title="Save Search"
+        id="js-XFUniqueId27"
+      >
+        Save Search
+      </a>
+
+      <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+    </div>
+  </form>
+</div>

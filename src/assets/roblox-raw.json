@@ -1,0 +1,113 @@
+{
+  "title": "Roblox Gaming Accounts",
+  "description": "Premium Roblox accounts with Robux, premium subscriptions, limiteds, pets, and exclusive items",
+  "features": [
+    "Premium subscription status",
+    "Robux balance included",
+    "Rare limiteds and collectibles",
+    "Exclusive pets and accessories",
+    "Various creation dates",
+    "Different email types available",
+    "Warranty protection",
+    "Instant delivery",
+    "Account verification",
+    "24/7 customer support"
+  ],
+  "categories": {
+    "premium_status": ["Premium Subscription Active", "No Premium (Free)", "Premium Expired"],
+    "robux_ranges": [
+      "0-100 Robux",
+      "100-500 Robux",
+      "500-1000 Robux",
+      "1000-5000 Robux",
+      "5000-10000 Robux",
+      "10000+ Robux"
+    ],
+    "account_features": [
+      "Has Limiteds",
+      "Has Pets",
+      "Has Game Passes",
+      "Has Developer Products",
+      "Has Group Memberships",
+      "Has Friends List",
+      "Has Avatar Items",
+      "Has Clothing Items"
+    ],
+    "creation_years": [
+      "2006-2010 (Classic)",
+      "2011-2015 (Veteran)",
+      "2016-2020 (Experienced)",
+      "2021-2024 (Recent)"
+    ],
+    "email_types": ["Gmail", "Outlook/Hotmail", "Yahoo", "Temp Mail", "Custom Domain"],
+    "regions": [
+      "United States",
+      "Europe",
+      "Asia Pacific",
+      "South America",
+      "Canada",
+      "Australia",
+      "Global"
+    ]
+  },
+  "popular_items": [
+    {
+      "name": "Premium Roblox Account with 5000 Robux",
+      "description": "Active premium subscription with 5000 Robux balance, rare limiteds, and exclusive pets",
+      "price_range": "$15-25",
+      "features": ["Premium Active", "5000 Robux", "Limiteds", "Pets", "Gmail"]
+    },
+    {
+      "name": "Veteran Account 2012 Creation",
+      "description": "Old account from 2012 with premium status and valuable collectibles",
+      "price_range": "$30-50",
+      "features": ["2012 Creation", "Premium", "Rare Items", "High Value", "Verified"]
+    },
+    {
+      "name": "Developer Account with BC/OBC",
+      "description": "Account with builder's club history and development tools access",
+      "price_range": "$25-40",
+      "features": ["Developer Tools", "BC History", "Game Passes", "Groups", "Assets"]
+    }
+  ],
+  "price_ranges": [
+    {
+      "range": "$1-5",
+      "description": "Basic accounts with minimal features"
+    },
+    {
+      "range": "$5-15",
+      "description": "Standard accounts with some Robux and items"
+    },
+    {
+      "range": "$15-30",
+      "description": "Premium accounts with good Robux balance and limiteds"
+    },
+    {
+      "range": "$30-50+",
+      "description": "High-value accounts with rare items and old creation dates"
+    }
+  ],
+  "tips": [
+    "Check premium subscription status carefully",
+    "Verify Robux balance before purchase",
+    "Look for accounts with limiteds for better value",
+    "Consider creation date for account age value",
+    "Check email type for account security",
+    "Verify warranty terms and conditions",
+    "Change password immediately after purchase",
+    "Enable 2-step verification for security",
+    "Check for any trade holds or restrictions",
+    "Verify account standing and ban status"
+  ],
+  "security_notes": [
+    "All accounts come with original email access",
+    "Change password and enable 2FA immediately",
+    "Verify account has no pending punishments",
+    "Check for any active restrictions or trade holds",
+    "Ensure account email is accessible",
+    "Verify premium subscription details if applicable",
+    "Check Robux balance matches description",
+    "Confirm all listed items are present"
+  ]
+}

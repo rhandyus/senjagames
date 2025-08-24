@@ -1,0 +1,560 @@
+<form action="" method="GET" id="searchForm">
+  <div class="filterContainer">
+    <div class="filterColumn">
+      <div class="connected">
+        <label for="phone">Phone linked</label>
+        <div class="switch-selector">
+          <input type="radio" name="phone" value="" id="phone_all" checked="" />
+          <label for="phone_all">Any</label>
+          <input type="radio" name="phone" value="yes" id="phone_yes" />
+          <label for="phone_yes">Yes</label>
+          <input type="radio" name="phone" value="no" id="phone_no" />
+          <label for="phone_no">No</label>
+        </div>
+      </div>
+
+      <input
+        class="inputFilter"
+        type="number"
+        name="daybreak"
+        placeholder="Days Inactive"
+        value=""
+      />
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="region"
+        name="region[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="eu">Europe</option>
+        <option value="na">North America</option>
+        <option value="asia">Asia</option>
+        <option value="ru">Russia</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Region"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="not_region"
+        name="not_region[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="eu">Europe</option>
+        <option value="na">North America</option>
+        <option value="asia">Asia</option>
+        <option value="ru">Russia</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Exclude region"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="origin"
+        name="origin[]"
+        multiple=""
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="brute">Brute</option>
+        <option value="phishing">Phishing</option>
+        <option value="stealer">Stealer</option>
+        <option value="personal">Personal</option>
+        <option value="resale">Resale</option>
+        <option value="autoreg">Autoreg</option>
+        <option value="dummy">Dummy</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Account origin"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="not_origin"
+        name="not_origin[]"
+        multiple=""
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="brute">Brute</option>
+        <option value="phishing">Phishing</option>
+        <option value="stealer">Stealer</option>
+        <option value="personal">Personal</option>
+        <option value="resale">Resale</option>
+        <option value="autoreg">Autoreg</option>
+        <option value="dummy">Dummy</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Exclude Account origin"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+    </div>
+
+    <div class="filterColumn">
+      <select
+        class="inputFilter select2-hidden-accessible"
+        id="tank"
+        name="tank[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      ></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Tanks in hangar"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div class="splitFilter" style="margin-top: 10px">
+        <input
+          class="inputFilter"
+          type="number"
+          name="top_min"
+          placeholder="Top tanks from"
+          value=""
+        />
+        <input class="inputFilter" type="number" name="top_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="prem_min"
+          placeholder="Premiums from"
+          value=""
+        />
+        <input class="inputFilter" type="number" name="prem_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="top_prem_min"
+          placeholder="Top prems from"
+          value=""
+        />
+        <input class="inputFilter" type="number" name="top_prem_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="connected">
+        <label for="premium">Premium</label>
+        <div class="switch-selector">
+          <input type="radio" name="premium" value="" id="premium_nomatter" checked="" />
+          <label for="premium_nomatter">Any</label>
+          <input type="radio" name="premium" value="yes" id="premium_yes" />
+          <label for="premium_yes">Yes</label>
+          <input type="radio" name="premium" value="no" id="premium_no" />
+          <label for="premium_no">No</label>
+        </div>
+      </div>
+
+      <div class="splitFilter" style="margin-top: 10px">
+        <input
+          min="1"
+          class="inputFilter"
+          type="number"
+          name="premium_expiration"
+          placeholder="Duration"
+          value=""
+        />
+        <select
+          style="width: 46%"
+          class="inputFilter select2-hidden-accessible"
+          id="premium_expiration_period"
+          name="premium_expiration_period"
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="day">Days</option>
+          <option value="month">Months</option>
+          <option value="year">Years</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: 46%"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--single"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="0"
+              aria-labelledby="select2-premium_expiration_period-container"
+              ><span
+                class="select2-selection__rendered"
+                id="select2-premium_expiration_period-container"
+                title="Days"
+                >Days</span
+              ><span class="select2-selection__arrow" role="presentation"
+                ><b role="presentation"></b></span></span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+      </div>
+    </div>
+
+    <div class="filterColumn">
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="battles_min"
+          placeholder="Battles from"
+          value=""
+        />
+        <input class="inputFilter" type="number" name="battles_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input class="inputFilter" type="number" name="gold_min" placeholder="Gold from" value="" />
+        <input class="inputFilter" type="number" name="gold_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="silver_min"
+          placeholder="Credits from"
+          value=""
+        />
+        <input class="inputFilter" type="number" name="silver_max" placeholder="up to" value="" />
+      </div>
+
+      <div class="splitFilter">
+        <input class="inputFilter" type="number" name="win_pmin" placeholder="Wins from" value="" />
+        <input
+          class="inputFilter"
+          type="number"
+          max="100"
+          name="win_pmax"
+          placeholder="up to 100"
+          value=""
+        />
+      </div>
+
+      <div class="connected">
+        <label for="clan">Clan</label>
+        <div class="switch-selector">
+          <input type="radio" name="clan" value="" id="clan_nomatter" checked="" />
+          <label for="clan_nomatter">Any</label>
+          <input type="radio" name="clan" value="yes" id="clan_yes" />
+          <label for="clan_yes">Yes</label>
+          <input type="radio" name="clan" value="no" id="clan_no" />
+          <label for="clan_no">No</label>
+        </div>
+      </div>
+
+      <select
+        style="margin-right: 5px"
+        class="inputFilter select2-hidden-accessible"
+        id="clan_role"
+        name="clan_role[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="private">Fighter</option>
+        <option value="recruitment_officer">Personnel Officer</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Role"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div style="margin-top: 10px"></div>
+
+      <select
+        style="margin-right: 5px"
+        class="inputFilter select2-hidden-accessible"
+        id="not_clan_role"
+        name="not_clan_role[]"
+        multiple=""
+        data-xf-init="select2"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <option value="private">Fighter</option>
+        <option value="recruitment_officer">Personnel Officer</option></select
+      ><span
+        class="select2 select2-container select2-container--default"
+        dir="ltr"
+        style="width: auto"
+        ><span class="selection"
+          ><span
+            class="select2-selection select2-selection--multiple"
+            role="combobox"
+            aria-haspopup="true"
+            aria-expanded="false"
+            tabindex="-1"
+            ><ul class="select2-selection__rendered">
+              <li class="select2-search select2-search--inline">
+                <input
+                  class="select2-search__field"
+                  type="search"
+                  tabindex="0"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  role="textbox"
+                  aria-autocomplete="list"
+                  placeholder="Exclude role"
+                  style="width: 0px"
+                />
+              </li></ul></span></span
+        ><span class="dropdown-wrapper" aria-hidden="true"></span
+      ></span>
+
+      <div class="splitFilter" style="margin-top: 10px">
+        <input
+          class="inputFilter"
+          type="number"
+          name="clan_gold_min"
+          placeholder="Gold from"
+          value=""
+        />
+        <input
+          class="inputFilter"
+          type="number"
+          name="clan_gold_max"
+          placeholder="up to"
+          value=""
+        />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="clan_credits_min"
+          placeholder="Credits from"
+          value=""
+        />
+        <input
+          class="inputFilter"
+          type="number"
+          name="clan_credits_max"
+          placeholder="up to"
+          value=""
+        />
+      </div>
+
+      <div class="splitFilter">
+        <input
+          class="inputFilter"
+          type="number"
+          name="clan_crystal_min"
+          placeholder="Crystals from"
+          value=""
+        />
+        <input
+          class="inputFilter"
+          type="number"
+          name="clan_crystal_max"
+          placeholder="up to"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="sortButtons">
+    <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+    <input type="hidden" name="page" value="1" id="pageInput" />
+    <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+    <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+    <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+    <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+  </div>
+
+  <div class="BottomFilter">
+    <button
+      class="updateButton fitlerButs"
+      type="submit"
+      id="searchButton"
+      data-xf-init="tooltip"
+      data-original-title="Update account results"
+    >
+      Update Results
+    </button>
+
+    <a
+      href="javascript:;"
+      class="button fitlerButs saveSearch"
+      data-search-id=""
+      data-xf-init="tooltip"
+      data-original-title="Save Search"
+      id="js-XFUniqueId26"
+    >
+      Save Search
+    </a>
+
+    <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+  </div>
+</form>

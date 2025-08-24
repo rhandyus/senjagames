@@ -1,0 +1,1304 @@
+<div class="searchBarContainer fully-loaded">
+  <form action="" method="GET" id="searchForm">
+    <div class="filterContainer">
+      <div class="filterColumn">
+        <div class="connected">
+          <label for="email">With mail</label>
+          <div class="switch-selector">
+            <input type="radio" name="email" value="" id="email_all" checked="" />
+            <label for="email_all">Any</label>
+            <input type="radio" name="email" value="yes" id="email_yes" />
+            <label for="email_yes">Yes</label>
+            <input type="radio" name="email" value="no" id="email_no" />
+            <label for="email_no">No</label>
+          </div>
+        </div>
+
+        <div class="connected">
+          <label for="tel">Phone linked</label>
+          <div class="switch-selector">
+            <input type="radio" name="tel" value="" id="tel_all" checked="" />
+            <label for="tel_all">Any</label>
+            <input type="radio" name="tel" value="yes" id="tel_yes" />
+            <label for="tel_yes">Yes</label>
+            <input type="radio" name="tel" value="no" id="tel_no" />
+            <label for="tel_no">No</label>
+          </div>
+        </div>
+
+        <input
+          class="inputFilter"
+          type="number"
+          name="daybreak"
+          min="50"
+          placeholder="Days Inactive (Min 50)"
+          value=""
+        />
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="country"
+          name="country[]"
+          multiple=""
+          data-xf-init="select2"
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="">Country</option>
+          <option value="AFG">Afghanistan</option>
+          <option value="ALB">Albania</option>
+          <option value="DZA">Algeria</option>
+          <option value="AND">Andorra</option>
+          <option value="AGO">Angola</option>
+          <option value="ATG">Antigua and Barbuda</option>
+          <option value="ARG">Argentina</option>
+          <option value="ARM">Armenia</option>
+          <option value="AUS">Australia</option>
+          <option value="AUT">Austria</option>
+          <option value="AZE">Azerbaijan</option>
+          <option value="BHS">Bahamas</option>
+          <option value="BHR">Bahrain</option>
+          <option value="BGD">Bangladesh</option>
+          <option value="BRB">Barbados</option>
+          <option value="BLR">Belarus</option>
+          <option value="BEL">Belgium</option>
+          <option value="BLZ">Belize</option>
+          <option value="BEN">Benin</option>
+          <option value="BTN">Bhutan</option>
+          <option value="BOL">Bolivia</option>
+          <option value="BIH">Bosnia and Herzegovina</option>
+          <option value="BWA">Botswana</option>
+          <option value="BRA">Brazil</option>
+          <option value="BRN">Brunei</option>
+          <option value="BGR">Bulgaria</option>
+          <option value="BFA">Burkina Faso</option>
+          <option value="BDI">Burundi</option>
+          <option value="CPV">Cabo Verde</option>
+          <option value="KHM">Cambodia</option>
+          <option value="CMR">Cameroon</option>
+          <option value="CAN">Canada</option>
+          <option value="CAF">Central African Republic</option>
+          <option value="TCD">Chad</option>
+          <option value="CHL">Chile</option>
+          <option value="CHN">China</option>
+          <option value="COL">Colombia</option>
+          <option value="COM">Comoros</option>
+          <option value="COD">Congo (Congo-Kinshasa)</option>
+          <option value="COG">Congo (Congo-Brazzaville)</option>
+          <option value="CRI">Costa Rica</option>
+          <option value="CIV">Côte d'Ivoire</option>
+          <option value="HRV">Croatia</option>
+          <option value="CUB">Cuba</option>
+          <option value="CYP">Cyprus</option>
+          <option value="CZE">Czech Republic (Czechia)</option>
+          <option value="DNK">Denmark</option>
+          <option value="DJI">Djibouti</option>
+          <option value="DMA">Dominica</option>
+          <option value="DOM">Dominican Republic</option>
+          <option value="TLS">East Timor (Timor-Leste)</option>
+          <option value="ECU">Ecuador</option>
+          <option value="EGY">Egypt</option>
+          <option value="SLV">El Salvador</option>
+          <option value="GNQ">Equatorial Guinea</option>
+          <option value="ERI">Eritrea</option>
+          <option value="EST">Estonia</option>
+          <option value="SWZ">Eswatini (fmr. "Swaziland")</option>
+          <option value="ETH">Ethiopia</option>
+          <option value="FJI">Fiji</option>
+          <option value="FIN">Finland</option>
+          <option value="FRA">France</option>
+          <option value="GAB">Gabon</option>
+          <option value="GMB">Gambia</option>
+          <option value="GEO">Georgia</option>
+          <option value="DEU">Germany</option>
+          <option value="GHA">Ghana</option>
+          <option value="GRC">Greece</option>
+          <option value="GRD">Grenada</option>
+          <option value="GTM">Guatemala</option>
+          <option value="GIN">Guinea</option>
+          <option value="GNB">Guinea-Bissau</option>
+          <option value="GUY">Guyana</option>
+          <option value="HTI">Haiti</option>
+          <option value="HND">Honduras</option>
+          <option value="HUN">Hungary</option>
+          <option value="ISL">Iceland</option>
+          <option value="IND">India</option>
+          <option value="IDN">Indonesia</option>
+          <option value="IRN">Iran</option>
+          <option value="IRQ">Iraq</option>
+          <option value="IRL">Ireland</option>
+          <option value="ISR">Israel</option>
+          <option value="ITA">Italy</option>
+          <option value="JAM">Jamaica</option>
+          <option value="JPN">Japan</option>
+          <option value="JOR">Jordan</option>
+          <option value="KAZ">Kazakhstan</option>
+          <option value="KEN">Kenya</option>
+          <option value="KIR">Kiribati</option>
+          <option value="PRK">Korea, North</option>
+          <option value="KOR">Korea, South</option>
+          <option value="XKX">Kosovo</option>
+          <option value="KWT">Kuwait</option>
+          <option value="KGZ">Kyrgyzstan</option>
+          <option value="LAO">Laos</option>
+          <option value="LVA">Latvia</option>
+          <option value="LBN">Lebanon</option>
+          <option value="LSO">Lesotho</option>
+          <option value="LBR">Liberia</option>
+          <option value="LBY">Libya</option>
+          <option value="LIE">Liechtenstein</option>
+          <option value="LTU">Lithuania</option>
+          <option value="LUX">Luxembourg</option>
+          <option value="MDG">Madagascar</option>
+          <option value="MWI">Malawi</option>
+          <option value="MYS">Malaysia</option>
+          <option value="MDV">Maldives</option>
+          <option value="MLI">Mali</option>
+          <option value="MLT">Malta</option>
+          <option value="MHL">Marshall Islands</option>
+          <option value="MRT">Mauritania</option>
+          <option value="MUS">Mauritius</option>
+          <option value="MEX">Mexico</option>
+          <option value="FSM">Micronesia</option>
+          <option value="MDA">Moldova</option>
+          <option value="MCO">Monaco</option>
+          <option value="MNG">Mongolia</option>
+          <option value="MNE">Montenegro</option>
+          <option value="MAR">Morocco</option>
+          <option value="MOZ">Mozambique</option>
+          <option value="MMR">Myanmar (formerly Burma)</option>
+          <option value="NAM">Namibia</option>
+          <option value="NRU">Nauru</option>
+          <option value="NPL">Nepal</option>
+          <option value="NLD">Netherlands</option>
+          <option value="NZL">New Zealand</option>
+          <option value="NIC">Nicaragua</option>
+          <option value="NER">Niger</option>
+          <option value="NGA">Nigeria</option>
+          <option value="MKD">North Macedonia (formerly Macedonia)</option>
+          <option value="NOR">Norway</option>
+          <option value="OMN">Oman</option>
+          <option value="PAK">Pakistan</option>
+          <option value="PLW">Palau</option>
+          <option value="PAN">Panama</option>
+          <option value="PNG">Papua New Guinea</option>
+          <option value="PRY">Paraguay</option>
+          <option value="PER">Peru</option>
+          <option value="PHL">Philippines</option>
+          <option value="POL">Poland</option>
+          <option value="PRT">Portugal</option>
+          <option value="QAT">Qatar</option>
+          <option value="ROU">Romania</option>
+          <option value="RUS">Russia</option>
+          <option value="RWA">Rwanda</option>
+          <option value="KNA">Saint Kitts and Nevis</option>
+          <option value="LCA">Saint Lucia</option>
+          <option value="VCT">Saint Vincent and the Grenadines</option>
+          <option value="WSM">Samoa</option>
+          <option value="SMR">San Marino</option>
+          <option value="STP">Sao Tome and Principe</option>
+          <option value="SAU">Saudi Arabia</option>
+          <option value="SEN">Senegal</option>
+          <option value="SRB">Serbia</option>
+          <option value="SYC">Seychelles</option>
+          <option value="SLE">Sierra Leone</option>
+          <option value="SGP">Singapore</option>
+          <option value="SVK">Slovakia</option>
+          <option value="SVN">Slovenia</option>
+          <option value="SLB">Solomon Islands</option>
+          <option value="SOM">Somalia</option>
+          <option value="ZAF">South Africa</option>
+          <option value="SSD">South Sudan</option>
+          <option value="ESP">Spain</option>
+          <option value="LKA">Sri Lanka</option>
+          <option value="SDN">Sudan</option>
+          <option value="SUR">Suriname</option>
+          <option value="SWE">Sweden</option>
+          <option value="CHE">Switzerland</option>
+          <option value="SYR">Syria</option>
+          <option value="TWN">Taiwan</option>
+          <option value="TJK">Tajikistan</option>
+          <option value="TZA">Tanzania</option>
+          <option value="THA">Thailand</option>
+          <option value="TGO">Togo</option>
+          <option value="TON">Tonga</option>
+          <option value="TTO">Trinidad and Tobago</option>
+          <option value="TUN">Tunisia</option>
+          <option value="TUR">Turkey</option>
+          <option value="TKM">Turkmenistan</option>
+          <option value="TUV">Tuvalu</option>
+          <option value="UGA">Uganda</option>
+          <option value="UKR">Ukraine</option>
+          <option value="ARE">United Arab Emirates</option>
+          <option value="GBR">United Kingdom</option>
+          <option value="USA">United States</option>
+          <option value="URY">Uruguay</option>
+          <option value="UZB">Uzbekistan</option>
+          <option value="VUT">Vanuatu</option>
+          <option value="VAT">Vatican City (Holy See)</option>
+          <option value="VEN">Venezuela</option>
+          <option value="VNM">Vietnam</option>
+          <option value="YEM">Yemen</option>
+          <option value="ZMB">Zambia</option>
+          <option value="ZWE">Zimbabwe</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: 249.906px"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+            >
+              <ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Country"
+                    style="width: 249.906px"
+                  />
+                </li>
+              </ul> </span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="origin"
+          name="origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+            >
+              <ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Account origin"
+                    style="width: 0px"
+                  />
+                </li>
+              </ul> </span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+
+        <div style="margin-top: 10px"></div>
+
+        <select
+          class="inputFilter select2-hidden-accessible"
+          id="not_origin"
+          name="not_origin[]"
+          multiple=""
+          tabindex="-1"
+          aria-hidden="true"
+        >
+          <option value="brute">Brute</option>
+          <option value="phishing">Phishing</option>
+          <option value="stealer">Stealer</option>
+          <option value="personal">Personal</option>
+          <option value="resale">Resale</option>
+          <option value="autoreg">Autoreg</option>
+          <option value="dummy">Dummy</option></select
+        ><span
+          class="select2 select2-container select2-container--default"
+          dir="ltr"
+          style="width: auto"
+          ><span class="selection"
+            ><span
+              class="select2-selection select2-selection--multiple"
+              role="combobox"
+              aria-haspopup="true"
+              aria-expanded="false"
+              tabindex="-1"
+            >
+              <ul class="select2-selection__rendered">
+                <li class="select2-search select2-search--inline">
+                  <input
+                    class="select2-search__field"
+                    type="search"
+                    tabindex="0"
+                    autocomplete="off"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    role="textbox"
+                    aria-autocomplete="list"
+                    placeholder="Exclude Account origin"
+                    style="width: 0px"
+                  />
+                </li>
+              </ul> </span></span
+          ><span class="dropdown-wrapper" aria-hidden="true"></span
+        ></span>
+      </div>
+
+      <div class="filterColumn">
+        <div class="wrapper">
+          <label>Valorant</label>
+
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="weaponSkin"
+            name="weaponSkin[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="">Loading weapon skins...</option></select
+          ><span
+            class="select2 select2-container select2-container--default select2-container--focus select2-container--below select2-container--open"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="true"
+                tabindex="-1"
+                aria-owns="select2-weaponSkin-results"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Skins"
+                      style="width: 0px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div style="margin-top: 10px"></div>
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="buddy"
+            name="buddy[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="">Loading buddies...</option>
+            <option value="f2f07eae-4518-15eb-546b-018961e0dd60">Task Force 809 Buddy</option>
+            <option value="bf997358-4a99-c1f8-37b0-5fa64200cdce">Beckoner Buddy</option>
+            <option value="dce731f8-4560-5f30-6eb5-8ab2e36864ec">RGX 11z Pro Buddy</option>
+            <option value="69c50b81-4484-838a-906a-b08d06c03cbd">RGX 11z Pro, Ep 4 Buddy</option>
+            <option value="b7a9cf2e-4488-88b9-a2c0-ed88fb189e9b">RGX 11z Pro, Ep 9 Buddy</option>
+            <option value="8a431014-470c-d11f-24e0-35a992e427d2">Cruiser Buddy</option>
+            <option value="8493f0fd-4d25-7834-86d6-b89ddb1d3f97">Big Announcement Buddy</option>
+            <option value="d68825bf-4c77-bf42-a2c8-fab1cd6f2d7f">Altitude Buddy</option>
+            <option value="e99d20eb-472e-59f5-d669-e09cd168820a">Anansi Buddy</option>
+            <option value="2215fb09-4cf3-e57a-cd15-dfb00f92dd44">Araxys Buddy</option>
+            <option value="f59ac578-411a-98a2-8c9d-22a58b352ebd">
+              Epilogue: Apple a Day Buddy
+            </option>
+            <option value="f5e10416-436e-5ca1-89ce-feb1ea81ca1a">Neptune Buddy</option>
+            <option value="d6c38282-4f11-822b-8fe1-dd9ad9045514">Gaia's Vengeance Buddy</option>
+            <option value="6bdc0477-4b5a-94ed-b944-f284de3b4bd8">
+              Gaia's Vengeance, Ep 7 Buddy
+            </option>
+            <option value="70963a6d-45b7-8fd4-c6aa-62b2155715aa">Zedd Buddy</option>
+            <option value="452194fb-4ebd-353a-2ff7-0e90cf5523f9">Get Carried Buddy</option>
+            <option value="49d304e1-4e20-4a0b-ede3-698422dc8cde">Composite Buddy</option>
+            <option value="3d1a73a2-47cf-d82a-c884-b486084c5b42">Alley-oop Buddy</option>
+            <option value="b6f6aa63-4648-56d5-ea37-53bef52031f2">Epilogue: Alley-oop Buddy</option>
+            <option value="baf4ebf5-4742-3179-4b9d-899a8d49c3fe">Night Guard Buddy</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Buddies"
+                      style="width: 249.906px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div style="margin-top: 10px"></div>
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="agent"
+            name="agent[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="">Loading agents...</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Agents"
+                      style="width: 0px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div class="splitFilter" style="margin-top: 10px">
+            <input
+              class="inputFilter"
+              type="number"
+              name="valorant_smin"
+              placeholder="Min Skins"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="valorant_smax"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input class="inputFilter" type="number" name="vp_min" placeholder="VP From" value="" />
+            <input class="inputFilter" type="number" name="vp_max" placeholder="up to" value="" />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="inv_min"
+              placeholder="Min Inv Value"
+              value=""
+            />
+            <input class="inputFilter" type="number" name="inv_max" placeholder="up to" value="" />
+          </div>
+
+          <label class="iconic checkboxRow"
+            ><input type="checkbox" name="knife" value="true" /><i aria-hidden="true"></i
+            ><span class="iconic-label"> Has any knife</span></label
+          >
+
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="valorant_region"
+            name="valorant_region[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="NA">North America</option>
+            <option value="LA">Latin America</option>
+            <option value="BR">Brazil</option>
+            <option value="EU">Europe</option>
+            <option value="KR">Korea</option>
+            <option value="AP">Asia Pacific</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Region"
+                      style="width: 0px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div style="margin-top: 10px"></div>
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="valorant_not_region"
+            name="valorant_not_region[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="NA">North America</option>
+            <option value="LA">Latin America</option>
+            <option value="BR">Brazil</option>
+            <option value="EU">Europe</option>
+            <option value="KR">Korea</option>
+            <option value="AP">Asia Pacific</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Exclude Region"
+                      style="width: 0px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div class="splitFilter" style="margin-top: 10px">
+            <input
+              class="inputFilter"
+              type="number"
+              name="valorant_level_min"
+              placeholder="Level from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="valorant_level_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="amin"
+              placeholder="Agents from"
+              value=""
+            />
+            <input class="inputFilter" type="number" name="amax" placeholder="up to" value="" />
+          </div>
+
+          <label>Current Rank</label>
+          <div class="splitFilter">
+            <select
+              class="inputFilter select2-hidden-accessible"
+              id="rmin"
+              name="rmin"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="3">Iron 1</option>
+              <option value="4">Iron 2</option>
+              <option value="5">Iron 3</option>
+              <option value="6">Bronze 1</option>
+              <option value="7">Bronze 2</option>
+              <option value="8">Bronze 3</option>
+              <option value="9">Silver 1</option>
+              <option value="10">Silver 2</option>
+              <option value="11">Silver 3</option>
+              <option value="12">Gold 1</option>
+              <option value="13">Gold 2</option>
+              <option value="14">Gold 3</option>
+              <option value="15">Platinum 1</option>
+              <option value="16">Platinum 2</option>
+              <option value="17">Platinum 3</option>
+              <option value="18">Diamond 1</option>
+              <option value="19">Diamond 2</option>
+              <option value="20">Diamond 3</option>
+              <option value="21">Ascendant 1</option>
+              <option value="22">Ascendant 2</option>
+              <option value="23">Ascendant 3</option>
+              <option value="24">Immortal 1</option>
+              <option value="25">Immortal 2</option>
+              <option value="26">Immortal 3</option>
+              <option value="27">Radiant</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: auto"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-rmin-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-rmin-container"
+                    title="Iron 1"
+                    ><span class="select2-selection__placeholder">From</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+
+            <select
+              class="inputFilter select2-hidden-accessible"
+              id="rmax"
+              name="rmax"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="3">Iron 1</option>
+              <option value="4">Iron 2</option>
+              <option value="5">Iron 3</option>
+              <option value="6">Bronze 1</option>
+              <option value="7">Bronze 2</option>
+              <option value="8">Bronze 3</option>
+              <option value="9">Silver 1</option>
+              <option value="10">Silver 2</option>
+              <option value="11">Silver 3</option>
+              <option value="12">Gold 1</option>
+              <option value="13">Gold 2</option>
+              <option value="14">Gold 3</option>
+              <option value="15">Platinum 1</option>
+              <option value="16">Platinum 2</option>
+              <option value="17">Platinum 3</option>
+              <option value="18">Diamond 1</option>
+              <option value="19">Diamond 2</option>
+              <option value="20">Diamond 3</option>
+              <option value="21">Ascendant 1</option>
+              <option value="22">Ascendant 2</option>
+              <option value="23">Ascendant 3</option>
+              <option value="24">Immortal 1</option>
+              <option value="25">Immortal 2</option>
+              <option value="26">Immortal 3</option>
+              <option value="27">Radiant</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: auto"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-rmax-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-rmax-container"
+                    title="Iron 1"
+                    ><span class="select2-selection__placeholder">Up to</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+          </div>
+
+          <label>Last Rank</label>
+          <div class="splitFilter">
+            <select
+              class="inputFilter select2-hidden-accessible"
+              id="last_rmin"
+              name="last_rmin"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="3">Iron 1</option>
+              <option value="4">Iron 2</option>
+              <option value="5">Iron 3</option>
+              <option value="6">Bronze 1</option>
+              <option value="7">Bronze 2</option>
+              <option value="8">Bronze 3</option>
+              <option value="9">Silver 1</option>
+              <option value="10">Silver 2</option>
+              <option value="11">Silver 3</option>
+              <option value="12">Gold 1</option>
+              <option value="13">Gold 2</option>
+              <option value="14">Gold 3</option>
+              <option value="15">Platinum 1</option>
+              <option value="16">Platinum 2</option>
+              <option value="17">Platinum 3</option>
+              <option value="18">Diamond 1</option>
+              <option value="19">Diamond 2</option>
+              <option value="20">Diamond 3</option>
+              <option value="21">Ascendant 1</option>
+              <option value="22">Ascendant 2</option>
+              <option value="23">Ascendant 3</option>
+              <option value="24">Immortal 1</option>
+              <option value="25">Immortal 2</option>
+              <option value="26">Immortal 3</option>
+              <option value="27">Radiant</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: auto"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-last_rmin-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-last_rmin-container"
+                    title="Iron 1"
+                    ><span class="select2-selection__placeholder">From</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+
+            <select
+              class="inputFilter select2-hidden-accessible"
+              id="last_rmax"
+              name="last_rmax"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="3">Iron 1</option>
+              <option value="4">Iron 2</option>
+              <option value="5">Iron 3</option>
+              <option value="6">Bronze 1</option>
+              <option value="7">Bronze 2</option>
+              <option value="8">Bronze 3</option>
+              <option value="9">Silver 1</option>
+              <option value="10">Silver 2</option>
+              <option value="11">Silver 3</option>
+              <option value="12">Gold 1</option>
+              <option value="13">Gold 2</option>
+              <option value="14">Gold 3</option>
+              <option value="15">Platinum 1</option>
+              <option value="16">Platinum 2</option>
+              <option value="17">Platinum 3</option>
+              <option value="18">Diamond 1</option>
+              <option value="19">Diamond 2</option>
+              <option value="20">Diamond 3</option>
+              <option value="21">Ascendant 1</option>
+              <option value="22">Ascendant 2</option>
+              <option value="23">Ascendant 3</option>
+              <option value="24">Immortal 1</option>
+              <option value="25">Immortal 2</option>
+              <option value="26">Immortal 3</option>
+              <option value="27">Radiant</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: auto"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-last_rmax-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-last_rmax-container"
+                    title="Iron 1"
+                    ><span class="select2-selection__placeholder">Up to</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+          </div>
+
+          <label>Last Season Rank</label>
+          <div class="splitFilter">
+            <select
+              class="inputFilter select2-hidden-accessible"
+              id="previous_rmin"
+              name="previous_rmin"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="3">Iron 1</option>
+              <option value="4">Iron 2</option>
+              <option value="5">Iron 3</option>
+              <option value="6">Bronze 1</option>
+              <option value="7">Bronze 2</option>
+              <option value="8">Bronze 3</option>
+              <option value="9">Silver 1</option>
+              <option value="10">Silver 2</option>
+              <option value="11">Silver 3</option>
+              <option value="12">Gold 1</option>
+              <option value="13">Gold 2</option>
+              <option value="14">Gold 3</option>
+              <option value="15">Platinum 1</option>
+              <option value="16">Platinum 2</option>
+              <option value="17">Platinum 3</option>
+              <option value="18">Diamond 1</option>
+              <option value="19">Diamond 2</option>
+              <option value="20">Diamond 3</option>
+              <option value="21">Ascendant 1</option>
+              <option value="22">Ascendant 2</option>
+              <option value="23">Ascendant 3</option>
+              <option value="24">Immortal 1</option>
+              <option value="25">Immortal 2</option>
+              <option value="26">Immortal 3</option>
+              <option value="27">Radiant</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: auto"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-previous_rmin-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-previous_rmin-container"
+                    title="Iron 1"
+                    ><span class="select2-selection__placeholder">From</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+
+            <select
+              class="inputFilter select2-hidden-accessible"
+              id="previous_rmax"
+              name="previous_rmax"
+              data-xf-init="select2"
+              tabindex="-1"
+              aria-hidden="true"
+            >
+              <option value="3">Iron 1</option>
+              <option value="4">Iron 2</option>
+              <option value="5">Iron 3</option>
+              <option value="6">Bronze 1</option>
+              <option value="7">Bronze 2</option>
+              <option value="8">Bronze 3</option>
+              <option value="9">Silver 1</option>
+              <option value="10">Silver 2</option>
+              <option value="11">Silver 3</option>
+              <option value="12">Gold 1</option>
+              <option value="13">Gold 2</option>
+              <option value="14">Gold 3</option>
+              <option value="15">Platinum 1</option>
+              <option value="16">Platinum 2</option>
+              <option value="17">Platinum 3</option>
+              <option value="18">Diamond 1</option>
+              <option value="19">Diamond 2</option>
+              <option value="20">Diamond 3</option>
+              <option value="21">Ascendant 1</option>
+              <option value="22">Ascendant 2</option>
+              <option value="23">Ascendant 3</option>
+              <option value="24">Immortal 1</option>
+              <option value="25">Immortal 2</option>
+              <option value="26">Immortal 3</option>
+              <option value="27">Radiant</option></select
+            ><span
+              class="select2 select2-container select2-container--default"
+              dir="ltr"
+              style="width: auto"
+              ><span class="selection"
+                ><span
+                  class="select2-selection select2-selection--single"
+                  role="combobox"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  tabindex="0"
+                  aria-labelledby="select2-previous_rmax-container"
+                  ><span
+                    class="select2-selection__rendered"
+                    id="select2-previous_rmax-container"
+                    title="Iron 1"
+                    ><span class="select2-selection__placeholder">Up to</span></span
+                  ><span class="select2-selection__arrow" role="presentation"
+                    ><b role="presentation"></b></span></span></span
+              ><span class="dropdown-wrapper" aria-hidden="true"></span
+            ></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filterColumn">
+        <div class="wrapper">
+          <label>League of Legends</label>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="lol_level_min"
+              placeholder="Level from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="lol_level_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="win_rate_min"
+              placeholder="WinRate from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="win_rate_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="lol_smin"
+              placeholder="Skins from"
+              value=""
+            />
+            <input class="inputFilter" type="number" name="lol_smax" placeholder="up to" value="" />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="champion_min"
+              placeholder="Champions from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="champion_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="lol_region"
+            name="lol_region[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="la1">Latin America North</option>
+            <option value="eun1">Europe Nordic &amp; East</option>
+            <option value="euw1">Europe West</option>
+            <option value="tr1">Turkey</option>
+            <option value="na1">North America</option>
+            <option value="ru">Russia</option>
+            <option value="vn2">Vietnam</option>
+            <option value="jp1">Japan</option>
+            <option value="br1">Brazil</option>
+            <option value="la2">Latin America South</option>
+            <option value="sg2">Signapore, Malaysia &amp; Indonesia</option>
+            <option value="th2">Thailand</option>
+            <option value="oc1">Oceania</option>
+            <option value="ph2">Philippines</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Region"
+                      style="width: 0px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div style="margin-top: 10px"></div>
+
+          <select
+            class="inputFilter select2-hidden-accessible"
+            id="lol_not_region"
+            name="lol_not_region[]"
+            multiple=""
+            data-xf-init="select2"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <option value="la1">Latin America North</option>
+            <option value="eun1">Europe Nordic &amp; East</option>
+            <option value="euw1">Europe West</option>
+            <option value="tr1">Turkey</option>
+            <option value="na1">North America</option>
+            <option value="ru">Russia</option>
+            <option value="vn2">Vietnam</option>
+            <option value="jp1">Japan</option>
+            <option value="br1">Brazil</option>
+            <option value="la2">Latin America South</option>
+            <option value="sg2">Signapore, Malaysia &amp; Indonesia</option>
+            <option value="th2">Thailand</option>
+            <option value="oc1">Oceania</option>
+            <option value="ph2">Philippines</option></select
+          ><span
+            class="select2 select2-container select2-container--default"
+            dir="ltr"
+            style="width: auto"
+            ><span class="selection"
+              ><span
+                class="select2-selection select2-selection--multiple"
+                role="combobox"
+                aria-haspopup="true"
+                aria-expanded="false"
+                tabindex="-1"
+              >
+                <ul class="select2-selection__rendered">
+                  <li class="select2-search select2-search--inline">
+                    <input
+                      class="select2-search__field"
+                      type="search"
+                      tabindex="0"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      role="textbox"
+                      aria-autocomplete="list"
+                      placeholder="Exclude Region"
+                      style="width: 0px"
+                    />
+                  </li>
+                </ul> </span></span
+            ><span class="dropdown-wrapper" aria-hidden="true"></span
+          ></span>
+
+          <div class="splitFilter" style="margin-top: 10px">
+            <input
+              class="inputFilter"
+              type="number"
+              name="blue_min"
+              placeholder="Blue essence from"
+              value=""
+            />
+            <input class="inputFilter" type="number" name="blue_max" placeholder="up to" value="" />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="orange_min"
+              placeholder="Orange essence from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="orange_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="mythic_min"
+              placeholder="Mythic essence from"
+              value=""
+            />
+            <input
+              class="inputFilter"
+              type="number"
+              name="mythic_max"
+              placeholder="up to"
+              value=""
+            />
+          </div>
+
+          <div class="splitFilter">
+            <input
+              class="inputFilter"
+              type="number"
+              name="riot_min"
+              placeholder="RP from"
+              value=""
+            />
+            <input class="inputFilter" type="number" name="riot_max" placeholder="up to" value="" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sortButtons">
+      <input type="hidden" id="sortInput" name="order_by" value="price_to_up" />
+      <input type="hidden" name="page" value="1" id="pageInput" />
+      <button type="button" class="button-sort selected" data-value="price_to_up">Cheapest</button>
+      <button type="button" class="button-sort" data-value="price_to_down">Expensive</button>
+      <button type="button" class="button-sort" data-value="pdate_to_down_upload">Newest</button>
+      <button type="button" class="button-sort" data-value="pdate_to_up_upload">Oldest</button>
+    </div>
+
+    <div class="BottomFilter">
+      <button
+        class="updateButton fitlerButs"
+        type="submit"
+        id="searchButton"
+        data-xf-init="tooltip"
+        data-original-title="Update account results"
+      >
+        Update Results
+      </button>
+
+      <a
+        href="javascript:;"
+        class="button fitlerButs saveSearch"
+        data-search-id=""
+        data-xf-init="tooltip"
+        data-original-title="Save Search"
+        id="js-XFUniqueId27"
+      >
+        Save Search
+      </a>
+
+      <a target="_blank" href="/threads/113/" class="button fitlerButs"> Beginners Guide </a>
+    </div>
+  </form>
+</div>
