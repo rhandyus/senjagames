@@ -38,14 +38,23 @@ app.use((req, res, next) => {
 // Function to load and execute serverless functions
 const loadServerlessFunction = async functionPath => {
   try {
-    // Delete from require cache to allow hot reloading
+    // Check if file exists first
     const fullPath = path.join(__dirname, functionPath)
+    
+    // Check if file exists and is not disabled
+    const fs = await import('fs')
+    if (!fs.existsSync(fullPath)) {
+      console.log(`⚠️  Function file not found (may be disabled): ${functionPath}`)
+      return null
+    }
+
+    // Delete from require cache to allow hot reloading
     delete require.cache[require.resolve(fullPath)]
 
     const { default: handler } = await import(`file://${fullPath}`)
     return handler
   } catch (error) {
-    console.error(`Error loading function ${functionPath}:`, error)
+    console.error(`❌ Failed to load function: ${functionPath}`, error.code === 'MODULE_NOT_FOUND' ? 'File not found' : error.message)
     return null
   }
 }
@@ -80,23 +89,24 @@ app.all('/api/*', async (req, res) => {
 
   console.log(`Incoming request: ${req.method} ${req.path}`)
 
-  // Map API paths to serverless function files
+  // Map API paths to serverless function files (only active functions)
   const routeMappings = {
     steam: 'api/steam.js',
     epic: 'api/epic.js',
     fortnite: 'api/fortnite.js',
     roblox: 'api/roblox.js',
-    discord: 'api/discord.js',
-    gifts: 'api/gifts.js',
+    // Disabled functions - will fall back to dynamic routes:
+    // discord: 'api/discord.js', // disabled
+    // gifts: 'api/gifts.js', // disabled
     minecraft: 'api/minecraft.js',
-    escapefromtarkov: 'api/escapefromtarkov.js',
+    // escapefromtarkov: 'api/escapefromtarkov.js', // disabled
     socialclub: 'api/socialclub.js',
     uplay: 'api/uplay.js',
-    tiktok: 'api/tiktok.js',
-    instagram: 'api/instagram.js',
-    chatgpt: 'api/chatgpt.js',
+    // tiktok: 'api/tiktok.js', // disabled
+    // instagram: 'api/instagram.js', // disabled
+    // chatgpt: 'api/chatgpt.js', // disabled
     battlenet: 'api/battlenet.js',
-    vpn: 'api/vpn.js',
+    // vpn: 'api/vpn.js', // disabled
     'lzt-proxy': 'api/lzt-proxy.js'
   }
 
@@ -107,8 +117,20 @@ app.all('/api/*', async (req, res) => {
     // Special handling for specific nested routes
     if (lztPath === 'steam/games') {
       functionPath = 'api/lzt/steam/games.js'
+      // If the specific function doesn't exist, fall back to dynamic route
+      const fs = await import('fs')
+      if (!fs.existsSync(path.join(__dirname, functionPath))) {
+        console.log(`⚠️  ${functionPath} not found, using dynamic route fallback`)
+        functionPath = 'api/lzt/[...category].js'
+      }
     } else if (lztPath === 'steam/categories') {
       functionPath = 'api/lzt/steam/categories.js'
+      // If the specific function doesn't exist, fall back to dynamic route
+      const fs = await import('fs')
+      if (!fs.existsSync(path.join(__dirname, functionPath))) {
+        console.log(`⚠️  ${functionPath} not found, using dynamic route fallback`)
+        functionPath = 'api/lzt/[...category].js'
+      }
     } else if (lztPath.includes('/')) {
       // Handle other nested paths like lzt/steam/something
       functionPath = 'api/lzt/[...category].js'
