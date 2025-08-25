@@ -97,93 +97,135 @@ export default async function handler(req, res) {
     // Special handling for steam/games endpoint to transform the API response
     if (mainCategory === 'steam' && subPath === 'games') {
       console.log('📥 /api/lzt/steam/games endpoint called via dynamic route')
-      
-      // Build LZT Market API URL
-      const baseURL = 'https://prod-api.lzt.market'
-      const apiURL = new URL('steam/games', baseURL)
 
-      // Get token from environment
-      const token =
-        process.env.ZELENKA_TOKEN || process.env.VITE_ZELENKA_TOKEN || process.env.LZT_TOKEN
+      try {
+        // Build LZT Market API URL
+        const baseURL = 'https://prod-api.lzt.market'
+        const apiURL = new URL('steam/games', baseURL)
 
-      if (!token) {
-        console.error('❌ No LZT Market token found')
-        return res.status(500).json({
-          error: 'Server configuration error',
-          message: 'Missing API token'
-        })
-      }
+        // Get token from environment
+        const token =
+          process.env.ZELENKA_TOKEN || process.env.VITE_ZELENKA_TOKEN || process.env.LZT_TOKEN
 
-      console.log(`🎮 LZT API Request for steam/games:`, apiURL.toString())
-
-      // Make request to LZT Market API
-      const response = await fetch(apiURL.toString(), {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'User-Agent': 'SenjaGames-API/1.0'
+        if (!token) {
+          console.error('❌ No LZT Market token found')
+          return res.status(500).json({
+            error: 'Server configuration error',
+            message: 'Missing API token'
+          })
         }
-      })
 
-      if (!response.ok) {
-        console.error('❌ LZT API Error:', response.status, response.statusText)
-        const errorText = await response.text()
-        console.error('Error details:', errorText)
+        console.log(`🎮 LZT API Request for steam/games:`, apiURL.toString())
 
-        return res.status(response.status).json({
-          error: 'LZT Market API error',
-          status: response.status,
-          message: errorText,
-          category: 'steam/games'
-        })
-      }
-
-      const data = await response.json()
-      console.log(`🎮 Raw steam/games API response structure:`, Object.keys(data))
-      console.log(`🔍 First few games in response:`, JSON.stringify(data.games ? Object.keys(data.games).slice(0, 5) : 'No games key', null, 2))
-
-      // Transform the LZT API response to the format expected by the frontend
-      // The steam/games API actually returns: { games: {...}, system_info: {...} }
-      // Frontend expects: { "game_id": { "name": "Game Name" }, ... }
-      const transformedData = {}
-
-      if (data.games && typeof data.games === 'object') {
-        // Handle games as object where keys are game IDs
-        Object.entries(data.games).forEach(([gameId, game]) => {
-          if (game && (game.title || game.name)) {
-            transformedData[gameId] = {
-              id: parseInt(gameId),
-              name: game.title || game.name || `Game ${gameId}`,
-              title: game.title || game.name || `Game ${gameId}`,
-              abbr: game.abbr || game.title || game.name,
-              category_id: game.category_id || 1,
-              img: game.img || '',
-              url: game.url || ''
-            }
+        // Make request to LZT Market API
+        const response = await fetch(apiURL.toString(), {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'User-Agent': 'SenjaGames-API/1.0'
           }
         })
-      } else if (data.items && Array.isArray(data.items)) {
-        // Fallback: Handle items as array (in case structure changes)
-        data.items.forEach(game => {
-          if (game.app_id && (game.title || game.name)) {
-            transformedData[game.app_id] = {
-              id: parseInt(game.app_id),
-              name: game.title || game.name || `Game ${game.app_id}`,
-              title: game.title || game.name || `Game ${game.app_id}`,
-              abbr: game.abbr || game.title || game.name,
-              category_id: game.category_id || 1,
-              img: game.img || '',
-              url: game.url || ''
+
+        if (!response.ok) {
+          throw new Error(`LZT API Error: ${response.status} ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        console.log(`🎮 Raw steam/games API response structure:`, Object.keys(data))
+        console.log(
+          `🔍 First few games in response:`,
+          JSON.stringify(data.games ? Object.keys(data.games).slice(0, 5) : 'No games key', null, 2)
+        )
+
+        // Transform the LZT API response to the format expected by the frontend
+        // The steam/games API actually returns: { games: {...}, system_info: {...} }
+        // Frontend expects: { "game_id": { "name": "Game Name" }, ... }
+        const transformedData = {}
+
+        if (data.games && typeof data.games === 'object') {
+          // Handle games as object where keys are game IDs
+          Object.entries(data.games).forEach(([gameId, game]) => {
+            if (game && (game.title || game.name)) {
+              transformedData[gameId] = {
+                id: parseInt(gameId),
+                name: game.title || game.name || `Game ${gameId}`,
+                title: game.title || game.name || `Game ${gameId}`,
+                abbr: game.abbr || game.title || game.name,
+                category_id: game.category_id || 1,
+                img: game.img || '',
+                url: game.url || ''
+              }
             }
+          })
+        } else if (data.items && Array.isArray(data.items)) {
+          // Fallback: Handle items as array (in case structure changes)
+          data.items.forEach(game => {
+            if (game.app_id && (game.title || game.name)) {
+              transformedData[game.app_id] = {
+                id: parseInt(game.app_id),
+                name: game.title || game.name || `Game ${game.app_id}`,
+                title: game.title || game.name || `Game ${game.app_id}`,
+                abbr: game.abbr || game.title || game.name,
+                category_id: game.category_id || 1,
+                img: game.img || '',
+                url: game.url || ''
+              }
+            }
+          })
+        }
+
+        const gameCount = Object.keys(transformedData).length
+        if (gameCount > 0) {
+          console.log(`✅ Steam games API transformed ${gameCount} games to expected format`)
+          return res.status(200).json(transformedData)
+        } else {
+          throw new Error('No games found in API response')
+        }
+      } catch (error) {
+        // Silent fallback to local JSON data - no error alerts shown to user
+        console.log('🔄 Using local steam-game.json data (API unavailable)')
+
+        try {
+          // Import the local JSON file
+          const fs = await import('fs')
+          const path = await import('path')
+          const { fileURLToPath } = await import('url')
+
+          const __filename = fileURLToPath(import.meta.url)
+          const __dirname = path.dirname(__filename)
+          const jsonPath = path.join(__dirname, '../src/assets/steam-game.json')
+
+          const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
+          const transformedData = {}
+
+          if (jsonData.games && Array.isArray(jsonData.games)) {
+            jsonData.games.forEach(game => {
+              if (game.app_id && game.title) {
+                transformedData[game.app_id] = {
+                  id: parseInt(game.app_id),
+                  name: game.title,
+                  title: game.title,
+                  abbr: game.abbr || game.title,
+                  category_id: game.category_id || 1,
+                  img: game.img || '',
+                  url: game.url || ''
+                }
+              }
+            })
           }
-        })
+
+          const gameCount = Object.keys(transformedData).length
+          console.log(`✅ Steam games loaded from local JSON: ${gameCount} games`)
+          return res.status(200).json(transformedData)
+        } catch (jsonError) {
+          console.error('❌ Failed to load fallback JSON data:', jsonError)
+          return res.status(500).json({
+            error: 'Steam games unavailable',
+            message: 'Unable to load game data'
+          })
+        }
       }
-
-      const gameCount = Object.keys(transformedData).length
-      console.log(`✅ Steam games API transformed ${gameCount} games to expected format`)
-
-      return res.status(200).json(transformedData)
     }
 
     // No special handling needed for other endpoints - let the API call proceed normally

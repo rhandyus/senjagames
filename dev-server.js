@@ -40,7 +40,7 @@ const loadServerlessFunction = async functionPath => {
   try {
     // Check if file exists first
     const fullPath = path.join(__dirname, functionPath)
-    
+
     // Check if file exists and is not disabled
     const fs = await import('fs')
     if (!fs.existsSync(fullPath)) {
@@ -54,7 +54,10 @@ const loadServerlessFunction = async functionPath => {
     const { default: handler } = await import(`file://${fullPath}`)
     return handler
   } catch (error) {
-    console.error(`❌ Failed to load function: ${functionPath}`, error.code === 'MODULE_NOT_FOUND' ? 'File not found' : error.message)
+    console.error(
+      `❌ Failed to load function: ${functionPath}`,
+      error.code === 'MODULE_NOT_FOUND' ? 'File not found' : error.message
+    )
     return null
   }
 }

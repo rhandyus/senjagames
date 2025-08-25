@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react'
 import { useEffect, useMemo, useState } from 'react'
+import steamGamesData from '../assets/steam-game.json'
 import SearchableGameDropdown from './SearchableGameDropdown'
 
 // Game lists for fallback
@@ -187,13 +188,11 @@ const SteamFilters = ({ onFilterChange, loading }) => {
   // State for API games
   const [apiGames, setApiGames] = useState([])
   const [gamesLoading, setGamesLoading] = useState(false)
-  const [gamesError, setGamesError] = useState(null)
 
   // Fetch games from server API on component mount
   useEffect(() => {
     const fetchGames = async () => {
       setGamesLoading(true)
-      setGamesError(null)
 
       try {
         // Fetch directly from our server endpoint via Vite proxy
@@ -215,10 +214,22 @@ const SteamFilters = ({ onFilterChange, loading }) => {
 
         if (gamesArray && Array.isArray(gamesArray) && gamesArray.length > 0) {
           setApiGames(gamesArray)
+        } else {
+          // Silent fallback to local JSON data
+          const fallbackGames = steamGamesData.games.map(game => ({
+            id: parseInt(game.app_id),
+            name: game.title
+          }))
+          setApiGames(fallbackGames)
         }
       } catch (error) {
-        console.error('Error fetching games:', error)
-        setGamesError('Failed to load games from API')
+        // Silent fallback to local JSON data - no error message shown
+        console.log('Using local steam games data')
+        const fallbackGames = steamGamesData.games.map(game => ({
+          id: parseInt(game.app_id),
+          name: game.title
+        }))
+        setApiGames(fallbackGames)
       } finally {
         setGamesLoading(false)
       }
@@ -439,13 +450,6 @@ const SteamFilters = ({ onFilterChange, loading }) => {
                       className='text-purple-500 text-lg animate-spin'
                     />
                   )}
-                  {gamesError && (
-                    <Icon
-                      icon='mdi:alert-circle'
-                      className='text-red-500 text-lg'
-                      title={`Error: ${gamesError}`}
-                    />
-                  )}
                 </label>
 
                 <SearchableGameDropdown
@@ -458,12 +462,6 @@ const SteamFilters = ({ onFilterChange, loading }) => {
                   enableServerSearch={true}
                   searchEndpoint='/api/lzt/steam/games'
                 />
-
-                {gamesError && (
-                  <div className='text-xs text-red-400 mt-1'>
-                    Failed to load games from API. Using fallback list.
-                  </div>
-                )}
               </div>
 
               {/* Warranty Duration */}
