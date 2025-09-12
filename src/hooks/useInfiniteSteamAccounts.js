@@ -51,6 +51,7 @@ export const useInfiniteSteamAccounts = (filters = {}) => {
 
       // Account status and activity
       item_state: apiAccount.item_state || 'active',
+      item_origin: apiAccount.item_origin, // Preserve origin data (not displayed in UI)
       account_last_activity: steamData.account_last_activity || steamData.last_activity,
       lastSeen: formatLastSeen(steamData.account_last_activity || steamData.last_activity),
 
@@ -69,7 +70,7 @@ export const useInfiniteSteamAccounts = (filters = {}) => {
           : 0),
 
       // Additional fields
-      item_origin: apiAccount.item_origin,
+
       warranty: apiAccount.warranty,
       hasWarranty: !!apiAccount.warranty,
       guarantee: apiAccount.guarantee,

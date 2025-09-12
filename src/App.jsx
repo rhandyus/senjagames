@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Link, Route, Routes } from 'react-router-dom'
+import { Link, Route, Routes, useSearchParams } from 'react-router-dom'
 import AccountDetailPage from './components/AccountDetailPage'
 import BattleNetFilters from './components/BattleNetFilters'
 import CartModal from './components/CartModal'
@@ -45,7 +45,7 @@ import Login from './components/Login'
 import MiHoyoFilters from './components/MiHoyoFilters'
 import MinecraftFilters from './components/MinecraftFilters'
 import MinecraftPage from './components/MinecraftPage'
-import OriginPage from './components/OriginPage'
+
 import PaymentModal from './components/PaymentModal'
 import ProtectedRoute from './components/ProtectedRoute'
 import RiotFilters from './components/RiotFilters'
@@ -57,6 +57,7 @@ import SupercellPage from './components/SupercellPage'
 import TelegramPage from './components/TelegramPage'
 // Commented out - not in 12 chosen categories
 // import TikTokFilters from './components/TikTokFilters'
+import OriginPage from './components/OriginPage'
 import UplayFilters from './components/UplayFilters'
 import UplayPage from './components/UplayPage'
 // Commented out - not in 12 chosen categories
@@ -105,6 +106,7 @@ function MainPage() {
   const [nameUpdate, setNameUpdate] = useState({ show: false, value: '' })
   const { user, signOut, updateUserProfile } = useAuth()
   const { totalItems, addToCart } = useCart()
+  const [searchParams] = useSearchParams()
 
   // Local state for categories and accounts (removed useZelenkaAccounts)
   const [selectedCategory, setSelectedCategory] = useState('Steam')
@@ -114,10 +116,10 @@ function MainPage() {
   const [filteredAccounts, setFilteredAccounts] = useState([])
 
   // Helper functions for category management
-  const changeCategory = category => {
+  const changeCategory = useCallback(category => {
     setSelectedCategory(category)
     setCurrentGameType(category)
-  }
+  }, [])
 
   const updateSteamFilters = newFilters => {
     setSteamFilters(newFilters)
@@ -168,6 +170,112 @@ function MainPage() {
 
   // Static categories only - no need to load from LZT API
 
+  const handleCategoryClick = useCallback(categoryName => {
+    if (categoryName === 'Steam') {
+      // Stay on main page but set Steam mode
+      setCurrentGameType('Steam')
+      changeCategory('Steam') // This will set the filters and context
+    } else if (categoryName === 'Fortnite') {
+      // Stay on main page but set Fortnite mode
+      setCurrentGameType('Fortnite')
+      changeCategory('Fortnite') // This will set the filters and context
+    } else if (isEpicGamesCategory(categoryName)) {
+      // Stay on main page but set Epic Games mode
+      setCurrentGameType('Epic Games')
+      changeCategory('Epic Games') // This will set the filters and context
+    } else if (isMiHoyoCategory(categoryName)) {
+      // Stay on main page but set MiHoYo mode
+      setCurrentGameType('miHoYo')
+      changeCategory('miHoYo') // This will set the filters and context
+    } else if (isRiotCategory(categoryName)) {
+      // Stay on main page but set Riot mode
+      setCurrentGameType('Riot')
+      changeCategory('Riot') // This will set the filters and context
+    } else if (isTelegramCategory(categoryName)) {
+      // Stay on main page but set Telegram mode
+      setCurrentGameType('Telegram')
+      changeCategory('Telegram') // This will set the filters and context
+    } else if (isSupercellCategory(categoryName)) {
+      // Stay on main page but set Supercell mode
+      setCurrentGameType('Supercell')
+      changeCategory('Supercell') // This will set the filters and context
+    } else if (isDiscordCategory(categoryName)) {
+      // Stay on main page but set Discord mode
+      setCurrentGameType('Discord')
+      changeCategory('Discord') // This will set the filters and context
+    } else if (isInstagramCategory(categoryName)) {
+      // Stay on main page but set Instagram mode
+      setCurrentGameType('Instagram')
+      changeCategory('Instagram') // This will set the filters and context
+    } else if (isChatGPTCategory(categoryName)) {
+      // Stay on main page but set ChatGPT mode
+      setCurrentGameType('ChatGPT')
+      changeCategory('ChatGPT') // This will set the filters and context
+    } else if (isMinecraftCategory(categoryName)) {
+      // Stay on main page but set Minecraft mode
+      setCurrentGameType('Minecraft')
+      changeCategory('Minecraft') // This will set the filters and context
+    } else if (isEscapeFromTarkovCategory(categoryName)) {
+      // Stay on main page but set Escape From Tarkov mode
+      setCurrentGameType('Escape from Tarkov')
+      changeCategory('Escape from Tarkov') // This will set the filters and context
+    } else if (isSocialClubCategory(categoryName)) {
+      // Stay on main page but set Social Club mode
+      setCurrentGameType('Social Club')
+      changeCategory('Social Club Rockstar') // This will set the filters and context
+    } else if (categoryName === 'Uplay') {
+      // Stay on main page but set Uplay mode
+      setCurrentGameType('Uplay')
+      changeCategory('Uplay') // This will set the filters and context
+    } else if (isDiscordCategory(categoryName)) {
+      // Stay on main page but set Discord mode
+      setCurrentGameType('Discord')
+      changeCategory('Discord') // This will set the filters and context
+    } else if (isTikTokCategory(categoryName)) {
+      // Stay on main page but set TikTok mode
+      setCurrentGameType('TikTok')
+      changeCategory('TikTok') // This will set the filters and context
+    } else if (isRobloxCategory(categoryName)) {
+      // Stay on main page but set Roblox mode
+      setCurrentGameType('Roblox')
+      changeCategory('Roblox') // This will set the filters and context
+    } else if (isBattleNetCategory(categoryName)) {
+      // Stay on main page but set Battle.net mode
+      setCurrentGameType('Battle.net')
+      changeCategory('Battle.net') // This will set the filters and context
+    } else if (isVPNCategory(categoryName)) {
+      // Stay on main page but set VPN mode
+      setCurrentGameType('VPN')
+      changeCategory('VPN') // This will set the filters and context
+    } else if (isOriginCategory(categoryName)) {
+      // Stay on main page but set Origin mode (like Steam)
+      setCurrentGameType('Origin')
+      changeCategory('Origin') // This will set the filters and context
+    } else if (isWotCategory(categoryName)) {
+      // Stay on main page but set World of Tanks mode
+      setCurrentGameType('World of Tanks')
+      changeCategory('World of Tanks') // This will set the filters and context
+    } else if (categoryName === 'ChatGPT') {
+      // Handle ChatGPT specifically
+      setCurrentGameType('ChatGPT')
+      changeCategory('ChatGPT')
+    } else {
+      // For other categories, use the original changeCategory function
+      setCurrentGameType('Other')
+      changeCategory(categoryName)
+    }
+  }, [changeCategory])
+
+  // Handle URL category parameter
+  useEffect(() => {
+    const categoryParam = searchParams.get('category')
+    if (categoryParam) {
+      // Decode URL encoded category names
+      const decodedCategory = decodeURIComponent(categoryParam)
+      handleCategoryClick(decodedCategory)
+    }
+  }, [searchParams, handleCategoryClick])
+
   // Force Steam as default category only on initial load (not on category changes)
   useEffect(() => {
     if (selectedCategory !== 'Steam' && !loading && selectedCategory === '') {
@@ -188,7 +296,6 @@ function MainPage() {
       isRiotCategory(selectedCategory) ||
       isTelegramCategory(selectedCategory) ||
       isSupercellCategory(selectedCategory) ||
-      isOriginCategory(selectedCategory) ||
       // isDiscordCategory(selectedCategory) ||  // Commented out - not in 12 chosen categories
       // isInstagramCategory(selectedCategory) ||  // Commented out - not in 12 chosen categories
       // isChatGPTCategory(selectedCategory) ||  // Commented out - not in 12 chosen categories
@@ -199,6 +306,7 @@ function MainPage() {
       isRobloxCategory(selectedCategory) ||
       isBattleNetCategory(selectedCategory) ||
       // isVPNCategory(selectedCategory) ||  // Commented out - not in 12 chosen categories
+      isOriginCategory(selectedCategory) ||
       isWotCategory(selectedCategory)
     ) {
       // Clear the general accounts state for custom categories
@@ -342,16 +450,11 @@ function MainPage() {
         color: '#00AEFF',
         isLocal: true
       },
-      {
-        name: 'Origin',
-        displayName: 'EA',
-        icon: 'simple-icons:ea',
-        color: '#FF6C37',
-        isLocal: false
-      },
+
       { name: 'Riot', icon: 'simple-icons:riotgames', color: '#FF4654', isLocal: false },
       { name: 'Fortnite', icon: fortniteIcon, color: '#313131', isLocal: true },
-      { name: 'Telegram', icon: 'logos:telegram', color: '#0088CC', isLocal: false }
+      { name: 'Telegram', icon: 'logos:telegram', color: '#0088CC', isLocal: false },
+      { name: 'Origin', icon: 'simple-icons:ea', color: '#FF6600', isLocal: false }
     ]
     return staticCategories
   }, []) // Empty dependency array - never re-calculate
@@ -410,28 +513,6 @@ function MainPage() {
       categoryName === 'Boom Beach' ||
       categoryName === 'boom beach' ||
       (categoryName && categoryName.toLowerCase().includes('supercell'))
-    )
-  }
-
-  // Helper function to check if category is Origin/EA-related
-  const isOriginCategory = categoryName => {
-    if (!categoryName) return false
-    const lowerName = categoryName.toLowerCase()
-
-    return (
-      categoryName === 'Origin' ||
-      categoryName === 'EA' ||
-      lowerName === 'origin' ||
-      lowerName === 'ea' ||
-      lowerName === 'electronic arts' ||
-      lowerName.includes('ea (origin)') ||
-      (lowerName.includes('origin') &&
-        !lowerName.includes('steam') &&
-        !lowerName.includes('fortnite')) ||
-      (lowerName.includes('ea') &&
-        !lowerName.includes('steam') &&
-        !lowerName.includes('team') &&
-        lowerName !== 'steam')
     )
   }
 
@@ -530,6 +611,15 @@ function MainPage() {
     )
   }
 
+  // Helper function to check if category is Origin-related
+  const isOriginCategory = categoryName => {
+    return (
+      categoryName === 'Origin' ||
+      categoryName === 'origin' ||
+      (categoryName && categoryName.toLowerCase().includes('origin'))
+    )
+  }
+
   // Helper function to check if category is World of Tanks-related
   const isWotCategory = categoryName => {
     return (
@@ -544,101 +634,7 @@ function MainPage() {
   }
 
   // Custom category change handler to handle special pages
-  const handleCategoryClick = categoryName => {
-    if (categoryName === 'Steam') {
-      // Stay on main page but set Steam mode
-      setCurrentGameType('Steam')
-      changeCategory('Steam') // This will set the filters and context
-    } else if (categoryName === 'Fortnite') {
-      // Stay on main page but set Fortnite mode
-      setCurrentGameType('Fortnite')
-      changeCategory('Fortnite') // This will set the filters and context
-    } else if (isEpicGamesCategory(categoryName)) {
-      // Stay on main page but set Epic Games mode
-      setCurrentGameType('Epic Games')
-      changeCategory('Epic Games') // This will set the filters and context
-    } else if (isMiHoyoCategory(categoryName)) {
-      // Stay on main page but set MiHoYo mode
-      setCurrentGameType('miHoYo')
-      changeCategory('miHoYo') // This will set the filters and context
-    } else if (isRiotCategory(categoryName)) {
-      // Stay on main page but set Riot mode
-      setCurrentGameType('Riot')
-      changeCategory('Riot') // This will set the filters and context
-    } else if (isTelegramCategory(categoryName)) {
-      // Stay on main page but set Telegram mode
-      setCurrentGameType('Telegram')
-      changeCategory('Telegram') // This will set the filters and context
-    } else if (isSupercellCategory(categoryName)) {
-      // Stay on main page but set Supercell mode
-      setCurrentGameType('Supercell')
-      changeCategory('Supercell') // This will set the filters and context
-    } else if (isOriginCategory(categoryName)) {
-      // Stay on main page but set EA mode (display as Origin)
-      setCurrentGameType('Origin')
-      changeCategory('EA') // Use EA internally for API compatibility
-    } else if (isDiscordCategory(categoryName)) {
-      // Stay on main page but set Discord mode
-      setCurrentGameType('Discord')
-      changeCategory('Discord') // This will set the filters and context
-    } else if (isInstagramCategory(categoryName)) {
-      // Stay on main page but set Instagram mode
-      setCurrentGameType('Instagram')
-      changeCategory('Instagram') // This will set the filters and context
-    } else if (isChatGPTCategory(categoryName)) {
-      // Stay on main page but set ChatGPT mode
-      setCurrentGameType('ChatGPT')
-      changeCategory('ChatGPT') // This will set the filters and context
-    } else if (isMinecraftCategory(categoryName)) {
-      // Stay on main page but set Minecraft mode
-      setCurrentGameType('Minecraft')
-      changeCategory('Minecraft') // This will set the filters and context
-    } else if (isEscapeFromTarkovCategory(categoryName)) {
-      // Stay on main page but set Escape From Tarkov mode
-      setCurrentGameType('Escape from Tarkov')
-      changeCategory('Escape from Tarkov') // This will set the filters and context
-    } else if (isSocialClubCategory(categoryName)) {
-      // Stay on main page but set Social Club mode
-      setCurrentGameType('Social Club')
-      changeCategory('Social Club Rockstar') // This will set the filters and context
-    } else if (categoryName === 'Uplay') {
-      // Stay on main page but set Uplay mode
-      setCurrentGameType('Uplay')
-      changeCategory('Uplay') // This will set the filters and context
-    } else if (isDiscordCategory(categoryName)) {
-      // Stay on main page but set Discord mode
-      setCurrentGameType('Discord')
-      changeCategory('Discord') // This will set the filters and context
-    } else if (isTikTokCategory(categoryName)) {
-      // Stay on main page but set TikTok mode
-      setCurrentGameType('TikTok')
-      changeCategory('TikTok') // This will set the filters and context
-    } else if (isRobloxCategory(categoryName)) {
-      // Stay on main page but set Roblox mode
-      setCurrentGameType('Roblox')
-      changeCategory('Roblox') // This will set the filters and context
-    } else if (isBattleNetCategory(categoryName)) {
-      // Stay on main page but set Battle.net mode
-      setCurrentGameType('Battle.net')
-      changeCategory('Battle.net') // This will set the filters and context
-    } else if (isVPNCategory(categoryName)) {
-      // Stay on main page but set VPN mode
-      setCurrentGameType('VPN')
-      changeCategory('VPN') // This will set the filters and context
-    } else if (isWotCategory(categoryName)) {
-      // Stay on main page but set World of Tanks mode
-      setCurrentGameType('World of Tanks')
-      changeCategory('World of Tanks') // This will set the filters and context
-    } else if (categoryName === 'ChatGPT') {
-      // Handle ChatGPT specifically
-      setCurrentGameType('ChatGPT')
-      changeCategory('ChatGPT')
-    } else {
-      // For other categories, use the original changeCategory function
-      setCurrentGameType('Other')
-      changeCategory(categoryName)
-    }
-  }
+
 
   // Function to refresh accounts for non-custom categories
   const refreshAccounts = async () => {
@@ -651,7 +647,6 @@ function MainPage() {
       isRiotCategory(selectedCategory) ||
       isTelegramCategory(selectedCategory) ||
       isSupercellCategory(selectedCategory) ||
-      isOriginCategory(selectedCategory) ||
       isDiscordCategory(selectedCategory) ||
       isInstagramCategory(selectedCategory) ||
       isChatGPTCategory(selectedCategory) ||
@@ -663,6 +658,7 @@ function MainPage() {
       isRobloxCategory(selectedCategory) ||
       isBattleNetCategory(selectedCategory) ||
       isVPNCategory(selectedCategory) ||
+      isOriginCategory(selectedCategory) ||
       isWotCategory(selectedCategory)
     ) {
       // These categories are handled by their specific components
@@ -916,13 +912,13 @@ function MainPage() {
             !isMiHoyoCategory(selectedCategory) &&
             !isRiotCategory(selectedCategory) && (
               <div className='flex items-center space-x-4'>
-                <p className='text-gray-400'>{filteredAccounts.length} accounts found</p>
+                <p className='text-gray-400'>{filteredAccounts.length} akun ditemukan</p>
                 <button
                   onClick={refreshAccounts}
                   className='bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors'
                   disabled={loading}
                 >
-                  {loading ? 'Loading...' : 'Refresh'}
+                  {loading ? 'Memuat...' : 'Refresh'}
                 </button>
               </div>
             )}
@@ -931,8 +927,7 @@ function MainPage() {
         {/* Steam Filters - Show only when Steam category is selected and NOT in special categories */}
         {selectedCategory === 'Steam' &&
           !isTelegramCategory(selectedCategory) &&
-          !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) && (
+          !isSupercellCategory(selectedCategory) && (
             <SteamFilters
               onFilterChange={filters => {
                 // Update local state for infinite scroll component
@@ -981,8 +976,7 @@ function MainPage() {
         {/* MiHoYo Filters - Show only when miHoYo category is selected and NOT in special categories */}
         {isMiHoyoCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
-          !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) && (
+          !isSupercellCategory(selectedCategory) && (
             <MiHoyoFilters
               onFilterChange={filters => {
                 // Update local state for MiHoYo accounts filtering
@@ -995,8 +989,7 @@ function MainPage() {
         {/* Riot Filters - Show only when Riot category is selected and NOT in special categories */}
         {isRiotCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
-          !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) && (
+          !isSupercellCategory(selectedCategory) && (
             <RiotFilters
               filters={riotFilters}
               setFilters={setRiotFilters}
@@ -1011,8 +1004,7 @@ function MainPage() {
         {/* Minecraft Filters - Show only when Minecraft category is selected and NOT in special categories */}
         {isMinecraftCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
-          !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) && (
+          !isSupercellCategory(selectedCategory) && (
             <MinecraftFilters
               onFiltersChange={filters => {
                 // Update local state for Minecraft accounts filtering
@@ -1025,8 +1017,7 @@ function MainPage() {
         {/* Escape from Tarkov Filters - Show only when EFT category is selected and NOT in special categories */}
         {isEscapeFromTarkovCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
-          !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) && (
+          !isSupercellCategory(selectedCategory) && (
             <EscapeFromTarkovFilters
               onFiltersChange={filters => {
                 // Update local state for EFT accounts filtering
@@ -1039,8 +1030,7 @@ function MainPage() {
         {/* Social Club Filters - Show only when Social Club category is selected and NOT in special categories */}
         {isSocialClubCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
-          !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) && (
+          !isSupercellCategory(selectedCategory) && (
             <SocialClubFilters
               onFiltersChange={filters => {
                 // Update local state for Social Club accounts filtering
@@ -1120,8 +1110,8 @@ function MainPage() {
         {/* Supercell Page - Show only when Supercell category is selected */}
         {isSupercellCategory(selectedCategory) && <SupercellPage />}
 
-        {/* Origin Page - Show only when Origin or EA category is selected */}
-        {(selectedCategory === 'EA' || isOriginCategory(selectedCategory)) && <OriginPage />}
+        {/* Origin Page - Show only when Origin category is selected */}
+        {isOriginCategory(selectedCategory) && <OriginPage />}
 
         {/* Discord Page - Show only when Discord category is selected */}
         {isDiscordCategory(selectedCategory) && <InfiniteDiscordAccountsContainer />}
@@ -1160,7 +1150,7 @@ function MainPage() {
         {/* World of Tanks Page - Show only when World of Tanks category is selected */}
         {isWotCategory(selectedCategory) && <InfiniteWotAccountsContainer />}
 
-        {/* Error State - Only for non-Steam, non-Epic Games, non-Gifts, non-Fortnite, non-MiHoYo, non-Riot, non-Telegram, non-Supercell, non-Origin, non-Discord, non-Instagram, non-Minecraft, non-TikTok, non-Roblox, non-Battle.net, and non-WOT categories */}
+        {/* Error State - Only for non-Steam, non-Epic Games, non-Gifts, non-Fortnite, non-MiHoYo, non-Riot, non-Telegram, non-Supercell, non-Discord, non-Instagram, non-Minecraft, non-TikTok, non-Roblox, non-Battle.net, and non-WOT categories */}
         {selectedCategory !== 'Steam' &&
           selectedCategory !== 'Epic Games' &&
           selectedCategory !== 'Gifts' &&
@@ -1170,7 +1160,6 @@ function MainPage() {
           !isRiotCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
           !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) &&
           !isDiscordCategory(selectedCategory) &&
           !isInstagramCategory(selectedCategory) &&
           !isChatGPTCategory(selectedCategory) &&
@@ -1178,10 +1167,11 @@ function MainPage() {
           !isRobloxCategory(selectedCategory) &&
           !isBattleNetCategory(selectedCategory) &&
           !isVPNCategory(selectedCategory) &&
+          !isOriginCategory(selectedCategory) &&
           !isWotCategory(selectedCategory) &&
           error && (
             <div className='bg-red-900 border border-red-700 text-red-100 px-4 py-3 rounded-lg mb-6'>
-              <p className='font-medium'>Error loading accounts:</p>
+              <p className='font-medium'>Error memuat akun:</p>
               <p className='text-sm mt-1'>{error}</p>
               <button
                 onClick={refreshAccounts}
@@ -1265,13 +1255,14 @@ function MainPage() {
             selectedCategory
           ) ? null : isBattleNetCategory(selectedCategory) ? null : isVPNCategory(
             selectedCategory
-          ) ? null : isWotCategory(selectedCategory) ? null : ( // Supercell accounts are handled by SupercellPage component above // Origin accounts are handled by OriginPage component above // Discord accounts are handled by InfiniteDiscordAccountsContainer component above // Instagram accounts are handled by InfiniteInstagramAccountsContainer component above // Minecraft accounts are handled by InfiniteMinecraftAccountsContainer component above // TikTok accounts are handled by InfiniteTikTokAccountsContainer component above // Roblox accounts are handled by InfiniteRobloxAccountsContainer component above // Battle.net accounts are handled by InfiniteBattleNetAccountsContainer component above // World of Tanks accounts are handled by InfiniteWotAccountsContainer component above
+          ) ? null : isOriginCategory(selectedCategory) ? null : isWotCategory(
+            selectedCategory
+          ) ? null : ( // Supercell accounts are handled by SupercellPage component above // Discord accounts are handled by InfiniteDiscordAccountsContainer component above // Instagram accounts are handled by InfiniteInstagramAccountsContainer component above // Minecraft accounts are handled by InfiniteMinecraftAccountsContainer component above // TikTok accounts are handled by InfiniteTikTokAccountsContainer component above // Roblox accounts are handled by InfiniteRobloxAccountsContainer component above // Battle.net accounts are handled by InfiniteBattleNetAccountsContainer component above // World of Tanks accounts are handled by InfiniteWotAccountsContainer component above
           // Only show LZT accounts for categories that are NOT our custom platforms
           !loading &&
           !error &&
           !isTelegramCategory(selectedCategory) &&
           !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) &&
           !isDiscordCategory(selectedCategory) &&
           !isInstagramCategory(selectedCategory) &&
           !isChatGPTCategory(selectedCategory) &&
@@ -1279,6 +1270,7 @@ function MainPage() {
           !isRobloxCategory(selectedCategory) &&
           !isBattleNetCategory(selectedCategory) &&
           !isVPNCategory(selectedCategory) &&
+          !isOriginCategory(selectedCategory) &&
           !isWotCategory(selectedCategory) &&
           selectedCategory !== 'Steam' &&
           selectedCategory !== 'Fortnite' &&
@@ -1322,7 +1314,7 @@ function MainPage() {
                     )}
                     {(account.account_last_activity || account.lastSeen) && (
                       <div className='flex justify-between text-sm'>
-                        <span className='text-gray-400'>Last seen:</span>
+                        <span className='text-gray-400'>Terakhir dilihat:</span>
                         <span className='text-gray-200 font-medium'>
                           {account.account_last_activity
                             ? new Date(account.account_last_activity * 1000).toLocaleDateString()
@@ -1335,14 +1327,6 @@ function MainPage() {
                         <span className='text-gray-400'>Country:</span>
                         <span className='text-gray-200 font-medium'>
                           {account.steam_country || account.country}
-                        </span>
-                      </div>
-                    )}
-                    {account.item_origin && (
-                      <div className='flex justify-between text-sm'>
-                        <span className='text-gray-400'>Origin:</span>
-                        <span className='text-gray-200 font-medium capitalize'>
-                          {account.item_origin}
                         </span>
                       </div>
                     )}
@@ -1459,7 +1443,7 @@ function MainPage() {
                         className='flex-1 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-200 font-medium text-center shadow-lg hover:shadow-green-500/25'
                       >
                         <Icon icon='mdi:cart-plus' className='inline mr-2' />
-                        <span className='hidden sm:inline'>Add to Cart</span>
+                        <span className='hidden sm:inline'>Tambah ke Keranjang</span>
                         <span className='sm:hidden'>Cart</span>
                       </button>
 
@@ -1468,7 +1452,7 @@ function MainPage() {
                         className='flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-200 font-medium text-center shadow-lg hover:shadow-purple-500/25'
                       >
                         <Icon icon='mdi:credit-card' className='inline mr-2' />
-                        <span className='hidden sm:inline'>Buy Now</span>
+                        <span className='hidden sm:inline'>Beli Sekarang</span>
                         <span className='sm:hidden'>Buy</span>
                       </button>
                     </div>
@@ -1479,19 +1463,20 @@ function MainPage() {
           )
         )}
 
-        {/* Empty State - Show only for non-Steam, non-Fortnite, non-MiHoYo, non-Riot, non-Telegram, non-Supercell, and non-Origin categories */}
+        {/* Empty State - Show only for non-Steam, non-Fortnite, non-MiHoYo, non-Riot, non-Telegram, and non-Supercell categories */}
         {selectedCategory !== 'Steam' &&
           selectedCategory !== 'Fortnite' &&
           !isMiHoyoCategory(selectedCategory) &&
           !isRiotCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
           !isSupercellCategory(selectedCategory) &&
-          !isOriginCategory(selectedCategory) &&
           !loading &&
           !error &&
           filteredAccounts.length === 0 && (
             <div className='text-center py-12'>
-              <p className='text-gray-400 text-lg'>No accounts found for {selectedCategory}</p>
+              <p className='text-gray-400 text-lg'>
+                Tidak ada akun ditemukan untuk {selectedCategory}
+              </p>
               <button
                 onClick={refreshAccounts}
                 className='mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors'
@@ -1598,6 +1583,19 @@ function MainPage() {
                       <path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' />
                     </svg>
                     Shopee Official Store
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href='https://t.me/mgissella'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='hover:text-red-400 transition-colors flex items-center'
+                  >
+                    <svg className='w-4 h-4 mr-2' fill='currentColor' viewBox='0 0 24 24'>
+                      <path d='M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.820 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z' />
+                    </svg>
+                    Telegram Support
                   </a>
                 </li>
               </ul>
@@ -1709,6 +1707,7 @@ function App() {
         {/* Commented out - not in 12 chosen categories */}
         {/* <Route path='/escapefromtarkov' element={<EscapeFromTarkovPage />} /> */}
         <Route path='/uplay' element={<UplayPage />} />
+        <Route path='/origin' element={<OriginPage />} />
         {/* Commented out - not in 12 chosen categories */}
         {/* <Route path='/discord' element={<DiscordPage />} /> */}
         <Route path='/login' element={<Login />} />

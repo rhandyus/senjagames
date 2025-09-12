@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export const useInfiniteMinecraftAccounts = (filters = {}) => {
   const [accounts, setAccounts] = useState([])
@@ -7,6 +7,7 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
   const [error, setError] = useState(null)
   const [hasMore, setHasMore] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const initialLoadRef = useRef(false)
 
   // Transform account data to match expected format
   const transformAccountData = account => {
@@ -19,7 +20,7 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
       item_id: account.item_id,
       title: account.title || 'Minecraft Account',
       price: account.price || 0,
-      currency: account.currency || 'RUB',
+      currency: account.currency || 'RUB', // API returns prices in RUB
       description: account.description || '',
 
       // Basic account info
@@ -49,6 +50,18 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
 
       // Activity
       minecraft_last_activity: account.minecraft_last_activity,
+
+      // Hypixel stats
+      hypixel_ban: account.hypixel_ban,
+      hypixel_level: account.hypixel_level || account.level_hypixel,
+      hypixel_achievements: account.hypixel_achievements || account.achievements_hypixel,
+      hypixel_last_login: account.hypixel_last_login || account.last_login_hypixel,
+      hypixel_rank: account.hypixel_rank || account.rank_hypixel,
+
+      // Security and origin info
+      security_change_date: account.security_change_date || account.pending_security_change,
+      origin: account.origin,
+      brute_checked: account.brute_checked,
 
       // Seller info
       seller_last_seen: account.seller_last_seen,
@@ -153,6 +166,44 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
         const response = await fetch(url)
 
         if (!response.ok) {
+          if (response.status === 429) {
+            // Handle rate limiting - wait and retry after a delay
+            console.warn('⚠️ Rate limited, retrying after 2 seconds...')
+            await new Promise(resolve => setTimeout(resolve, 2000))
+
+            // Retry the request once
+            const retryResponse = await fetch(url)
+            if (!retryResponse.ok) {
+              throw new Error(`API Error: ${retryResponse.status} ${retryResponse.statusText}`)
+            }
+            const retryResult = await retryResponse.json()
+            console.log('✅ Minecraft API Response (retry):', retryResult)
+
+            // Continue with retry result
+            const responseData = retryResult.data || retryResult
+            if (!responseData.items) {
+              throw new Error('Invalid API response format')
+            }
+
+            const { items, hasNextPage } = responseData
+            const transformedAccounts = items
+              .map(transformAccountData)
+              .filter(account => account !== null)
+
+            console.log(
+              `✅ Transformed ${transformedAccounts.length} Minecraft accounts for page ${pageNum} (retry)`
+            )
+
+            if (pageNum === 1) {
+              setAccounts(transformedAccounts)
+            } else {
+              setAccounts(prev => [...prev, ...transformedAccounts])
+            }
+
+            setHasMore(hasNextPage === true)
+            setCurrentPage(pageNum)
+            return
+          }
           throw new Error(`API Error: ${response.status} ${response.statusText}`)
         }
 
@@ -202,10 +253,22 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
     }
   }, [loading, loadingMore, hasMore, currentPage, fetchAccounts])
 
-  // Fetch accounts when filters change
+  // Fetch accounts when filters change (with debounce)
   useEffect(() => {
-    console.log('🔄 Minecraft filters changed, fetching accounts...', filters)
-    fetchAccounts(1, false)
+    // Skip debounce on initial load for better UX
+    if (!initialLoadRef.current) {
+      initialLoadRef.current = true
+      console.log('🔄 Initial Minecraft accounts load...', filters)
+      fetchAccounts(1, false)
+      return
+    }
+
+    const timeoutId = setTimeout(() => {
+      console.log('🔄 Minecraft filters changed, fetching accounts...', filters)
+      fetchAccounts(1, false)
+    }, 300) // 300ms debounce
+
+    return () => clearTimeout(timeoutId)
   }, [filters, fetchAccounts])
 
   return {

@@ -77,6 +77,15 @@ export default async function handler(req, res) {
       `🔍 LZT Route Processing - mainCategory: ${mainCategory}, pathSegments: ${JSON.stringify(pathSegments)}`
     )
 
+    // Skip epic/games - it has its own dedicated endpoint file
+    if (mainCategory === 'epic' && subPath === 'games') {
+      console.log('🔄 Skipping epic/games - handled by dedicated endpoint')
+      return res.status(404).json({
+        error: 'Route handled by dedicated endpoint',
+        message: 'This route is handled by /api/lzt/epic/games.js'
+      })
+    }
+
     // Map the main category
     const mappedCategory = categoryMapping[mainCategory]
     console.log(`🔍 LZT Category Mapping - ${mainCategory} -> ${mappedCategory}`)

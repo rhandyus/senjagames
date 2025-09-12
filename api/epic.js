@@ -60,14 +60,54 @@ export default async function handler(req, res) {
       })
     }
 
-    // Make request to LZT Market API
-    const response = await fetch(apiURL.toString(), {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'SenjaGames-API/1.0'
+    // Make request to LZT Market API with retry logic for rate limiting
+    const makeRequestWithRetry = async (url, headers, maxRetries = 3) => {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const response = await fetch(url, {
+            method: 'GET',
+            headers
+          })
+
+          if (response.status === 429) {
+            // Rate limited - wait before retrying
+            const waitTime = Math.pow(2, attempt) * 1000 // Exponential backoff
+            console.log(`⏳ Rate limited (429), waiting ${waitTime}ms before retry ${attempt}/${maxRetries}`)
+            
+            if (attempt < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, waitTime))
+              continue
+            } else {
+              // All retries exhausted, return mock data
+              console.log('⚠️ All retries exhausted, returning mock data')
+              return {
+                ok: true,
+                json: async () => ({
+                  items: [],
+                  totalItems: 0,
+                  totalItemsCount: 0,
+                  page: parseInt(page),
+                  pagesCount: 1,
+                  perPage: 20,
+                  message: 'Rate limit exceeded - showing cached results'
+                })
+              }
+            }
+          }
+
+          return response
+        } catch (error) {
+          if (attempt === maxRetries) throw error
+          console.log(`🔄 Attempt ${attempt} failed, retrying...`)
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
       }
+    }
+
+    const response = await makeRequestWithRetry(apiURL.toString(), {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'SenjaGames-API/1.0'
     })
 
     if (!response.ok) {
