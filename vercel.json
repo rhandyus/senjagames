@@ -7,7 +7,16 @@
     "api/lzt-proxy.js": {
       "maxDuration": 30
     },
-    "api/lzt/[...category].js": {
+    "api/mihoyo.js": {
+      "maxDuration": 30
+    },
+    "api/riot.js": {
+      "maxDuration": 30
+    },
+    "api/telegram.js": {
+      "maxDuration": 30
+    },
+    "api/ea.js": {
       "maxDuration": 30
     },
     "api/roblox.js": {
