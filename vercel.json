@@ -44,10 +44,6 @@
       "destination": "/api/lzt-proxy?path=$1"
     },
     {
-      "source": "/api/lzt/(.*)",
-      "destination": "/api/lzt/$1"
-    },
-    {
       "source": "/api/winpay/(.*)",
       "destination": "/api/winpay/$1"
     },
