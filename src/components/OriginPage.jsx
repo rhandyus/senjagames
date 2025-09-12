@@ -30,7 +30,7 @@ const OriginPage = () => {
           sb: 'price_asc'
         })
 
-        const response = await fetch(`/api/lzt/ea?${params}`)
+        const response = await fetch(`/api/unify?name=ea&${params}`)
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)

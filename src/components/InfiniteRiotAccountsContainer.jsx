@@ -27,7 +27,7 @@ const InfiniteRiotAccountsContainer = ({ filters }) => {
         ...currentFilters
       })
 
-      const response = await fetch(`/api/lzt/riot?${queryParams}`)
+      const response = await fetch(`/api/unify?name=riot&${queryParams}`)
 
       if (!response.ok) {
         const errorData = await response.json()

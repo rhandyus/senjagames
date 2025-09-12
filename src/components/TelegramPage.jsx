@@ -22,7 +22,7 @@ const TelegramPage = () => {
       console.log('📱 Fetching Telegram accounts from server endpoint...')
 
       // Fetch from server endpoint instead of direct API call
-      const response = await fetch('/api/lzt/telegram')
+      const response = await fetch('/api/unify?name=telegram')
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)

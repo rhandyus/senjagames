@@ -22,7 +22,7 @@ const InfiniteMiHoyoAccountsContainer = ({ filters }) => {
         ...currentFilters
       })
 
-      const response = await fetch(`/api/lzt/mihoyo?${queryParams}`)
+      const response = await fetch(`/api/unify?name=mihoyo&${queryParams}`)
 
       if (!response.ok) {
         const errorData = await response.json()
