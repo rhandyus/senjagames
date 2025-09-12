@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     })
 
     // Debug environment variables
-    const token = process.env.ZELENKA_TOKEN || process.env.VITE_ZELENKA_TOKEN
+    const token = process.env.LZT_TOKEN
     console.log(
       'Environment variables available:',
       Object.keys(process.env).filter(key => key.includes('ZELENKA'))
