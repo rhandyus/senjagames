@@ -170,101 +170,104 @@ function MainPage() {
 
   // Static categories only - no need to load from LZT API
 
-  const handleCategoryClick = useCallback(categoryName => {
-    if (categoryName === 'Steam') {
-      // Stay on main page but set Steam mode
-      setCurrentGameType('Steam')
-      changeCategory('Steam') // This will set the filters and context
-    } else if (categoryName === 'Fortnite') {
-      // Stay on main page but set Fortnite mode
-      setCurrentGameType('Fortnite')
-      changeCategory('Fortnite') // This will set the filters and context
-    } else if (isEpicGamesCategory(categoryName)) {
-      // Stay on main page but set Epic Games mode
-      setCurrentGameType('Epic Games')
-      changeCategory('Epic Games') // This will set the filters and context
-    } else if (isMiHoyoCategory(categoryName)) {
-      // Stay on main page but set MiHoYo mode
-      setCurrentGameType('miHoYo')
-      changeCategory('miHoYo') // This will set the filters and context
-    } else if (isRiotCategory(categoryName)) {
-      // Stay on main page but set Riot mode
-      setCurrentGameType('Riot')
-      changeCategory('Riot') // This will set the filters and context
-    } else if (isTelegramCategory(categoryName)) {
-      // Stay on main page but set Telegram mode
-      setCurrentGameType('Telegram')
-      changeCategory('Telegram') // This will set the filters and context
-    } else if (isSupercellCategory(categoryName)) {
-      // Stay on main page but set Supercell mode
-      setCurrentGameType('Supercell')
-      changeCategory('Supercell') // This will set the filters and context
-    } else if (isDiscordCategory(categoryName)) {
-      // Stay on main page but set Discord mode
-      setCurrentGameType('Discord')
-      changeCategory('Discord') // This will set the filters and context
-    } else if (isInstagramCategory(categoryName)) {
-      // Stay on main page but set Instagram mode
-      setCurrentGameType('Instagram')
-      changeCategory('Instagram') // This will set the filters and context
-    } else if (isChatGPTCategory(categoryName)) {
-      // Stay on main page but set ChatGPT mode
-      setCurrentGameType('ChatGPT')
-      changeCategory('ChatGPT') // This will set the filters and context
-    } else if (isMinecraftCategory(categoryName)) {
-      // Stay on main page but set Minecraft mode
-      setCurrentGameType('Minecraft')
-      changeCategory('Minecraft') // This will set the filters and context
-    } else if (isEscapeFromTarkovCategory(categoryName)) {
-      // Stay on main page but set Escape From Tarkov mode
-      setCurrentGameType('Escape from Tarkov')
-      changeCategory('Escape from Tarkov') // This will set the filters and context
-    } else if (isSocialClubCategory(categoryName)) {
-      // Stay on main page but set Social Club mode
-      setCurrentGameType('Social Club')
-      changeCategory('Social Club Rockstar') // This will set the filters and context
-    } else if (categoryName === 'Uplay') {
-      // Stay on main page but set Uplay mode
-      setCurrentGameType('Uplay')
-      changeCategory('Uplay') // This will set the filters and context
-    } else if (isDiscordCategory(categoryName)) {
-      // Stay on main page but set Discord mode
-      setCurrentGameType('Discord')
-      changeCategory('Discord') // This will set the filters and context
-    } else if (isTikTokCategory(categoryName)) {
-      // Stay on main page but set TikTok mode
-      setCurrentGameType('TikTok')
-      changeCategory('TikTok') // This will set the filters and context
-    } else if (isRobloxCategory(categoryName)) {
-      // Stay on main page but set Roblox mode
-      setCurrentGameType('Roblox')
-      changeCategory('Roblox') // This will set the filters and context
-    } else if (isBattleNetCategory(categoryName)) {
-      // Stay on main page but set Battle.net mode
-      setCurrentGameType('Battle.net')
-      changeCategory('Battle.net') // This will set the filters and context
-    } else if (isVPNCategory(categoryName)) {
-      // Stay on main page but set VPN mode
-      setCurrentGameType('VPN')
-      changeCategory('VPN') // This will set the filters and context
-    } else if (isOriginCategory(categoryName)) {
-      // Stay on main page but set Origin mode (like Steam)
-      setCurrentGameType('Origin')
-      changeCategory('Origin') // This will set the filters and context
-    } else if (isWotCategory(categoryName)) {
-      // Stay on main page but set World of Tanks mode
-      setCurrentGameType('World of Tanks')
-      changeCategory('World of Tanks') // This will set the filters and context
-    } else if (categoryName === 'ChatGPT') {
-      // Handle ChatGPT specifically
-      setCurrentGameType('ChatGPT')
-      changeCategory('ChatGPT')
-    } else {
-      // For other categories, use the original changeCategory function
-      setCurrentGameType('Other')
-      changeCategory(categoryName)
-    }
-  }, [changeCategory])
+  const handleCategoryClick = useCallback(
+    categoryName => {
+      if (categoryName === 'Steam') {
+        // Stay on main page but set Steam mode
+        setCurrentGameType('Steam')
+        changeCategory('Steam') // This will set the filters and context
+      } else if (categoryName === 'Fortnite') {
+        // Stay on main page but set Fortnite mode
+        setCurrentGameType('Fortnite')
+        changeCategory('Fortnite') // This will set the filters and context
+      } else if (isEpicGamesCategory(categoryName)) {
+        // Stay on main page but set Epic Games mode
+        setCurrentGameType('Epic Games')
+        changeCategory('Epic Games') // This will set the filters and context
+      } else if (isMiHoyoCategory(categoryName)) {
+        // Stay on main page but set MiHoYo mode
+        setCurrentGameType('miHoYo')
+        changeCategory('miHoYo') // This will set the filters and context
+      } else if (isRiotCategory(categoryName)) {
+        // Stay on main page but set Riot mode
+        setCurrentGameType('Riot')
+        changeCategory('Riot') // This will set the filters and context
+      } else if (isTelegramCategory(categoryName)) {
+        // Stay on main page but set Telegram mode
+        setCurrentGameType('Telegram')
+        changeCategory('Telegram') // This will set the filters and context
+      } else if (isSupercellCategory(categoryName)) {
+        // Stay on main page but set Supercell mode
+        setCurrentGameType('Supercell')
+        changeCategory('Supercell') // This will set the filters and context
+      } else if (isDiscordCategory(categoryName)) {
+        // Stay on main page but set Discord mode
+        setCurrentGameType('Discord')
+        changeCategory('Discord') // This will set the filters and context
+      } else if (isInstagramCategory(categoryName)) {
+        // Stay on main page but set Instagram mode
+        setCurrentGameType('Instagram')
+        changeCategory('Instagram') // This will set the filters and context
+      } else if (isChatGPTCategory(categoryName)) {
+        // Stay on main page but set ChatGPT mode
+        setCurrentGameType('ChatGPT')
+        changeCategory('ChatGPT') // This will set the filters and context
+      } else if (isMinecraftCategory(categoryName)) {
+        // Stay on main page but set Minecraft mode
+        setCurrentGameType('Minecraft')
+        changeCategory('Minecraft') // This will set the filters and context
+      } else if (isEscapeFromTarkovCategory(categoryName)) {
+        // Stay on main page but set Escape From Tarkov mode
+        setCurrentGameType('Escape from Tarkov')
+        changeCategory('Escape from Tarkov') // This will set the filters and context
+      } else if (isSocialClubCategory(categoryName)) {
+        // Stay on main page but set Social Club mode
+        setCurrentGameType('Social Club')
+        changeCategory('Social Club Rockstar') // This will set the filters and context
+      } else if (categoryName === 'Uplay') {
+        // Stay on main page but set Uplay mode
+        setCurrentGameType('Uplay')
+        changeCategory('Uplay') // This will set the filters and context
+      } else if (isDiscordCategory(categoryName)) {
+        // Stay on main page but set Discord mode
+        setCurrentGameType('Discord')
+        changeCategory('Discord') // This will set the filters and context
+      } else if (isTikTokCategory(categoryName)) {
+        // Stay on main page but set TikTok mode
+        setCurrentGameType('TikTok')
+        changeCategory('TikTok') // This will set the filters and context
+      } else if (isRobloxCategory(categoryName)) {
+        // Stay on main page but set Roblox mode
+        setCurrentGameType('Roblox')
+        changeCategory('Roblox') // This will set the filters and context
+      } else if (isBattleNetCategory(categoryName)) {
+        // Stay on main page but set Battle.net mode
+        setCurrentGameType('Battle.net')
+        changeCategory('Battle.net') // This will set the filters and context
+      } else if (isVPNCategory(categoryName)) {
+        // Stay on main page but set VPN mode
+        setCurrentGameType('VPN')
+        changeCategory('VPN') // This will set the filters and context
+      } else if (isOriginCategory(categoryName)) {
+        // Stay on main page but set Origin mode (like Steam)
+        setCurrentGameType('Origin')
+        changeCategory('Origin') // This will set the filters and context
+      } else if (isWotCategory(categoryName)) {
+        // Stay on main page but set World of Tanks mode
+        setCurrentGameType('World of Tanks')
+        changeCategory('World of Tanks') // This will set the filters and context
+      } else if (categoryName === 'ChatGPT') {
+        // Handle ChatGPT specifically
+        setCurrentGameType('ChatGPT')
+        changeCategory('ChatGPT')
+      } else {
+        // For other categories, use the original changeCategory function
+        setCurrentGameType('Other')
+        changeCategory(categoryName)
+      }
+    },
+    [changeCategory]
+  )
 
   // Handle URL category parameter
   useEffect(() => {
@@ -634,7 +637,6 @@ function MainPage() {
   }
 
   // Custom category change handler to handle special pages
-
 
   // Function to refresh accounts for non-custom categories
   const refreshAccounts = async () => {
