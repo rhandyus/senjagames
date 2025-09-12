@@ -5,7 +5,7 @@ import { useEpicGames } from '../hooks/useEpicGames'
 const SearchableEpicGameDropdown = ({
   selectedGames = [],
   onGamesChange = () => {},
-  placeholder = 'Search for Epic Games...'
+  placeholder = 'Cari Epic Games...'
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')

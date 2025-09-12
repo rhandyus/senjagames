@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
+import { useEffect, useState } from 'react'
 import FortniteFilters from './FortniteFilters'
 
 const FortnitePage = ({ onBack }) => {
@@ -291,7 +291,7 @@ const FortnitePage = ({ onBack }) => {
           ) : accounts.length === 0 ? (
             <div className='text-center py-12'>
               <Icon icon='mdi:account-search' className='text-6xl text-gray-600 mx-auto mb-4' />
-              <h3 className='text-xl font-semibold text-gray-300 mb-2'>No accounts found</h3>
+              <h3 className='text-xl font-semibold text-gray-300 mb-2'>Tidak ada akun ditemukan</h3>
               <p className='text-gray-500'>Try adjusting your filters to find more accounts</p>
             </div>
           ) : (
@@ -385,7 +385,7 @@ const FortnitePage = ({ onBack }) => {
                     {/* Action Button */}
                     <button className='w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center'>
                       <Icon icon='mdi:cart-plus' className='mr-2' />
-                      Add to Cart
+                      Tambah ke Keranjang
                     </button>
                   </div>
                 </div>

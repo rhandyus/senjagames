@@ -1,8 +1,8 @@
 const SocialClubAccountCard = ({ account, onAddToCart, onViewDetails }) => {
   // Helper function to format price
-  const formatPrice = (price, currency = 'usd') => {
-    if (currency === 'rub') {
-      return `₽${price}`
+  const formatPrice = (price, currency = 'idr') => {
+    if (currency === 'idr' || currency === 'IDR') {
+      return `Rp ${Number(price).toLocaleString('id-ID')}`
     }
     return `$${price.toFixed(2)}`
   }

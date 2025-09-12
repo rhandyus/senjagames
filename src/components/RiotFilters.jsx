@@ -178,7 +178,7 @@ function RiotFilters({ filters = {}, setFilters = () => {}, onApplyFilters }) {
     champion_max: '',
     lol_region: [],
     lol_not_region: [],
-    pmin: '',
+    pmin: '1',
     pmax: '',
     order_by: 'bump',
     ...filters
@@ -235,7 +235,7 @@ function RiotFilters({ filters = {}, setFilters = () => {}, onApplyFilters }) {
         lol_not_region: [],
 
         // Price
-        pmin: '',
+        pmin: '1',
         pmax: '',
 
         // Sorting
@@ -890,6 +890,29 @@ function RiotFilters({ filters = {}, setFilters = () => {}, onApplyFilters }) {
           </div>
         </div>
 
+        {/* Price Range Section */}
+        <div className='bg-gray-900 p-4 rounded-lg border border-gray-700 mt-6'>
+          <h3 className='text-white font-medium mb-4'>Price Range (USD)</h3>
+          <div className='grid grid-cols-2 gap-2'>
+            <input
+              type='number'
+              name='pmin'
+              placeholder='Min Price'
+              className='bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent'
+              value={safeFilters.pmin}
+              onChange={e => handleFilterChange('pmin', e.target.value)}
+            />
+            <input
+              type='number'
+              name='pmax'
+              placeholder='Max Price'
+              className='bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent'
+              value={safeFilters.pmax}
+              onChange={e => handleFilterChange('pmax', e.target.value)}
+            />
+          </div>
+        </div>
+
         {/* Sort Buttons */}
         <div className='sortButtons flex flex-wrap gap-2 mt-6'>
           <input type='hidden' name='order_by' value={safeFilters.order_by} />
@@ -937,7 +960,7 @@ function RiotFilters({ filters = {}, setFilters = () => {}, onApplyFilters }) {
             onClick={handleApplyFilters}
             className='w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 rounded-lg transition-colors'
           >
-            Apply Filters
+            Terapkan Filter
           </button>
         </div>
       </form>

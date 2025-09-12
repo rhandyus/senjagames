@@ -35,9 +35,6 @@ const EscapeFromTarkovFilters = ({ onFiltersChange, initialFilters = {} }) => {
     // Email type
     email_type: '',
 
-    // Origin
-    origin: [],
-
     // PvE Access
     access_pve: '',
 
@@ -85,7 +82,6 @@ const EscapeFromTarkovFilters = ({ onFiltersChange, initialFilters = {} }) => {
       dollars_max: '',
       container: [],
       email_type: '',
-      origin: [],
       access_pve: '',
       last_activity: '',
       last_activity_period: 'day'
@@ -121,17 +117,6 @@ const EscapeFromTarkovFilters = ({ onFiltersChange, initialFilters = {} }) => {
     { value: 'gamma_container', label: 'Gamma Container' },
     { value: 'epsilon_container', label: 'Epsilon Container' },
     { value: 'kappa_container', label: 'Kappa Container' }
-  ]
-
-  // Origins
-  const origins = [
-    { value: 'brute', label: 'Brute' },
-    { value: 'phishing', label: 'Phishing' },
-    { value: 'stealer', label: 'Stealer' },
-    { value: 'personal', label: 'Personal' },
-    { value: 'resale', label: 'Resale' },
-    { value: 'autoreg', label: 'Autoreg' },
-    { value: 'dummy', label: 'Dummy' }
   ]
 
   return (
@@ -359,24 +344,6 @@ const EscapeFromTarkovFilters = ({ onFiltersChange, initialFilters = {} }) => {
           </div>
         </div>
 
-        {/* Origins */}
-        <div className='space-y-3'>
-          <h4 className='text-md font-semibold text-gray-200'>Account Origin</h4>
-          <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3'>
-            {origins.map(origin => (
-              <label key={origin.value} className='flex items-center space-x-2 cursor-pointer'>
-                <input
-                  type='checkbox'
-                  checked={filters.origin.includes(origin.value)}
-                  onChange={() => handleMultiSelectChange('origin', origin.value)}
-                  className='rounded border-gray-600 text-purple-600 focus:ring-purple-500 focus:ring-offset-gray-900'
-                />
-                <span className='text-sm text-gray-300'>{origin.label}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
         {/* Sort Options */}
         <div className='flex flex-wrap gap-2'>
           <h4 className='w-full text-md font-semibold text-gray-200 mb-2'>Sort By</h4>
@@ -407,7 +374,7 @@ const EscapeFromTarkovFilters = ({ onFiltersChange, initialFilters = {} }) => {
             type='submit'
             className='bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors'
           >
-            Apply Filters
+            Terapkan Filter
           </button>
           <button
             type='button'

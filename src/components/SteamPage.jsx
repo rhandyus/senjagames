@@ -236,7 +236,7 @@ const SteamPage = ({ onBack }) => {
               <Icon icon='mdi:steam' className='mr-2' />
               Steam Accounts
             </h2>
-            <div className='text-gray-400'>{accounts.length} accounts found</div>
+            <div className='text-gray-400'>{accounts.length} akun ditemukan</div>
           </div>
 
           {/* Filters directly under Steam Accounts heading */}
@@ -246,7 +246,7 @@ const SteamPage = ({ onBack }) => {
         {/* Error State */}
         {error && (
           <div className='bg-red-900 border border-red-700 text-red-100 px-4 py-3 rounded-lg mb-6'>
-            <p className='font-medium'>Error loading Steam accounts:</p>
+            <p className='font-medium'>Error memuat akun Steam:</p>
             <p className='text-sm mt-1'>{error}</p>
             <button
               onClick={() => fetchAccounts()}
@@ -345,7 +345,7 @@ const SteamPage = ({ onBack }) => {
                       <span className='text-gray-200 font-medium'>{account.country}</span>
                     </div>
                     <div className='flex justify-between text-sm'>
-                      <span className='text-gray-400'>Last seen:</span>
+                      <span className='text-gray-400'>Terakhir dilihat:</span>
                       <span className='text-gray-200 font-medium'>{account.lastSeen}</span>
                     </div>
                   </div>

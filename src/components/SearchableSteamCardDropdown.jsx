@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
 import { Icon } from '@iconify/react'
+import { useEffect, useRef, useState } from 'react'
 
 const SearchableCosmeticDropdown = ({
   selectedItems = [],
@@ -121,7 +121,7 @@ const SearchableCosmeticDropdown = ({
         >
           <span className='text-gray-400'>
             {itemsList.length === 0
-              ? 'Loading...'
+              ? 'Memuat...'
               : selectedItems.length === 0
                 ? placeholder
                 : `${selectedItems.length} item${selectedItems.length !== 1 ? 's' : ''} selected`}
@@ -153,7 +153,7 @@ const SearchableCosmeticDropdown = ({
             <div className='max-h-48 overflow-y-auto'>
               {filteredItems.length === 0 ? (
                 <div className='p-3 text-gray-400 text-sm text-center'>
-                  {itemsList.length === 0 ? 'Loading items...' : 'No items found'}
+                  {itemsList.length === 0 ? 'Memuat item...' : 'Item tidak ditemukan'}
                 </div>
               ) : (
                 filteredItems.map(item => {

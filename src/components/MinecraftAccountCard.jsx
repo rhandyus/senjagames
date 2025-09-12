@@ -8,11 +8,16 @@ const MinecraftAccountCard = ({ account }) => {
   const handleAddToCart = e => {
     e.preventDefault()
     e.stopPropagation()
+
+    // Convert price from RUB to IDR (API always returns RUB)
+    const RUB_TO_IDR = parseFloat(import.meta.env.VITE_RUB_TO_IDR_RATE) || 195
+    const convertedPrice = (parseFloat(account.price) || 0) * RUB_TO_IDR
+
     addToCart({
       id: account.item_id || account.id,
       title: `Minecraft Account - ${account.title || account.minecraft_nickname || 'Unknown'}`,
-      price: account.price,
-      currency: account.currency || 'RUB',
+      price: Math.round(convertedPrice),
+      currency: 'IDR',
       type: 'minecraft',
       account: account
     })
@@ -22,14 +27,19 @@ const MinecraftAccountCard = ({ account }) => {
     // Add any click tracking here if needed
   }
 
-  // Format price
+  // Format price - Convert RUB to IDR for display
   const price = parseFloat(account.price) || 0
+  const RUB_TO_IDR = parseFloat(import.meta.env.VITE_RUB_TO_IDR_RATE) || 195 // 1 RUB = 195 IDR
+
+  // Convert price from RUB to IDR (API always returns RUB)
+  const displayPrice = price * RUB_TO_IDR
+
   const formattedPrice =
-    price > 0 ? `${price.toLocaleString()} ${account.currency || 'RUB'}` : 'Free'
+    displayPrice > 0 ? `Rp ${Math.round(displayPrice).toLocaleString('id-ID')}` : 'Free'
 
   // Convert to USD (approximate)
-  const exchangeRate = account.currency === 'USD' ? 1 : 0.011 // 1 RUB ≈ 0.011 USD
-  const priceUSD = price * exchangeRate
+  const exchangeRate = 0.000066 // 1 IDR ≈ 0.000066 USD
+  const priceUSD = displayPrice * exchangeRate
   const formatUSD = amount => amount.toFixed(2)
 
   // Get warranty info (standard for Minecraft accounts)
@@ -133,9 +143,34 @@ const MinecraftAccountCard = ({ account }) => {
 
           {/* Capes */}
           {account.minecraft_capes_count > 0 && (
-            <div className='flex items-center justify-between text-sm'>
-              <span className='text-gray-400'>Capes:</span>
-              <span className='text-purple-400 font-medium'>{account.minecraft_capes_count}</span>
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between text-sm'>
+                <span className='text-gray-400'>Capes:</span>
+                <span className='text-purple-400 font-medium'>{account.minecraft_capes_count}</span>
+              </div>
+
+              {/* Cape Images */}
+              {account.minecraft_capes && account.minecraft_capes.length > 0 && (
+                <div className='flex flex-wrap gap-1'>
+                  {account.minecraft_capes.slice(0, 4).map((cape, index) => (
+                    <img
+                      key={index}
+                      src={`/data/capes/${cape}.png`}
+                      alt={cape}
+                      title={`${cape} Cape`}
+                      className='h-6 w-6 rounded border border-gray-600 object-cover'
+                      onError={e => {
+                        e.target.style.display = 'none'
+                      }}
+                    />
+                  ))}
+                  {account.minecraft_capes.length > 4 && (
+                    <span className='text-xs text-gray-400 flex items-center'>
+                      +{account.minecraft_capes.length - 4} more
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
           )}
 
@@ -170,10 +205,64 @@ const MinecraftAccountCard = ({ account }) => {
           )}
         </div>
 
-        {/* Description */}
-        {account.description && (
-          <div className='text-sm text-gray-300 line-clamp-2 bg-gray-800 p-2 rounded-lg'>
-            {account.description}
+        {/* Hypixel Stats */}
+        {(account.hypixel_level ||
+          account.hypixel_achievements ||
+          account.hypixel_last_login ||
+          account.hypixel_ban === false) && (
+          <div className='space-y-2'>
+            <div className='text-xs text-gray-400 font-medium'>Hypixel Stats:</div>
+
+            {/* Hypixel Ban Status */}
+            {account.hypixel_ban === false && (
+              <div className='flex items-center space-x-1 bg-green-900 bg-opacity-50 px-2 py-1 rounded-lg border border-green-700'>
+                <Icon icon='mdi:shield-check' className='text-green-400 text-xs' />
+                <span className='text-green-400 text-xs font-medium'>No Hypixel Ban</span>
+              </div>
+            )}
+
+            {/* Hypixel Level */}
+            {account.hypixel_level && (
+              <div className='flex items-center justify-between text-sm'>
+                <span className='text-gray-400'>Level:</span>
+                <span className='text-blue-400 font-medium'>{account.hypixel_level}</span>
+              </div>
+            )}
+
+            {/* Hypixel Achievements */}
+            {account.hypixel_achievements && (
+              <div className='flex items-center justify-between text-sm'>
+                <span className='text-gray-400'>Achievements:</span>
+                <span className='text-yellow-400 font-medium'>{account.hypixel_achievements}</span>
+              </div>
+            )}
+
+            {/* Hypixel Last Login */}
+            {account.hypixel_last_login && (
+              <div className='flex items-center justify-between text-sm'>
+                <span className='text-gray-400'>Last Login:</span>
+                <span className='text-gray-300'>{account.hypixel_last_login}</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Security Warning */}
+        {account.security_change_date && (
+          <div className='bg-red-900 bg-opacity-50 border border-red-700 p-2 rounded-lg'>
+            <div className='flex items-center space-x-1 text-red-400 text-xs font-medium'>
+              <Icon icon='mdi:alert-circle' className='text-sm' />
+              <span>Security Change Pending</span>
+            </div>
+            <div className='text-red-300 text-xs mt-1'>On {account.security_change_date}</div>
+          </div>
+        )}
+
+        {/* Account Origin */}
+        {account.origin && (
+          <div className='flex items-center justify-between text-sm'>
+            <span className='text-gray-400'>Origin:</span>
+            <span className='text-gray-300 capitalize'>{account.origin}</span>
           </div>
         )}
 
@@ -193,7 +282,7 @@ const MinecraftAccountCard = ({ account }) => {
           className='w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2'
         >
           <Icon icon='mdi:cart-plus' className='text-lg' />
-          <span>Add to Cart</span>
+          <span>Tambah ke Keranjang</span>
         </button>
       </div>
     </Link>

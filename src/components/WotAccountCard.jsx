@@ -45,20 +45,6 @@ const WotAccountCard = ({ account, onViewDetails }) => {
     return regions[region] || region?.toUpperCase() || 'Unknown'
   }
 
-  // Get account origin color
-  const getOriginColor = origin => {
-    const colors = {
-      brute: 'bg-red-500',
-      phishing: 'bg-orange-500',
-      stealer: 'bg-yellow-500',
-      personal: 'bg-green-500',
-      resale: 'bg-blue-500',
-      autoreg: 'bg-purple-500',
-      dummy: 'bg-gray-500'
-    }
-    return colors[origin] || 'bg-gray-500'
-  }
-
   const handleAddToCart = () => {
     addToCart({
       id: account.item_id || account.wot_item_id,
@@ -251,16 +237,6 @@ const WotAccountCard = ({ account, onViewDetails }) => {
       {/* Footer */}
       <div className='p-4 bg-gray-800 border-t border-gray-700'>
         <div className='flex items-center justify-between mb-3'>
-          {/* Account Origin */}
-          <div className='flex items-center space-x-2'>
-            <div
-              className={`w-2 h-2 rounded-full ${getOriginColor(account.resale_item_origin || account.item_origin)}`}
-            ></div>
-            <span className='text-xs text-gray-400 capitalize'>
-              {account.resale_item_origin || account.item_origin || 'Unknown'}
-            </span>
-          </div>
-
           {/* Published Date */}
           <span className='text-xs text-gray-400'>{formatDate(account.published_date)}</span>
         </div>
@@ -278,7 +254,7 @@ const WotAccountCard = ({ account, onViewDetails }) => {
             className='flex-1 bg-amber-600 hover:bg-amber-700 text-white py-2 px-4 rounded-lg transition-colors text-sm font-medium flex items-center justify-center space-x-1'
           >
             <Icon icon='mdi:cart-plus' />
-            <span>Add to Cart</span>
+            <span>Tambah ke Keranjang</span>
           </button>
         </div>
       </div>

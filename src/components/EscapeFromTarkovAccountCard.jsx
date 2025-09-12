@@ -207,11 +207,6 @@ const EscapeFromTarkovAccountCard = ({ account }) => {
           </div>
         </div>
 
-        {/* Origin */}
-        <div className='flex items-center text-xs text-gray-500'>
-          <Icon icon='mdi:source-branch' className='mr-1' />
-          Origin: {account.item_origin || 'Unknown'}
-        </div>
       </div>
 
       {/* Footer with Add to Cart */}
@@ -221,7 +216,7 @@ const EscapeFromTarkovAccountCard = ({ account }) => {
           className='w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2'
         >
           <Icon icon='mdi:cart-plus' className='text-lg' />
-          <span>Add to Cart</span>
+          <span>Tambah ke Keranjang</span>
         </button>
       </div>
     </Link>

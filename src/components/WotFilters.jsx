@@ -168,7 +168,7 @@ const WotFilters = ({ onFiltersChange, initialFilters = {} }) => {
               onClick={clearFilters}
               className='text-sm text-gray-400 hover:text-white transition-colors'
             >
-              Clear All
+              Hapus Semua
             </button>
           </div>
         </div>
@@ -179,7 +179,7 @@ const WotFilters = ({ onFiltersChange, initialFilters = {} }) => {
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
           {/* Price Range */}
           <div>
-            <label className='block text-sm font-medium text-gray-300 mb-2'>Price Range</label>
+            <label className='block text-sm font-medium text-gray-300 mb-2'>Rentang Harga</label>
             <div className='flex space-x-2'>
               <input
                 type='number'

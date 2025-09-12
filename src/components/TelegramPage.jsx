@@ -303,7 +303,7 @@ const TelegramPage = () => {
         {!loading && filteredAccounts.length === 0 ? (
           <div className='text-center py-12'>
             <Icon icon='mdi:telegram' className='w-16 h-16 mx-auto text-gray-600 mb-4' />
-            <h3 className='text-xl font-semibold text-gray-400 mb-2'>No accounts found</h3>
+            <h3 className='text-xl font-semibold text-gray-400 mb-2'>Tidak ada akun ditemukan</h3>
             <p className='text-gray-500'>Try adjusting your filters to see more results</p>
           </div>
         ) : (

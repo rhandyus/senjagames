@@ -100,14 +100,14 @@ const SocialClubFilters = ({ onFiltersChange, initialFilters = {} }) => {
           onClick={resetFilters}
           className='bg-red-700 hover:bg-red-600 text-red-100 hover:text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 border border-red-600 hover:border-red-500'
         >
-          Reset Filters
+          Reset Filter
         </button>
       </div>
 
       {/* Quick Game Filters */}
       <div className='mb-6'>
         <div className='flex items-center justify-between mb-4'>
-          <h3 className='text-lg font-semibold text-green-400'>🎮 Quick Game Filters</h3>
+          <h3 className='text-lg font-semibold text-green-400'>🎮 Filter Game Cepat</h3>
         </div>
         <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2'>
           {socialClubGames.map(game => (
@@ -130,18 +130,18 @@ const SocialClubFilters = ({ onFiltersChange, initialFilters = {} }) => {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {/* Price Range */}
         <div className='space-y-2'>
-          <label className='block text-sm font-medium text-gray-300'>Price Range ($)</label>
+          <label className='block text-sm font-medium text-gray-300'>Rentang Harga ($)</label>
           <div className='flex space-x-2'>
             <input
               type='number'
-              placeholder='Min'
+              placeholder='Minimal'
               value={filters.priceMin}
               onChange={e => handleFilterChange('priceMin', e.target.value)}
               className='flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent'
             />
             <input
               type='number'
-              placeholder='Max'
+              placeholder='Maksimal'
               value={filters.priceMax}
               onChange={e => handleFilterChange('priceMax', e.target.value)}
               className='flex-1 bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent'

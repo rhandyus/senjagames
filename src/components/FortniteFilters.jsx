@@ -850,7 +850,7 @@ const FortniteFilters = ({ onFiltersChange, initialFilters = {} }) => {
               onClick={handleSubmit}
               className='w-full bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-lg transition-colors font-medium'
             >
-              Apply Filters
+              Terapkan Filter
             </button>
           </div>
         </div>

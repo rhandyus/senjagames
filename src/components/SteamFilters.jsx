@@ -208,8 +208,9 @@ const SteamFilters = ({ onFilterChange, loading }) => {
         const gamesArray = Object.entries(gamesData)
           .filter(([id, game]) => game && typeof game === 'object') // Filter out null/undefined games
           .map(([id, game]) => ({
-            id: parseInt(id),
-            name: game.name || game.title || `Game ${id}`
+            value: id.toString(),
+            label: game.name || game.title || `Game ${id}`,
+            isPopular: true // Mark API games as popular
           }))
 
         if (gamesArray && Array.isArray(gamesArray) && gamesArray.length > 0) {
@@ -217,8 +218,9 @@ const SteamFilters = ({ onFilterChange, loading }) => {
         } else {
           // Silent fallback to local JSON data
           const fallbackGames = steamGamesData.games.map(game => ({
-            id: parseInt(game.app_id),
-            name: game.title
+            value: game.app_id.toString(),
+            label: game.title,
+            isPopular: false
           }))
           setApiGames(fallbackGames)
         }
@@ -226,8 +228,9 @@ const SteamFilters = ({ onFilterChange, loading }) => {
         // Silent fallback to local JSON data - no error message shown
         console.log('Using local steam games data')
         const fallbackGames = steamGamesData.games.map(game => ({
-          id: parseInt(game.app_id),
-          name: game.title
+          value: game.app_id.toString(),
+          label: game.title,
+          isPopular: false
         }))
         setApiGames(fallbackGames)
       } finally {
@@ -388,12 +391,12 @@ const SteamFilters = ({ onFilterChange, loading }) => {
       {/* Quick Game Filters */}
       <div className='mb-6'>
         <div className='flex items-center justify-between mb-4'>
-          <h3 className='text-lg font-semibold text-green-400'>🎮 Quick Game Filters</h3>
+          <h3 className='text-lg font-semibold text-green-400'>🎮 Filter Game Cepat</h3>
           <button
             onClick={clearAllFilters}
             className='bg-red-700 hover:bg-red-600 text-red-100 hover:text-white px-3 py-1 rounded-lg text-sm transition-colors border border-red-600 hover:border-red-500'
           >
-            Clear All Filters
+            Hapus Semua Filter
           </button>
         </div>
         <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2'>
@@ -456,7 +459,7 @@ const SteamFilters = ({ onFilterChange, loading }) => {
                   selectedGames={filters.game}
                   onGameChange={newGames => handleFilterChange('game', newGames)}
                   gamesList={combinedGames}
-                  placeholder={gamesLoading ? 'Loading games...' : 'Cari dan pilih games...'}
+                  placeholder={gamesLoading ? 'Memuat games...' : 'Cari dan pilih games...'}
                   label=''
                   disabled={gamesLoading}
                   enableServerSearch={true}

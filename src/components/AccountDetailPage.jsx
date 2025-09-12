@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import ZelenkaAPI from '../services/zelenkaAPI'
-import { convertToIDR, formatCurrency, formatUSD, getPriceValue } from '../utils/currency'
+import { convertToIDR, formatCurrency } from '../utils/currency'
 import CartModal from './CartModal'
 import PaymentModal from './PaymentModal'
 
@@ -26,6 +26,7 @@ const AccountDetailPage = () => {
   const [paymentModal, setPaymentModal] = useState({ isOpen: false, item: null })
   const [toast, setToast] = useState({ show: false, message: '', type: '' })
   const [cartModal, setCartModal] = useState(false)
+  const [showAllGames, setShowAllGames] = useState(false)
 
   const api = new ZelenkaAPI()
 
@@ -84,13 +85,17 @@ const AccountDetailPage = () => {
             accountFromState.eg_games
           ) {
             setActiveTab('games') // Epic Games accounts should show games tab
+          } else if (accountFromState.category_id === 31 || accountFromState.roblox_id) {
+            setActiveTab('overview') // Roblox accounts should show overview tab
+          } else if (accountFromState.category_id === 4 || accountFromState.minecraft_username) {
+            setActiveTab('overview') // Minecraft accounts should show overview tab
           }
           return
         }
 
         // Fetch account details from API if we have an ID
         if (accountId) {
-          const api = new zelenkaAPI()
+          const api = new ZelenkaAPI()
           const accountData = await api.getAccountDetails(accountId)
 
           if (accountData) {
@@ -153,6 +158,21 @@ const AccountDetailPage = () => {
       return 'Fortnite'
     }
 
+    // Check for Minecraft account indicators
+    if (
+      account.category_id === 4 ||
+      account.minecraft_username ||
+      account.hypixel_level !== undefined ||
+      account.hypixel_achievements !== undefined ||
+      account.java_edition !== undefined ||
+      account.bedrock_edition !== undefined ||
+      account.minecraft_java ||
+      account.minecraft_bedrock ||
+      account.hypixel_rank
+    ) {
+      return 'Minecraft'
+    }
+
     // Check for Steam account indicators
     if (
       account.steam_level !== undefined ||
@@ -163,8 +183,109 @@ const AccountDetailPage = () => {
       return 'Steam'
     }
 
+    // Check for Roblox account indicators
+    if (
+      account.category_id === 31 ||
+      account.roblox_id ||
+      account.roblox_username ||
+      account.roblox_robux !== undefined ||
+      account.roblox_country
+    ) {
+      return 'Roblox'
+    }
+
+    // Check for Riot Games account indicators
+    if (
+      account.category_id === 13 ||
+      account.riot_id ||
+      account.riot_username ||
+      account.riot_valorant_level ||
+      account.riot_lol_level ||
+      account.valorantInventory
+    ) {
+      return 'Riot'
+    }
+
+    // Check for Telegram account indicators
+    if (
+      account.category_id === 24 ||
+      account.telegram_item_id ||
+      account.telegram_dc_id ||
+      account.telegram_country ||
+      account.telegram_last_seen !== undefined ||
+      account.telegram_premium !== undefined
+    ) {
+      return 'Telegram'
+    }
+
+    // Check for Uplay/Ubisoft account indicators
+    if (
+      account.category_id === 5 ||
+      account.uplay_country ||
+      account.uplay_games ||
+      account.uplay_created_date ||
+      account.uplay_last_activity
+    ) {
+      return 'Uplay'
+    }
+
+    // Check for Battle.net account indicators
+    if (
+      account.category_id === 11 ||
+      account.battlenet_country ||
+      account.battlenet_balance ||
+      account.battlenet_last_activity ||
+      account.battlenetGames
+    ) {
+      return 'Battle.net'
+    }
+
+    // Check for Origin/EA account indicators
+    if (
+      account.category_id === 8 ||
+      account.ea_country ||
+      account.ea_games ||
+      account.ea_id ||
+      account.ea_username ||
+      account.ea_item_id ||
+      account.platform === 'origin'
+    ) {
+      return 'Origin'
+    }
+
     // Default fallback
     return 'Gaming Account'
+  }
+
+  // Get the correct category URL to navigate back to
+  const getCategoryUrl = () => {
+    const platform = getAccountPlatform()
+    switch (platform) {
+      case 'Steam':
+        return '/?category=Steam'
+      case 'Epic Games':
+        return '/?category=Epic%20Games'
+      case 'Fortnite':
+        return '/?category=Fortnite'
+      case 'Gifts':
+        return '/?category=Gifts'
+      case 'Minecraft':
+        return '/?category=Minecraft'
+      case 'Roblox':
+        return '/?category=Roblox'
+      case 'Uplay':
+        return '/?category=Uplay'
+      case 'Battle.net':
+        return '/?category=Battle.net'
+      case 'Origin':
+        return '/?category=Origin'
+      case 'Riot':
+        return '/?category=Riot'
+      case 'Telegram':
+        return '/?category=Telegram'
+      default:
+        return '/' // Default to homepage for unknown platforms
+    }
   }
 
   // Get platform icon
@@ -177,8 +298,18 @@ const AccountDetailPage = () => {
         return 'simple-icons:epicgames'
       case 'Fortnite':
         return 'simple-icons:epicgames'
+      case 'Minecraft':
+        return 'game-icons:grass-block'
       case 'Steam':
         return 'simple-icons:steam'
+      case 'Roblox':
+        return 'simple-icons:roblox'
+      case 'Uplay':
+        return 'simple-icons:ubisoft'
+      case 'Battle.net':
+        return 'simple-icons:battlenet'
+      case 'Origin':
+        return 'simple-icons:origin'
       default:
         return 'mdi:gamepad-variant'
     }
@@ -194,8 +325,18 @@ const AccountDetailPage = () => {
         return 'bg-slate-700'
       case 'Fortnite':
         return 'bg-purple-600'
+      case 'Minecraft':
+        return 'bg-green-600'
       case 'Steam':
         return 'bg-blue-600'
+      case 'Roblox':
+        return 'bg-red-600'
+      case 'Uplay':
+        return 'bg-blue-500'
+      case 'Battle.net':
+        return 'bg-blue-800'
+      case 'Origin':
+        return 'bg-orange-600'
       default:
         return 'bg-gray-600'
     }
@@ -203,7 +344,8 @@ const AccountDetailPage = () => {
   const formatPrice = account => {
     if (!account) return 'N/A'
 
-    const priceUSD = getPriceValue(account)
+    // Convert USD to IDR like the account cards do
+    const priceUSD = account.price || 0
     const priceIDR = convertToIDR(priceUSD)
     return formatCurrency(priceIDR)
   }
@@ -581,7 +723,7 @@ const AccountDetailPage = () => {
       <div className='min-h-screen bg-gradient-to-r from-black via-gray-900 to-black'>
         <div className='max-w-7xl mx-auto px-4 py-8'>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(getCategoryUrl())}
             className='mb-6 flex items-center text-purple-400 hover:text-purple-300'
           >
             <Icon icon='mdi:arrow-left' className='mr-2' />
@@ -592,7 +734,7 @@ const AccountDetailPage = () => {
             <h2 className='text-xl font-bold mb-2'>Akun Tidak Ditemukan</h2>
             <p className='mb-4'>{error}</p>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate(getCategoryUrl())}
               className='bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600'
             >
               Kembali ke Marketplace
@@ -610,7 +752,7 @@ const AccountDetailPage = () => {
           <div className='text-center text-gray-400'>
             <p>Akun tidak ditemukan</p>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate(getCategoryUrl())}
               className='mt-4 text-purple-400 hover:text-purple-300'
             >
               Kembali ke Marketplace
@@ -629,7 +771,7 @@ const AccountDetailPage = () => {
           <div className='flex justify-between items-center h-16'>
             <div className='flex items-center space-x-4'>
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate(getCategoryUrl())}
                 className='flex items-center text-gray-300 hover:text-purple-400 transition-colors'
               >
                 <Icon icon='mdi:arrow-left' className='mr-2 text-xl' />
@@ -827,10 +969,10 @@ const AccountDetailPage = () => {
               <div className='border-b border-gray-700'>
                 <nav className='flex space-x-8 px-6'>
                   {(isFortniteAccount
-                    ? ['overview', 'cosmetics', 'security']
+                    ? ['overview', 'cosmetics']
                     : isEpicAccount
-                      ? ['overview', 'games', 'security']
-                      : ['overview', 'security']
+                      ? ['overview', 'games']
+                      : ['overview']
                   ).map(tab => (
                     <button
                       key={tab}
@@ -1196,6 +1338,1777 @@ const AccountDetailPage = () => {
                           </div>
                         )}
                       </>
+                    ) : getAccountPlatform() === 'Roblox' ? (
+                      // Roblox-specific stats
+                      <>
+                        <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+                          {account.roblox_username && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Username</div>
+                              <div className='text-white font-medium'>
+                                {account.roblox_username}
+                              </div>
+                            </div>
+                          )}
+                          {account.roblox_country && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                              <div className='text-white font-medium'>{account.roblox_country}</div>
+                            </div>
+                          )}
+                          {account.roblox_friends !== undefined && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Friends</div>
+                              <div className='text-red-400 font-bold text-lg'>
+                                {account.roblox_friends}
+                              </div>
+                            </div>
+                          )}
+                          {account.roblox_followers !== undefined && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Followers</div>
+                              <div className='text-red-400 font-bold text-lg'>
+                                {account.roblox_followers}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {(account.roblox_robux > 0 ||
+                          account.roblox_inventory_price > 0 ||
+                          account.roblox_limited_price > 0) && (
+                          <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
+                            {account.roblox_robux > 0 && (
+                              <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                                <div className='text-gray-400 text-sm'>Robux Balance</div>
+                                <div className='text-green-400 font-medium text-lg'>
+                                  {account.roblox_robux.toLocaleString()} R$
+                                </div>
+                              </div>
+                            )}
+                            {(account.roblox_inventory_price > 0 ||
+                              account.roblox_limited_price > 0) && (
+                              <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                                <div className='text-gray-400 text-sm'>Inventory Value</div>
+                                <div className='text-green-400 font-medium text-lg'>
+                                  ~{account.roblox_inventory_price || account.roblox_limited_price}
+                                </div>
+                              </div>
+                            )}
+                            {account.roblox_credit_balance > 0 && (
+                              <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                                <div className='text-gray-400 text-sm'>Credit Balance</div>
+                                <div className='text-yellow-400 font-medium text-lg'>
+                                  {account.roblox_credit_balance}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Account Status */}
+                        <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+                          {account.roblox_email_verified !== undefined && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Email Status</div>
+                              <div
+                                className={`font-medium ${account.roblox_email_verified === 1 ? 'text-green-400' : 'text-yellow-400'}`}
+                              >
+                                {account.roblox_email_verified === 1 ? 'Verified' : 'Unverified'}
+                              </div>
+                            </div>
+                          )}
+                          {account.roblox_verified !== undefined && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Account Status</div>
+                              <div
+                                className={`font-medium ${account.roblox_verified === 1 ? 'text-blue-400' : 'text-gray-400'}`}
+                              >
+                                {account.roblox_verified === 1 ? 'Verified' : 'Not Verified'}
+                              </div>
+                            </div>
+                          )}
+                          {account.roblox_subscription && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Premium</div>
+                              <div className='text-yellow-400 font-medium'>
+                                {account.roblox_subscription}
+                              </div>
+                            </div>
+                          )}
+                          {account.roblox_age_verified !== undefined && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Age Verified</div>
+                              <div
+                                className={`font-medium ${account.roblox_age_verified === 1 ? 'text-green-400' : 'text-gray-400'}`}
+                              >
+                                {account.roblox_age_verified === 1 ? 'Yes' : 'No'}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Account Dates */}
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                          {account.roblox_register_date && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Account Created</div>
+                              <div className='text-white font-medium'>
+                                {new Date(account.roblox_register_date * 1000).toLocaleDateString()}
+                              </div>
+                            </div>
+                          )}
+                          {account.published_date && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Listed Date</div>
+                              <div className='text-white font-medium'>
+                                {new Date(account.published_date * 1000).toLocaleDateString()}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    ) : getAccountPlatform() === 'Minecraft' ? (
+                      // Minecraft-specific stats matching the detailed HTML structure
+                      <>
+                        {/* Basic Account Information Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Register Date */}
+                            <div className='text-center'>
+                              <div
+                                className='text-white font-medium text-lg mb-1'
+                                title={formatDate(account.minecraft_created_at)}
+                              >
+                                {account.minecraft_created_at
+                                  ? new Date(
+                                      account.minecraft_created_at * 1000
+                                    ).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric'
+                                    })
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Register date</div>
+                            </div>
+
+                            {/* Country */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_country || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                            </div>
+
+                            {/* Java Username */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_nickname || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Java Username</div>
+                            </div>
+
+                            {/* Username Change */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_can_change_nickname ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.minecraft_can_change_nickname !== undefined
+                                  ? account.minecraft_can_change_nickname
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Username Change</div>
+                            </div>
+
+                            {/* Minecraft Java */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_java ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.minecraft_java !== undefined
+                                  ? account.minecraft_java
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Minecraft Java</div>
+                            </div>
+
+                            {/* Minecraft Bedrock */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_bedrock ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.minecraft_bedrock !== undefined
+                                  ? account.minecraft_bedrock
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Minecraft Bedrock</div>
+                            </div>
+
+                            {/* Minecraft Dungeons */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_dungeons ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.minecraft_dungeons !== undefined
+                                  ? account.minecraft_dungeons
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Minecraft Dungeons</div>
+                            </div>
+
+                            {/* Minecraft Legends */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_legends ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.minecraft_legends !== undefined
+                                  ? account.minecraft_legends
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Minecraft Legends</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Hypixel Stats Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <h4 className='text-white font-medium text-xl text-center mb-6'>
+                            Hypixel Stats
+                          </h4>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Hypixel Rank */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_hypixel_rank || 'None'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Hypixel Rank</div>
+                            </div>
+
+                            {/* Hypixel Level */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_hypixel_level !== undefined
+                                  ? account.minecraft_hypixel_level
+                                  : '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Hypixel Level</div>
+                            </div>
+
+                            {/* Hypixel Achievements */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_hypixel_achievement !== undefined
+                                  ? account.minecraft_hypixel_achievement
+                                  : '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Hypixel Achievements</div>
+                            </div>
+
+                            {/* Hypixel Last Login */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_hypixel_last_login ? 'text-yellow-300' : 'text-gray-400'}`}
+                              >
+                                {account.minecraft_hypixel_last_login ? (
+                                  <time
+                                    className='text-yellow-300'
+                                    dateTime={new Date(
+                                      account.minecraft_hypixel_last_login * 1000
+                                    ).toISOString()}
+                                    title={formatDate(account.minecraft_hypixel_last_login)}
+                                  >
+                                    {(() => {
+                                      const date = new Date(
+                                        account.minecraft_hypixel_last_login * 1000
+                                      )
+                                      const now = new Date()
+                                      const diffInHours = (now - date) / (1000 * 60 * 60)
+                                      if (diffInHours < 24) return 'Today'
+                                      const diffInDays = Math.floor(diffInHours / 24)
+                                      if (diffInDays === 1) return 'Yesterday'
+                                      if (diffInDays < 7) return `${diffInDays} days ago`
+                                      return date.toLocaleDateString('en-US', {
+                                        month: 'short',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                      })
+                                    })()}
+                                  </time>
+                                ) : (
+                                  'Unknown'
+                                )}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Hypixel Last Login</div>
+                            </div>
+
+                            {/* Skyblock Level */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_hypixel_skyblock_level !== undefined
+                                  ? account.minecraft_hypixel_skyblock_level
+                                  : '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Skyblock Level</div>
+                            </div>
+
+                            {/* Skyblock Net Worth */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.minecraft_hypixel_skyblock_net_worth !== undefined
+                                  ? account.minecraft_hypixel_skyblock_net_worth.toLocaleString()
+                                  : '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Skyblock Net Worth</div>
+                            </div>
+
+                            {/* Hypixel API */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.minecraft_hypixel_skyblock_api_enabled ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.minecraft_hypixel_skyblock_api_enabled !== undefined
+                                  ? account.minecraft_hypixel_skyblock_api_enabled
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Yes'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Hypixel API</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Skin Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <h4 className='text-white font-medium text-xl text-center mb-6'>Skin</h4>
+                          <div className='flex justify-center'>
+                            <div className='text-center'>
+                              {account.minecraft_skin ? (
+                                <img
+                                  src={`data:image/png;base64,${account.minecraft_skin}`}
+                                  alt='Minecraft Skin'
+                                  className='w-32 h-64 pixelated border border-gray-600 rounded mx-auto'
+                                  style={{
+                                    imageRendering: 'pixelated',
+                                    width: '50%',
+                                    maxWidth: '128px'
+                                  }}
+                                  title='Skin of the user'
+                                  onError={e => {
+                                    e.target.style.display = 'none'
+                                  }}
+                                />
+                              ) : (
+                                <div className='w-32 h-64 bg-gray-700 border border-gray-600 rounded mx-auto flex items-center justify-center'>
+                                  <Icon
+                                    icon='mdi:account-outline'
+                                    className='text-gray-400 text-4xl'
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Capes Section */}
+                        {account.minecraft_capes && account.minecraft_capes.length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              {account.minecraft_capes.length} Cape
+                              {account.minecraft_capes.length !== 1 ? 's' : ''}
+                            </h4>
+                            <div className='grid grid-cols-3 md:grid-cols-6 lg:grid-cols-8 gap-4'>
+                              {account.minecraft_capes.map((cape, index) => (
+                                <div key={index} className='text-center'>
+                                  <img
+                                    src={`data:image/png;base64,${cape.rendered}`}
+                                    alt={cape.name}
+                                    className='w-full aspect-[2/3] object-cover pixelated border border-gray-600 rounded'
+                                    style={{ imageRendering: 'pixelated' }}
+                                    title={cape.name}
+                                    onError={e => {
+                                      e.target.style.display = 'none'
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* External Links Section */}
+                        {account.minecraft_nickname && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <div className='space-y-4'>
+                              {/* NameMC Link */}
+                              <div className='flex items-center justify-between bg-gray-700 p-4 rounded-lg hover:bg-gray-600 transition-colors'>
+                                <span className='text-white font-medium'>
+                                  NameMC: {account.minecraft_nickname}
+                                </span>
+                                <a
+                                  href={`https://namemc.com/search?q=${account.minecraft_nickname}`}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  className='text-blue-400 hover:text-blue-300 transition-colors'
+                                  title='View NameMC Profile'
+                                >
+                                  <Icon icon='mdi:external-link' className='text-xl' />
+                                </a>
+                              </div>
+
+                              {/* Hypixel SkyBlock Stats Link */}
+                              <div className='flex items-center justify-between bg-gray-700 p-4 rounded-lg hover:bg-gray-600 transition-colors'>
+                                <span className='text-white font-medium'>
+                                  Hypixel SkyBlock Stats: {account.minecraft_nickname}
+                                </span>
+                                <a
+                                  href={`https://sky.shiiyu.moe/stats/${account.minecraft_nickname}`}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  className='text-blue-400 hover:text-blue-300 transition-colors'
+                                  title='View SkyBlock Stats'
+                                >
+                                  <Icon icon='mdi:external-link' className='text-xl' />
+                                </a>
+                              </div>
+
+                              {/* Plancke Link */}
+                              <div className='flex items-center justify-between bg-gray-700 p-4 rounded-lg hover:bg-gray-600 transition-colors'>
+                                <span className='text-white font-medium'>
+                                  Plancke: {account.minecraft_nickname}
+                                </span>
+                                <a
+                                  href={`https://plancke.io/hypixel/player/stats/${account.minecraft_nickname}`}
+                                  target='_blank'
+                                  rel='noopener noreferrer'
+                                  className='text-blue-400 hover:text-blue-300 transition-colors'
+                                  title='View Plancke Stats'
+                                >
+                                  <Icon icon='mdi:external-link' className='text-xl' />
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : getAccountPlatform() === 'Uplay' ? (
+                      // Uplay/Ubisoft-specific stats matching the detailed HTML structure and real API data
+                      <>
+                        {/* Basic Account Information Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Last Activity */}
+                            <div className='text-center'>
+                              <div
+                                className='text-white font-medium text-lg mb-1'
+                                title={formatDate(account.uplay_last_activity)}
+                              >
+                                {account.uplay_last_activity
+                                  ? new Date(account.uplay_last_activity * 1000).toLocaleDateString(
+                                      'en-US',
+                                      { year: 'numeric', month: 'short', day: 'numeric' }
+                                    )
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Last activity</div>
+                            </div>
+
+                            {/* Register Date */}
+                            <div className='text-center'>
+                              <div
+                                className='text-white font-medium text-lg mb-1'
+                                title={formatDate(account.uplay_created_date)}
+                              >
+                                {account.uplay_created_date
+                                  ? new Date(account.uplay_created_date * 1000).toLocaleDateString(
+                                      'en-US',
+                                      { year: 'numeric', month: 'short', day: 'numeric' }
+                                    )
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Register date</div>
+                            </div>
+
+                            {/* Country */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.uplay_country || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                            </div>
+
+                            {/* Games Count */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.uplay_game_count !== undefined
+                                  ? account.uplay_game_count
+                                  : Object.keys(account.uplay_games || {}).length || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Games</div>
+                            </div>
+
+                            {/* Xbox Linked */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.uplay_xbox_connected ? 'text-red-400' : 'text-gray-400'}`}
+                              >
+                                {account.uplay_xbox_connected !== undefined
+                                  ? account.uplay_xbox_connected
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Xbox Linked</div>
+                            </div>
+
+                            {/* PSN Linked */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.uplay_psn_connected ? 'text-red-400' : 'text-gray-400'}`}
+                              >
+                                {account.uplay_psn_connected !== undefined
+                                  ? account.uplay_psn_connected
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>PSN Linked</div>
+                            </div>
+
+                            {/* Balance */}
+                            {account.uplay_balance && (
+                              <div className='text-center'>
+                                <div className='text-green-400 font-medium text-lg mb-1'>
+                                  {account.uplay_balance}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Balance</div>
+                              </div>
+                            )}
+
+                            {/* Subscription */}
+                            {account.uplay_subscription && (
+                              <div className='text-center'>
+                                <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                  {account.uplay_subscription}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Subscription</div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Rainbow Six Siege Stats Section */}
+                        {(account.uplay_r6_level ||
+                          account.uplay_r6_operators_count ||
+                          account.uplay_r6_skins_count ||
+                          account.uplay_r6_rank) && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              R6 Stats
+                            </h4>
+                            <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                              {/* R6 Level */}
+                              <div className='text-center'>
+                                <div className='text-white font-medium text-lg mb-1'>
+                                  {account.uplay_r6_level !== undefined
+                                    ? account.uplay_r6_level
+                                    : '0'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>R6 Level</div>
+                              </div>
+
+                              {/* R6 Ban */}
+                              <div className='text-center'>
+                                <div
+                                  className={`font-medium text-lg mb-1 ${account.uplay_r6_ban ? 'text-red-400' : 'text-green-400'}`}
+                                >
+                                  {account.uplay_r6_ban !== undefined
+                                    ? account.uplay_r6_ban
+                                      ? 'Yes'
+                                      : 'No'
+                                    : 'No'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>R6 Ban</div>
+                              </div>
+
+                              {/* Operators */}
+                              <div className='text-center'>
+                                <div className='text-white font-medium text-lg mb-1'>
+                                  {account.uplay_r6_operators_count !== undefined
+                                    ? account.uplay_r6_operators_count
+                                    : '0'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Operators</div>
+                              </div>
+
+                              {/* Skins */}
+                              <div className='text-center'>
+                                <div className='text-white font-medium text-lg mb-1'>
+                                  {account.uplay_r6_skins_count !== undefined
+                                    ? account.uplay_r6_skins_count
+                                    : '0'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Skins</div>
+                              </div>
+
+                              {/* Rank */}
+                              {account.uplay_r6_rank && (
+                                <div className='text-center'>
+                                  <div className='text-white font-medium text-lg mb-1'>
+                                    {account.uplay_r6_rank}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>Rank</div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Games Library Section */}
+                        {account.uplay_games && Object.keys(account.uplay_games).length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              {Object.keys(account.uplay_games).length} Game
+                              {Object.keys(account.uplay_games).length !== 1 ? 's' : ''}
+                            </h4>
+                            <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
+                              {Object.values(account.uplay_games).map((game, index) => (
+                                <div
+                                  key={index}
+                                  className='text-center bg-gray-700 p-4 rounded-lg border border-gray-600 hover:bg-gray-600 transition-colors'
+                                >
+                                  <img
+                                    src={game.img}
+                                    alt={game.title}
+                                    className='w-full aspect-square object-cover rounded mb-2'
+                                    onError={e => {
+                                      e.target.style.display = 'none'
+                                    }}
+                                  />
+                                  <div
+                                    className='text-white text-sm font-medium truncate'
+                                    title={game.title}
+                                  >
+                                    {game.abbr || game.title}
+                                  </div>
+                                  {game.pvpTimePlayed !== undefined && (
+                                    <div className='text-gray-400 text-xs mt-1'>
+                                      PvP: {Math.round(game.pvpTimePlayed / 3600)}h
+                                    </div>
+                                  )}
+                                  {game.pveTimePlayed !== undefined && (
+                                    <div className='text-gray-400 text-xs'>
+                                      PvE: {Math.round(game.pveTimePlayed / 3600)}h
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Transaction History */}
+                        {account.uplay_transactions && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              Transaction History
+                            </h4>
+                            <div className='space-y-3 max-h-60 overflow-y-auto'>
+                              {(() => {
+                                try {
+                                  const transactions = JSON.parse(account.uplay_transactions)
+                                  return transactions.map((transaction, index) => (
+                                    <div
+                                      key={index}
+                                      className='bg-gray-700 p-4 rounded-lg border border-gray-600'
+                                    >
+                                      <div className='flex justify-between items-start mb-2'>
+                                        <div className='text-white font-medium text-sm truncate flex-1 mr-2'>
+                                          {transaction.product}
+                                        </div>
+                                        <div className='text-green-400 font-medium text-sm whitespace-nowrap'>
+                                          {transaction.amount}
+                                        </div>
+                                      </div>
+                                      <div className='flex justify-between text-xs text-gray-400'>
+                                        <span>{transaction.type}</span>
+                                        <span>
+                                          {new Date(transaction.date * 1000).toLocaleDateString()}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  ))
+                                } catch (e) {
+                                  return (
+                                    <div className='text-gray-400 text-center'>
+                                      No transaction data available
+                                    </div>
+                                  )
+                                }
+                              })()}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : getAccountPlatform() === 'Battle.net' ? (
+                      // Battle.net-specific stats matching the detailed HTML structure and real API data
+                      <>
+                        {/* Basic Account Information Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Last Activity */}
+                            <div className='text-center'>
+                              <div
+                                className='text-white font-medium text-lg mb-1'
+                                title={formatDate(account.battlenet_last_activity)}
+                              >
+                                {account.battlenet_last_activity
+                                  ? new Date(
+                                      account.battlenet_last_activity * 1000
+                                    ).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric'
+                                    })
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Last activity</div>
+                            </div>
+
+                            {/* Country */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.battlenet_country || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                            </div>
+
+                            {/* Balance */}
+                            <div className='text-center'>
+                              <div className='text-green-400 font-medium text-lg mb-1'>
+                                {account.battlenet_balance || '$0.00'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Balance</div>
+                            </div>
+
+                            {/* BattleTag Change */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.battlenet_can_change_tag ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.battlenet_can_change_tag !== undefined
+                                  ? account.battlenet_can_change_tag
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>BattleTag Change</div>
+                            </div>
+
+                            {/* Real ID Enabled */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.battlenet_real_id_enabled ? 'text-red-400' : 'text-green-400'}`}
+                              >
+                                {account.battlenet_real_id_enabled !== undefined
+                                  ? account.battlenet_real_id_enabled
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Real ID Enabled</div>
+                            </div>
+
+                            {/* Parental Control */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.battlenet_parent_control ? 'text-red-400' : 'text-green-400'}`}
+                              >
+                                {account.battlenet_parent_control !== undefined
+                                  ? account.battlenet_parent_control
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Parental Control</div>
+                            </div>
+
+                            {/* Phone Linked */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.battlenet_mobile ? 'text-yellow-400' : 'text-gray-400'}`}
+                              >
+                                {account.battlenet_mobile !== undefined
+                                  ? account.battlenet_mobile
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Phone Linked</div>
+                            </div>
+
+                            {/* Change Full Name */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.battlenet_change_full_name ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.battlenet_change_full_name !== undefined
+                                  ? account.battlenet_change_full_name
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Change Full Name</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Games Library Section */}
+                        {account.battlenetGames &&
+                          Object.keys(account.battlenetGames).length > 0 && (
+                            <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                              <h4 className='text-white font-medium text-xl text-center mb-6'>
+                                {Object.keys(account.battlenetGames).length} Game
+                                {Object.keys(account.battlenetGames).length !== 1 ? 's' : ''}
+                              </h4>
+                              <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
+                                {Object.values(account.battlenetGames).map((game, index) => (
+                                  <div
+                                    key={index}
+                                    className='text-center bg-gray-700 p-4 rounded-lg border border-gray-600 hover:bg-gray-600 transition-colors relative overflow-hidden'
+                                  >
+                                    {/* Background Image */}
+                                    <div
+                                      className='absolute inset-0 bg-cover bg-center opacity-20'
+                                      style={{
+                                        backgroundImage: `url(https://account.blizzard.com/static/game-icons/${game.img})`
+                                      }}
+                                    />
+
+                                    {/* Game Icon */}
+                                    <div className='relative z-10'>
+                                      <img
+                                        src={`https://account.blizzard.com/static/game-icons/${game.img}`}
+                                        alt={game.title}
+                                        className='w-16 h-16 mx-auto mb-2 rounded'
+                                        onError={e => {
+                                          e.target.src =
+                                            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0yMCAyMEg0NFY0NEgyMFYyMFoiIGZpbGw9IiM2QjcyODAiLz4KPC9zdmc+'
+                                        }}
+                                      />
+                                      <div
+                                        className='text-white text-sm font-medium truncate'
+                                        title={game.title}
+                                      >
+                                        {game.abbr || game.title}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Overwatch Wallets Section */}
+                        {account.battlenetWallets && account.battlenetWallets.length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              Game Currencies
+                            </h4>
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                              {account.battlenetWallets.map((wallet, index) => (
+                                <div
+                                  key={index}
+                                  className='bg-gray-700 p-4 rounded-lg border border-gray-600'
+                                >
+                                  <div className='text-white font-medium text-lg mb-1'>
+                                    {wallet.amount} {wallet.code}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>{wallet.title}</div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Transaction History */}
+                        {account.battlenetTransactions &&
+                          account.battlenetTransactions.length > 0 && (
+                            <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                              <h4 className='text-white font-medium text-xl text-center mb-6'>
+                                Purchase History
+                              </h4>
+                              <div className='space-y-3 max-h-60 overflow-y-auto'>
+                                {account.battlenetTransactions.map((transaction, index) => (
+                                  <div
+                                    key={index}
+                                    className='bg-gray-700 p-4 rounded-lg border border-gray-600'
+                                  >
+                                    <div className='flex justify-between items-start mb-2'>
+                                      <div className='text-white font-medium text-sm truncate flex-1 mr-2'>
+                                        {transaction.productTitle}
+                                      </div>
+                                      <div className='text-green-400 font-medium text-sm whitespace-nowrap'>
+                                        {transaction.formattedTotal}
+                                      </div>
+                                    </div>
+                                    <div className='text-xs text-gray-400'>
+                                      {new Date(transaction.date * 1000).toLocaleDateString()}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Gift History */}
+                        {account.battlenetGiftHistory &&
+                          account.battlenetGiftHistory.length > 0 && (
+                            <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                              <h4 className='text-white font-medium text-xl text-center mb-6'>
+                                Gift History
+                              </h4>
+                              <div className='space-y-3 max-h-60 overflow-y-auto'>
+                                {account.battlenetGiftHistory.map((gift, index) => (
+                                  <div
+                                    key={index}
+                                    className='bg-gray-700 p-4 rounded-lg border border-gray-600'
+                                  >
+                                    <div className='text-white font-medium text-sm'>
+                                      {gift.productTitle || 'Gift Item'}
+                                    </div>
+                                    <div className='text-xs text-gray-400 mt-1'>
+                                      {gift.date
+                                        ? new Date(gift.date * 1000).toLocaleDateString()
+                                        : 'Unknown Date'}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Bans Information */}
+                        {account.battlenet_bans && account.battlenet_bans.trim() && (
+                          <div className='bg-red-900 p-6 rounded-lg border border-red-600'>
+                            <h4 className='text-red-400 font-medium text-xl text-center mb-4'>
+                              Account Warnings
+                            </h4>
+                            <div className='text-red-300 text-center'>{account.battlenet_bans}</div>
+                          </div>
+                        )}
+                      </>
+                    ) : getAccountPlatform() === 'Origin' ? (
+                      // Origin/EA-specific stats based on eaorigin-detail.html and eaorigin-raw.json
+                      <>
+                        {/* Basic Account Information Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Country */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.ea_country || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                            </div>
+
+                            {/* Xbox Linked */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.ea_xbox_connected ? 'text-green-400' : 'text-gray-400'}`}
+                              >
+                                {account.ea_xbox_connected ? 'Yes' : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Xbox Linked</div>
+                            </div>
+
+                            {/* Steam Linked */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.ea_steam_connected ? 'text-red-400' : 'text-gray-400'}`}
+                              >
+                                {account.ea_steam_connected ? 'Yes' : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Steam Linked</div>
+                            </div>
+
+                            {/* PSN Linked */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.ea_psn_connected ? 'text-green-400' : 'text-gray-400'}`}
+                              >
+                                {account.ea_psn_connected ? 'Yes' : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>PSN Linked</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Games Library Section */}
+                        {account.ea_games && Object.keys(account.ea_games).length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              {Object.keys(account.ea_games).length} Game
+                              {Object.keys(account.ea_games).length !== 1 ? 's' : ''}
+                            </h4>
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                              {Object.values(account.ea_games).map((game, index) => (
+                                <div
+                                  key={index}
+                                  className='bg-gray-700 p-4 rounded-lg border border-gray-600 hover:bg-gray-600 transition-colors'
+                                >
+                                  {/* Game Image */}
+                                  {game.img && (
+                                    <div className='w-full h-32 mb-3 rounded-lg overflow-hidden bg-gray-800'>
+                                      <img
+                                        src={game.img}
+                                        alt={game.title}
+                                        className='w-full h-full object-cover'
+                                        onError={e => {
+                                          e.target.src =
+                                            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjMzc0MTUxIi8+CjxwYXRoIGQ9Ik0yMCAyMEg0NFY0NEgyMFYyMFoiIGZpbGw9IiM2QjcyODAiLz4KPC9zdmc+'
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+
+                                  {/* Game Title */}
+                                  <div
+                                    className='text-white font-medium text-lg mb-2 truncate'
+                                    title={game.title}
+                                  >
+                                    {game.title}
+                                  </div>
+
+                                  {/* Hours Played */}
+                                  {game.total_played !== undefined && (
+                                    <div className='flex items-center text-orange-400 text-sm'>
+                                      <svg
+                                        className='w-4 h-4 mr-1'
+                                        fill='currentColor'
+                                        viewBox='0 0 20 20'
+                                      >
+                                        <path
+                                          fillRule='evenodd'
+                                          d='M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z'
+                                          clipRule='evenodd'
+                                        />
+                                      </svg>
+                                      {game.total_played} hrs
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Apex Legends Statistics (if available) */}
+                        {account.ea_al_level > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              Apex Legends Statistics
+                            </h4>
+                            <div className='grid grid-cols-2 gap-4'>
+                              <div className='text-center'>
+                                <div className='text-purple-400 font-medium text-lg mb-1'>
+                                  {account.ea_al_level}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Level</div>
+                              </div>
+                              <div className='text-center'>
+                                <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                  {account.ea_al_rank_score > 0
+                                    ? account.ea_al_rank_score
+                                    : 'Unknown'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Rank</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Account Links */}
+                        {account.accountLinks && account.accountLinks.length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium text-xl text-center mb-6'>
+                              External Links
+                            </h4>
+                            <div className='space-y-3'>
+                              {account.accountLinks.map((link, index) => (
+                                <div
+                                  key={index}
+                                  className='flex items-center justify-between bg-gray-700 p-3 rounded-lg'
+                                >
+                                  <span className='text-gray-300'>{link.text}</span>
+                                  <a
+                                    href={link.link}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    className='text-orange-400 hover:text-orange-300 transition-colors'
+                                  >
+                                    <svg
+                                      className='w-5 h-5'
+                                      fill='currentColor'
+                                      viewBox='0 0 20 20'
+                                    >
+                                      <path d='M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z' />
+                                      <path d='M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-1a1 1 0 10-2 0v1H5V7h1a1 1 0 000-2H5z' />
+                                    </svg>
+                                  </a>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : getAccountPlatform() === 'Riot' ? (
+                      // Riot-specific stats matching the detailed HTML structure and real API data
+                      <>
+                        {/* Basic Account Information Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                            Account Information
+                          </h3>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Last Activity */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.riot_last_activity || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Last activity</div>
+                            </div>
+
+                            {/* Country */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.riot_country || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                            </div>
+
+                            {/* Phone Verified */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.riot_phone_verified ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.riot_phone_verified !== undefined
+                                  ? account.riot_phone_verified
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Phone Verified</div>
+                            </div>
+
+                            {/* Email Access */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.riot_email_access ? 'text-green-400' : 'text-red-400'}`}
+                              >
+                                {account.riot_email_access !== undefined
+                                  ? account.riot_email_access
+                                    ? 'Yes'
+                                    : 'No'
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Email Access</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Valorant Information */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                            Valorant Information
+                          </h3>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Level */}
+                            <div className='text-center'>
+                              <div className='text-blue-400 font-medium text-lg mb-1'>
+                                {account.riot_valorant_level || 'N/A'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Level</div>
+                            </div>
+
+                            {/* Rank */}
+                            <div className='text-center'>
+                              <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                {account.riot_valorant_rank || 'N/A'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Rank</div>
+                            </div>
+
+                            {/* VP */}
+                            <div className='text-center'>
+                              <div className='text-green-400 font-medium text-lg mb-1'>
+                                {account.riot_valorant_vp || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>VP</div>
+                            </div>
+
+                            {/* Radianite Points */}
+                            <div className='text-center'>
+                              <div className='text-purple-400 font-medium text-lg mb-1'>
+                                {account.riot_valorant_rp || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Radianite Points</div>
+                            </div>
+
+                            {/* Kingdom Credits */}
+                            <div className='text-center'>
+                              <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                {account.riot_valorant_kc || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Kingdom Credits</div>
+                            </div>
+
+                            {/* RR */}
+                            <div className='text-center'>
+                              <div className='text-orange-400 font-medium text-lg mb-1'>
+                                {account.riot_valorant_rr || 'N/A'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>RR</div>
+                            </div>
+
+                            {/* Region */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.riot_region || 'N/A'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Region</div>
+                            </div>
+
+                            {/* Inventory Value */}
+                            <div className='text-center'>
+                              <div className='text-green-400 font-medium text-lg mb-1'>
+                                ${account.riot_valorant_inventory_value || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Inventory Value</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* League of Legends Information */}
+                        {(account.riot_lol_level ||
+                          account.riot_lol_rank ||
+                          account.riot_lol_be ||
+                          account.riot_lol_rp) && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                              League of Legends Information
+                            </h3>
+                            <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                              {/* Level */}
+                              <div className='text-center'>
+                                <div className='text-blue-400 font-medium text-lg mb-1'>
+                                  {account.riot_lol_level || 'N/A'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Level</div>
+                              </div>
+
+                              {/* Rank */}
+                              <div className='text-center'>
+                                <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                  {account.riot_lol_rank || 'N/A'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Rank</div>
+                              </div>
+
+                              {/* Blue Essence */}
+                              <div className='text-center'>
+                                <div className='text-blue-400 font-medium text-lg mb-1'>
+                                  {account.riot_lol_be || '0'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Blue Essence</div>
+                              </div>
+
+                              {/* Riot Points */}
+                              <div className='text-center'>
+                                <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                  {account.riot_lol_rp || '0'}
+                                </div>
+                                <div className='text-gray-400 text-sm'>Riot Points</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Weapon Skins Section */}
+                        {account.valorantInventory?.WeaponSkins &&
+                          account.valorantInventory.WeaponSkins.length > 0 && (
+                            <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                              <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                                Weapon Skins ({account.valorantInventory.WeaponSkins.length})
+                              </h3>
+
+                              {/* Try download URL first, then direct URL, then fallback to items */}
+                              {account.imagePreviewLinks?.download?.weapons ||
+                              account.imagePreviewLinks?.direct?.weapons ? (
+                                <div className='text-center'>
+                                  <img
+                                    src={
+                                      account.imagePreviewLinks?.download?.weapons ||
+                                      account.imagePreviewLinks?.direct?.weapons
+                                    }
+                                    alt='Weapon Skins Preview'
+                                    className='mx-auto rounded-lg border border-gray-600 max-w-full h-auto max-h-96'
+                                    onError={e => {
+                                      // Try the alternative URL
+                                      const altUrl =
+                                        account.imagePreviewLinks?.direct?.weapons ||
+                                        account.imagePreviewLinks?.download?.weapons
+                                      if (e.target.src !== altUrl && altUrl) {
+                                        e.target.src = altUrl
+                                      } else {
+                                        e.target.style.display = 'none'
+                                        // Show the item grid instead
+                                        e.target.parentElement.innerHTML = `
+                                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                                          ${account.valorantInventory.WeaponSkins.map(
+                                            (skinId, index) => `
+                                            <div class="bg-gray-700 rounded-lg p-3 border border-gray-600 hover:border-orange-400 transition-colors">
+                                              <div class="text-white text-sm font-medium mb-1 truncate" title="Weapon Skin ${index + 1}">
+                                                Skin ${index + 1}
+                                              </div>
+                                            </div>
+                                          `
+                                          ).join('')}
+                                        </div>
+                                      `
+                                      }
+                                    }}
+                                  />
+                                  <p className='text-gray-400 text-sm mt-2'>Weapon Skins Preview</p>
+                                </div>
+                              ) : (
+                                <>
+                                  <p className='text-yellow-400 text-center mb-4'>
+                                    No preview image available - showing item list
+                                  </p>
+                                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
+                                    {account.valorantInventory.WeaponSkins.map((skinId, index) => (
+                                      <div
+                                        key={index}
+                                        className='bg-gray-700 rounded-lg p-3 border border-gray-600 hover:border-orange-400 transition-colors'
+                                      >
+                                        <div
+                                          className='text-white text-sm font-medium mb-1 truncate'
+                                          title={`Weapon Skin ${index + 1}`}
+                                        >
+                                          Skin {index + 1}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                        {/* Agents Section */}
+                        {account.valorantInventory?.Agent &&
+                          account.valorantInventory.Agent.length > 0 && (
+                            <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                              <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                                Agents ({account.valorantInventory.Agent.length})
+                              </h3>
+
+                              {account.imagePreviewLinks?.download?.agents ||
+                              account.imagePreviewLinks?.direct?.agents ? (
+                                <div className='text-center'>
+                                  <img
+                                    src={
+                                      account.imagePreviewLinks?.download?.agents ||
+                                      account.imagePreviewLinks?.direct?.agents
+                                    }
+                                    alt='Agents Preview'
+                                    className='mx-auto rounded-lg border border-gray-600 max-w-full h-auto max-h-96'
+                                    onError={e => {
+                                      const altUrl =
+                                        account.imagePreviewLinks?.direct?.agents ||
+                                        account.imagePreviewLinks?.download?.agents
+                                      if (e.target.src !== altUrl && altUrl) {
+                                        e.target.src = altUrl
+                                      } else {
+                                        e.target.style.display = 'none'
+                                        e.target.parentElement.innerHTML = `
+                                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                                          ${account.valorantInventory.Agent.map(
+                                            (agentId, index) => `
+                                            <div class="bg-gray-700 rounded-lg p-3 border border-gray-600 hover:border-purple-400 transition-colors">
+                                              <div class="text-white text-sm font-medium truncate" title="Agent ${index + 1}">
+                                                Agent ${index + 1}
+                                              </div>
+                                            </div>
+                                          `
+                                          ).join('')}
+                                        </div>
+                                      `
+                                      }
+                                    }}
+                                  />
+                                  <p className='text-gray-400 text-sm mt-2'>Agents Preview</p>
+                                </div>
+                              ) : (
+                                <>
+                                  <p className='text-yellow-400 text-center mb-4'>
+                                    No preview image available - showing item list
+                                  </p>
+                                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
+                                    {account.valorantInventory.Agent.map((agentId, index) => (
+                                      <div
+                                        key={index}
+                                        className='bg-gray-700 rounded-lg p-3 border border-gray-600 hover:border-purple-400 transition-colors'
+                                      >
+                                        <div
+                                          className='text-white text-sm font-medium truncate'
+                                          title={`Agent ${index + 1}`}
+                                        >
+                                          Agent {index + 1}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                        {/* Gun Buddies Section */}
+                        {account.valorantInventory?.Buddy &&
+                          account.valorantInventory.Buddy.length > 0 && (
+                            <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                              <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                                Gun Buddies ({account.valorantInventory.Buddy.length})
+                              </h3>
+
+                              {account.imagePreviewLinks?.download?.buddies ||
+                              account.imagePreviewLinks?.direct?.buddies ? (
+                                <div className='text-center'>
+                                  <img
+                                    src={
+                                      account.imagePreviewLinks?.download?.buddies ||
+                                      account.imagePreviewLinks?.direct?.buddies
+                                    }
+                                    alt='Gun Buddies Preview'
+                                    className='mx-auto rounded-lg border border-gray-600 max-w-full h-auto max-h-96'
+                                    onError={e => {
+                                      const altUrl =
+                                        account.imagePreviewLinks?.direct?.buddies ||
+                                        account.imagePreviewLinks?.download?.buddies
+                                      if (e.target.src !== altUrl && altUrl) {
+                                        e.target.src = altUrl
+                                      } else {
+                                        e.target.style.display = 'none'
+                                        e.target.parentElement.innerHTML = `
+                                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                                          ${account.valorantInventory.Buddy.map(
+                                            (buddyId, index) => `
+                                            <div class="bg-gray-700 rounded-lg p-3 border border-gray-600 hover:border-green-400 transition-colors">
+                                              <div class="text-white text-sm font-medium truncate" title="Gun Buddy ${index + 1}">
+                                                Buddy ${index + 1}
+                                              </div>
+                                            </div>
+                                          `
+                                          ).join('')}
+                                        </div>
+                                      `
+                                      }
+                                    }}
+                                  />
+                                  <p className='text-gray-400 text-sm mt-2'>Gun Buddies Preview</p>
+                                </div>
+                              ) : (
+                                <>
+                                  <p className='text-yellow-400 text-center mb-4'>
+                                    No preview image available - showing item list
+                                  </p>
+                                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
+                                    {account.valorantInventory.Buddy.map((buddyId, index) => (
+                                      <div
+                                        key={index}
+                                        className='bg-gray-700 rounded-lg p-3 border border-gray-600 hover:border-green-400 transition-colors'
+                                      >
+                                        <div
+                                          className='text-white text-sm font-medium truncate'
+                                          title={`Gun Buddy ${index + 1}`}
+                                        >
+                                          Buddy {index + 1}
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                        {/* External Links Section */}
+                        {account.accountLinks && account.accountLinks.length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                              External Links
+                            </h3>
+                            <div className='space-y-3'>
+                              {account.accountLinks.map((link, index) => (
+                                <div
+                                  key={index}
+                                  className='flex justify-between items-center p-3 bg-gray-700 rounded-lg border border-gray-600'
+                                >
+                                  <span className='text-gray-400'>{link.platform}:</span>
+                                  <span className='text-white'>{link.username}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : getAccountPlatform() === 'Telegram' ? (
+                      // Telegram-specific stats matching the detailed HTML structure and real API data
+                      <>
+                        {/* Basic Account Information Section */}
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                            Telegram Account Information
+                          </h3>
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
+                            {/* Country */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.telegram_country || 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Country</div>
+                            </div>
+
+                            {/* Spam Block */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${
+                                  account.telegram_spam_block === 1
+                                    ? 'text-red-400'
+                                    : account.telegram_spam_block === 0
+                                      ? 'text-green-400'
+                                      : 'text-gray-400'
+                                }`}
+                              >
+                                {account.telegram_spam_block === 1
+                                  ? 'Yes'
+                                  : account.telegram_spam_block === 0
+                                    ? 'No'
+                                    : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Spam Block</div>
+                            </div>
+
+                            {/* Last Activity */}
+                            <div className='text-center'>
+                              <div className='text-white font-medium text-lg mb-1'>
+                                {account.telegram_last_seen
+                                  ? new Date(account.telegram_last_seen * 1000).toLocaleDateString(
+                                      'en-US',
+                                      {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                      }
+                                    )
+                                  : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Last Activity</div>
+                            </div>
+
+                            {/* Telegram Premium */}
+                            <div className='text-center'>
+                              <div
+                                className={`font-medium text-lg mb-1 ${account.telegram_premium ? 'text-yellow-400' : 'text-gray-400'}`}
+                              >
+                                {account.telegram_premium ? 'Yes' : 'No'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Telegram Premium</div>
+                            </div>
+
+                            {/* ID Digit Count */}
+                            <div className='text-center'>
+                              <div className='text-blue-400 font-medium text-lg mb-1'>
+                                {account.telegram_id_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>ID Digit Count</div>
+                            </div>
+
+                            {/* Chats */}
+                            <div className='text-center'>
+                              <div className='text-purple-400 font-medium text-lg mb-1'>
+                                {account.telegram_chats_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Chats</div>
+                            </div>
+
+                            {/* Subscribed Channels */}
+                            <div className='text-center'>
+                              <div className='text-cyan-400 font-medium text-lg mb-1'>
+                                {account.telegram_channels_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Subscribed Channels</div>
+                            </div>
+
+                            {/* Conversations */}
+                            <div className='text-center'>
+                              <div className='text-green-400 font-medium text-lg mb-1'>
+                                {account.telegram_conversations_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Conversations</div>
+                            </div>
+
+                            {/* Contacts */}
+                            <div className='text-center'>
+                              <div className='text-orange-400 font-medium text-lg mb-1'>
+                                {account.telegram_contacts_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Contacts</div>
+                            </div>
+
+                            {/* Telegram Stars */}
+                            <div className='text-center'>
+                              <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                {account.telegram_stars_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Telegram Stars</div>
+                            </div>
+
+                            {/* Admin Count */}
+                            <div className='text-center'>
+                              <div className='text-red-400 font-medium text-lg mb-1'>
+                                {account.telegram_admin_count || '0'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Admin Channels</div>
+                            </div>
+
+                            {/* Age Verification */}
+                            <div className='text-center'>
+                              <div className='text-gray-400 font-medium text-lg mb-1'>
+                                {account.telegram_birthday ? 'Verified' : 'Unknown'}
+                              </div>
+                              <div className='text-gray-400 text-sm'>Specified Age of Owner</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Additional Information */}
+                        {(account.telegram_premium_expires ||
+                          account.telegram_gifts_count > 0 ||
+                          account.telegram_dc_id) && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                              Additional Details
+                            </h3>
+                            <div className='grid grid-cols-2 md:grid-cols-3 gap-6'>
+                              {/* Data Center */}
+                              {account.telegram_dc_id && (
+                                <div className='text-center'>
+                                  <div className='text-blue-400 font-medium text-lg mb-1'>
+                                    DC {account.telegram_dc_id}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>Data Center</div>
+                                </div>
+                              )}
+
+                              {/* Premium Expires */}
+                              {account.telegram_premium_expires &&
+                                account.telegram_premium_expires > 0 && (
+                                  <div className='text-center'>
+                                    <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                      {new Date(
+                                        account.telegram_premium_expires * 1000
+                                      ).toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                      })}
+                                    </div>
+                                    <div className='text-gray-400 text-sm'>Premium Expires</div>
+                                  </div>
+                                )}
+
+                              {/* Gifts Count */}
+                              {account.telegram_gifts_count > 0 && (
+                                <div className='text-center'>
+                                  <div className='text-pink-400 font-medium text-lg mb-1'>
+                                    {account.telegram_gifts_count}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>Gifts Received</div>
+                                </div>
+                              )}
+
+                              {/* NFT Gifts */}
+                              {account.telegram_gifts_nft_count > 0 && (
+                                <div className='text-center'>
+                                  <div className='text-purple-400 font-medium text-lg mb-1'>
+                                    {account.telegram_gifts_nft_count}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>NFT Gifts</div>
+                                </div>
+                              )}
+
+                              {/* Gift Stars */}
+                              {account.telegram_gifts_stars > 0 && (
+                                <div className='text-center'>
+                                  <div className='text-yellow-400 font-medium text-lg mb-1'>
+                                    {account.telegram_gifts_stars}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>Gift Stars</div>
+                                </div>
+                              )}
+
+                              {/* Password Protected */}
+                              {account.telegram_password !== undefined && (
+                                <div className='text-center'>
+                                  <div
+                                    className={`font-medium text-lg mb-1 ${account.telegram_password ? 'text-green-400' : 'text-gray-400'}`}
+                                  >
+                                    {account.telegram_password ? 'Yes' : 'No'}
+                                  </div>
+                                  <div className='text-gray-400 text-sm'>Password Protected</div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Gifts Section */}
+                        {account.telegram_gifts && account.telegram_gifts !== '[]' && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <h3 className='text-white font-bold text-xl mb-4 text-center'>
+                              Telegram Gifts
+                            </h3>
+                            <div className='text-center'>
+                              <div className='text-gray-400'>
+                                {(() => {
+                                  try {
+                                    const gifts = JSON.parse(account.telegram_gifts)
+                                    if (gifts.length === 0) {
+                                      return 'No gifts received'
+                                    }
+                                    return `${gifts.length} gift(s) received`
+                                  } catch (e) {
+                                    return 'Gift data available'
+                                  }
+                                })()}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
                     ) : (
                       // Steam-specific stats (keep existing logic)
                       <>
@@ -1279,10 +3192,11 @@ const AccountDetailPage = () => {
                         </h3>
                       </div>
 
-                      {/* Games Grid Gallery */}
-                      <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+                      {/* Games Grid Gallery - Compact View */}
+                      <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3'>
                         {Object.values(account.steam_full_games.list)
                           .sort((a, b) => (b.playtime_forever || 0) - (a.playtime_forever || 0))
+                          .slice(0, showAllGames ? undefined : 12)
                           .map((game, index) => (
                             <div
                               key={index}
@@ -1306,66 +3220,29 @@ const AccountDetailPage = () => {
                                 />
                                 {/* Playtime overlay */}
                                 {game.playtime_forever > 0 && (
-                                  <div className='absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm'>
+                                  <div className='absolute top-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded-full backdrop-blur-sm'>
                                     {formatPlaytime(game.playtime_forever)}
                                   </div>
                                 )}
-                                {/* Hover overlay */}
-                                <div className='absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center'>
-                                  <div className='text-white text-center p-2'>
-                                    <svg
-                                      className='w-8 h-8 mx-auto mb-2'
-                                      fill='currentColor'
-                                      viewBox='0 0 20 20'
-                                    >
-                                      <path
-                                        fillRule='evenodd'
-                                        d='M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z'
-                                        clipRule='evenodd'
-                                      />
-                                    </svg>
-                                    <p className='text-xs font-medium'>View Details</p>
-                                  </div>
-                                </div>
                               </div>
-                              <div className='p-3'>
-                                <h4 className='text-white font-medium text-sm leading-tight line-clamp-2 group-hover:text-blue-400 transition-colors'>
+                              <div className='p-2'>
+                                <h4 className='text-white font-medium text-xs leading-tight line-clamp-2 group-hover:text-blue-400 transition-colors'>
                                   {game.title}
                                 </h4>
-                                {game.abbr && (
-                                  <p className='text-gray-500 text-xs mt-1 uppercase tracking-wide'>
-                                    {game.abbr}
-                                  </p>
-                                )}
-                                {game.playtime_forever > 0 && (
-                                  <div className='mt-2 flex items-center gap-1'>
-                                    <svg
-                                      className='w-3 h-3 text-gray-400'
-                                      fill='currentColor'
-                                      viewBox='0 0 20 20'
-                                    >
-                                      <path
-                                        fillRule='evenodd'
-                                        d='M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z'
-                                        clipRule='evenodd'
-                                      />
-                                    </svg>
-                                    <span className='text-gray-400 text-xs'>
-                                      {formatPlaytime(game.playtime_forever)} played
-                                    </span>
-                                  </div>
-                                )}
                               </div>
                             </div>
                           ))}
                       </div>
 
                       {/* View More Games Button */}
-                      {Object.keys(account.steam_full_games.list).length > 30 && (
-                        <div className='text-center pt-4'>
-                          <button className='bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2 mx-auto'>
+                      {Object.keys(account.steam_full_games.list).length > 12 && (
+                        <div className='text-center pt-2'>
+                          <button
+                            onClick={() => setShowAllGames(!showAllGames)}
+                            className='bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2 mx-auto text-sm'
+                          >
                             <svg
-                              className='w-5 h-5'
+                              className={`w-4 h-4 transition-transform ${showAllGames ? 'rotate-180' : ''}`}
                               fill='none'
                               stroke='currentColor'
                               viewBox='0 0 24 24'
@@ -1377,58 +3254,14 @@ const AccountDetailPage = () => {
                                 d='M19 9l-7 7-7-7'
                               />
                             </svg>
-                            Show All Games
+                            {showAllGames
+                              ? `Show Less`
+                              : `Show All ${Object.keys(account.steam_full_games.list).length} Games`}
                           </button>
                         </div>
                       )}
                     </div>
                   )}
-
-                {activeTab === 'security' && (
-                  <div className='space-y-4'>
-                    <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
-                      <h3 className='text-lg font-semibold text-white mb-4'>Fitur Keamanan</h3>
-                      <div className='space-y-3'>
-                        <div className='flex justify-between items-center'>
-                          <span className='text-gray-400'>Autentikasi Dua Faktor</span>
-                          <span className={account.steam_mfa ? 'text-green-400' : 'text-red-400'}>
-                            {account.steam_mfa ? 'Aktif' : 'Nonaktif'}
-                          </span>
-                        </div>
-                        <div className='flex justify-between items-center'>
-                          <span className='text-gray-400'>Status Akun</span>
-                          <span
-                            className={
-                              !account.steam_is_limited ? 'text-green-400' : 'text-red-400'
-                            }
-                          >
-                            {!account.steam_is_limited ? 'Unlimited' : 'Limited'}
-                          </span>
-                        </div>
-                        <div className='flex justify-between items-center'>
-                          <span className='text-gray-400'>Market Access</span>
-                          <span
-                            className={account.steam_market ? 'text-green-400' : 'text-red-400'}
-                          >
-                            {account.steam_market ? 'Available' : 'Restricted'}
-                          </span>
-                        </div>
-                        {account.email_provider && (
-                          <div className='flex justify-between items-center'>
-                            <span className='text-gray-400'>Email Provider</span>
-                            <span className='text-white'>{account.email_provider}</span>
-                          </div>
-                        )}
-                        {account.item_domain && (
-                          <div className='flex justify-between items-center'>
-                            <span className='text-gray-400'>Email Domain</span>
-                            <span className='text-white'>{account.item_domain}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
 
                 {activeTab === 'cosmetics' && isFortniteAccount && (
                   <div className='space-y-6'>
@@ -1646,9 +3479,6 @@ const AccountDetailPage = () => {
                 <div className='text-3xl font-bold text-purple-400 mb-1'>
                   {formatPrice(account)}
                 </div>
-                <div className='text-sm text-gray-400 mb-2'>
-                  ${formatUSD(getPriceValue(account))} USD
-                </div>
                 {account.hasWarranty && (
                   <p className='text-green-400 text-sm'>Termasuk garansi {account.warranty}</p>
                 )}
@@ -1683,12 +3513,6 @@ const AccountDetailPage = () => {
             <div className='bg-gray-900 rounded-lg border border-gray-700 p-6'>
               <h3 className='text-lg font-semibold text-white mb-4'>Account Info</h3>
               <div className='space-y-3 text-sm'>
-                {account.item_origin && (
-                  <div className='flex justify-between'>
-                    <span className='text-gray-400'>Origin:</span>
-                    <span className='text-white capitalize'>{account.item_origin}</span>
-                  </div>
-                )}
                 {account.item_state && (
                   <div className='flex justify-between'>
                     <span className='text-gray-400'>Status:</span>
@@ -1712,9 +3536,17 @@ const AccountDetailPage = () => {
             <div className='bg-gray-900 rounded-lg border border-gray-700 p-6'>
               <h3 className='text-lg font-semibold text-white mb-4'>Need Help?</h3>
               <div className='space-y-3'>
-                <button className='w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium'>
+                <a
+                  href='https://t.me/mgissella'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium flex items-center justify-center'
+                >
+                  <svg className='w-5 h-5 mr-2' fill='currentColor' viewBox='0 0 24 24'>
+                    <path d='M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.820 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z' />
+                  </svg>
                   Contact Senja Games
-                </button>
+                </a>
               </div>
             </div>
           </div>

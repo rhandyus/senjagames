@@ -5,25 +5,12 @@ const OriginFilters = ({ onFiltersChange }) => {
   const [filters, setFilters] = useState({
     game: [],
     gamesCount: { min: '', max: '' },
-    origin: [],
-    notOrigin: [],
     priceMin: '',
     priceMax: '',
     country: '',
     lastActivity: '',
     totalPlayed: { min: '', max: '' }
   })
-
-  // Origin options
-  const originOptions = [
-    { value: 'brute', label: 'Brute' },
-    { value: 'phishing', label: 'Phishing' },
-    { value: 'stealer', label: 'Stealer' },
-    { value: 'personal', label: 'Personal' },
-    { value: 'resale', label: 'Resale' },
-    { value: 'autoreg', label: 'Autoreg' },
-    { value: 'dummy', label: 'Dummy' }
-  ]
 
   // Popular EA games options
   const gameOptions = [
@@ -136,8 +123,6 @@ const OriginFilters = ({ onFiltersChange }) => {
     const clearedFilters = {
       game: [],
       gamesCount: { min: '', max: '' },
-      origin: [],
-      notOrigin: [],
       priceMin: '',
       priceMax: '',
       country: '',
@@ -160,7 +145,7 @@ const OriginFilters = ({ onFiltersChange }) => {
           onClick={clearFilters}
           className='text-sm text-gray-400 hover:text-red-400 transition-colors'
         >
-          Clear All
+          Hapus Semua
         </button>
       </div>
 
@@ -201,35 +186,13 @@ const OriginFilters = ({ onFiltersChange }) => {
               />
             </div>
           </div>
-
-          {/* Account Origin */}
-          <div>
-            <label className='block text-sm font-medium text-gray-300 mb-2'>Account Origin</label>
-            <MultiSelect
-              options={originOptions}
-              value={filters.origin}
-              onChange={value => handleFilterChange('origin', value)}
-              placeholder='Account origin'
-            />
-          </div>
-
-          {/* Exclude Origin */}
-          <div>
-            <label className='block text-sm font-medium text-gray-300 mb-2'>Exclude Origin</label>
-            <MultiSelect
-              options={originOptions}
-              value={filters.notOrigin}
-              onChange={value => handleFilterChange('notOrigin', value)}
-              placeholder='Exclude origin'
-            />
-          </div>
         </div>
 
         {/* Second Column */}
         <div className='space-y-4'>
           {/* Price Range */}
           <div>
-            <label className='block text-sm font-medium text-gray-300 mb-2'>Price Range</label>
+            <label className='block text-sm font-medium text-gray-300 mb-2'>Rentang Harga</label>
             <div className='grid grid-cols-2 gap-2'>
               <input
                 type='number'
@@ -328,24 +291,6 @@ const OriginFilters = ({ onFiltersChange }) => {
               <div>• More games = better value</div>
               <div>• Recent activity = higher risk</div>
               <div>• Check total played hours</div>
-            </div>
-          </div>
-
-          <div className='bg-gray-800 p-3 rounded-lg border border-gray-600'>
-            <h5 className='text-sm font-medium text-gray-300 mb-2'>Account Origins</h5>
-            <div className='space-y-1 text-xs text-gray-400'>
-              <div>
-                • <span className='text-green-400'>Personal</span>: Safest option
-              </div>
-              <div>
-                • <span className='text-yellow-400'>Resale</span>: Medium risk
-              </div>
-              <div>
-                • <span className='text-red-400'>Stealer</span>: High risk
-              </div>
-              <div>
-                • <span className='text-blue-400'>Autoreg</span>: Generated accounts
-              </div>
             </div>
           </div>
         </div>

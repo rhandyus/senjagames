@@ -320,7 +320,7 @@ const MinecraftFilters = ({ onFiltersChange, initialFilters = {} }) => {
             className='bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2'
           >
             <Icon icon='mdi:filter' className='text-lg' />
-            <span>Apply Filters</span>
+            <span>Terapkan Filter</span>
           </button>
           <button
             type='button'

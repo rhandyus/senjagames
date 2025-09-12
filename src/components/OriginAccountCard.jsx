@@ -56,19 +56,6 @@ const OriginAccountCard = ({ account }) => {
 
   const activityStatus = getActivityStatus(lastActivity)
 
-  const getOriginColor = origin => {
-    const colors = {
-      personal: 'text-green-400',
-      resale: 'text-yellow-400',
-      stealer: 'text-red-400',
-      phishing: 'text-red-400',
-      brute: 'text-orange-400',
-      autoreg: 'text-blue-400',
-      dummy: 'text-purple-400'
-    }
-    return colors[origin?.toLowerCase()] || 'text-gray-400'
-  }
-
   return (
     <div className='bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl border border-gray-700 hover:border-orange-500 transition-all duration-300 shadow-lg hover:shadow-xl group'>
       {/* Header */}
@@ -170,17 +157,6 @@ const OriginAccountCard = ({ account }) => {
       {/* Stats Grid */}
       <div className='p-4'>
         <div className='grid grid-cols-2 gap-4 mb-4'>
-          {/* Origin */}
-          <div className='bg-gray-800 rounded-lg p-3'>
-            <div className='flex items-center space-x-2 mb-1'>
-              <Icon icon='mdi:source-branch' className='text-gray-400 text-sm' />
-              <span className='text-xs text-gray-400'>Origin</span>
-            </div>
-            <div className={`text-sm font-medium capitalize ${getOriginColor(account.origin)}`}>
-              {account.origin || 'Unknown'}
-            </div>
-          </div>
-
           {/* Last Activity */}
           <div className='bg-gray-800 rounded-lg p-3'>
             <div className='flex items-center space-x-2 mb-1'>
@@ -213,7 +189,7 @@ const OriginAccountCard = ({ account }) => {
 
         {/* Action Button */}
         <Link
-          to={`/account-detail/${account.id}`}
+          to={`/acc/?id=${account.item_id || account.id}`}
           state={{ account, type: 'origin' }}
           className='w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 group-hover:shadow-lg'
         >

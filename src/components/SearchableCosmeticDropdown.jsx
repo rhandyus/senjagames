@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
 import { Icon } from '@iconify/react'
+import { useEffect, useRef, useState } from 'react'
 
 const SearchableCosmeticDropdown = ({
   selectedItems = [],
@@ -104,7 +104,7 @@ const SearchableCosmeticDropdown = ({
             className='text-gray-400 hover:text-gray-200 text-xs px-1'
             type='button'
           >
-            Clear All
+            Hapus Semua
           </button>
         </div>
       )}

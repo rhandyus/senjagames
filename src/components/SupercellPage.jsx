@@ -379,7 +379,7 @@ const SupercellPage = () => {
         {filteredAccounts.length === 0 && !isLoading && (
           <div className='text-center py-12'>
             <Icon icon='mdi:account-off' className='text-6xl text-gray-600 mx-auto mb-4' />
-            <h3 className='text-xl font-semibold text-gray-400 mb-2'>No accounts found</h3>
+            <h3 className='text-xl font-semibold text-gray-400 mb-2'>Tidak ada akun ditemukan</h3>
             <p className='text-gray-500'>Try adjusting your filters to see more results.</p>
           </div>
         )}

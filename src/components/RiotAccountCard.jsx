@@ -199,66 +199,39 @@ const RiotAccountCard = ({ account }) => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className='p-4 space-y-3 flex-1'>
-        {/* Status Row */}
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center space-x-3'>
-            {/* Email Status */}
-            <div
-              className={`flex items-center space-x-1 px-2 py-1 rounded-lg border ${
-                getEmailStatus().verified
-                  ? 'bg-green-900 bg-opacity-50 border-green-700'
-                  : 'bg-yellow-900 bg-opacity-50 border-yellow-700'
-              }`}
-            >
-              <Icon
-                icon={getEmailStatus().verified ? 'mdi:email-check' : 'mdi:email'}
-                className={`text-sm ${getEmailStatus().verified ? 'text-green-400' : 'text-yellow-400'}`}
-              />
-              <span
-                className={`text-xs font-medium ${getEmailStatus().verified ? 'text-green-400' : 'text-yellow-400'}`}
-              >
-                {getEmailStatus().text}
-              </span>
-            </div>
+      {/* Main Content - Info Section matching HTML structure */}
+      <div className='marketIndexItem--Info p-4 space-y-3 flex-1'>
+        {/* Email Status */}
+        <div
+          className={`column ${getEmailStatus().verified ? 'warn-green' : 'warn-yellow'} flex items-center space-x-2`}
+        >
+          <Icon
+            icon='fa-solid:thumbs-up'
+            className={`${getEmailStatus().verified ? 'text-green-400' : 'text-yellow-400'}`}
+          />
+          <span
+            className={`text-sm ${getEmailStatus().verified ? 'text-green-400' : 'text-yellow-400'}`}
+          >
+            {account.riot_email_verified === 1 ? 'With Mail' : 'Email Access'}
+          </span>
+        </div>
 
-            {/* Phone Status */}
-            {getPhoneStatus() && (
-              <div className='flex items-center space-x-1 bg-green-900 bg-opacity-50 px-2 py-1 rounded-lg border border-green-700'>
-                <Icon icon='mdi:phone-check' className='text-green-400 text-sm' />
-                <span className='text-green-400 text-xs font-medium'>Phone Verified</span>
-              </div>
-            )}
-
-            {/* Warranty */}
-            <div className='flex items-center space-x-1 bg-yellow-900 bg-opacity-50 px-2 py-1 rounded-lg border border-yellow-700'>
-              <Icon icon='mdi:shield-check' className='text-yellow-400 text-sm' />
-              <span className='text-yellow-400 text-xs font-medium'>{getWarrantyInfo()}</span>
-            </div>
-          </div>
-
-          {/* Country */}
-          {account.riot_country && (
-            <div className='flex items-center space-x-1 bg-gray-800 px-2 py-1 rounded-lg border border-gray-600'>
-              <Icon icon='mdi:flag' className='text-gray-400 text-sm' />
-              <span className='text-gray-400 text-xs'>{account.riot_country}</span>
-            </div>
-          )}
+        {/* Phone Status */}
+        <div
+          className={`column ${getPhoneStatus() ? 'warn-red' : 'warn-green'} flex items-center space-x-2`}
+        >
+          <Icon
+            icon='fa-solid:thumbs-up'
+            className={`${getPhoneStatus() ? 'text-red-400' : 'text-green-400'}`}
+          />
+          <span className={`text-sm ${getPhoneStatus() ? 'text-red-400' : 'text-green-400'}`}>
+            {getPhoneStatus() ? 'Phone linked' : 'No phone'}
+          </span>
         </div>
 
         {/* Last Seen */}
-        <div
-          className={`flex items-center space-x-2 p-2 rounded-lg border ${
-            getLastSeenWarning() === 'warn-green'
-              ? 'bg-green-900 bg-opacity-30 border-green-700'
-              : getLastSeenWarning() === 'warn-yellow'
-                ? 'bg-yellow-900 bg-opacity-30 border-yellow-700'
-                : 'bg-red-900 bg-opacity-30 border-red-700'
-          }`}
-        >
-          <Icon
-            icon='mdi:clock-outline'
+        <div className={`column ${getLastSeenWarning()}`}>
+          <p
             className={`text-sm ${
               getLastSeenWarning() === 'warn-green'
                 ? 'text-green-400'
@@ -266,96 +239,159 @@ const RiotAccountCard = ({ account }) => {
                   ? 'text-yellow-400'
                   : 'text-red-400'
             }`}
-          />
-          <span
-            className={`text-xs font-medium ${
-              getLastSeenWarning() === 'warn-green'
-                ? 'text-green-400'
-                : getLastSeenWarning() === 'warn-yellow'
-                  ? 'text-yellow-400'
-                  : 'text-red-400'
-            }`}
           >
-            {formatRelativeTime(
-              account.riot_last_activity || account.account_last_activity || account.lastSeen
-            )}
-          </span>
+            Last seen {formatDate(account.riot_last_activity || account.account_last_activity)}
+          </p>
         </div>
 
-        {/* Riot Username */}
-        {account.riot_username && (
-          <div className='bg-gray-800 p-2 rounded-lg border border-gray-600 text-center'>
-            <div className='text-purple-400 font-bold text-sm'>{account.riot_username}</div>
-            <div className='text-gray-400 text-xs'>Riot ID</div>
-          </div>
-        )}
-
-        {/* Games Section */}
-        <div className='games-section'>
-          <div className='flex items-center justify-between mb-2'>
-            <span className='text-gray-300 text-sm font-medium flex items-center space-x-1'>
-              <Icon icon='mdi:gamepad-variant' className='text-purple-400' />
-              <span>Games ({getRiotGames().length})</span>
-            </span>
-          </div>
-
-          <div className='space-y-2'>
-            {getRiotGames().length > 0 ? (
-              getRiotGames().map((game, index) => (
-                <div
-                  key={index}
-                  className='flex items-center bg-gray-800 p-3 rounded-lg border border-gray-600 hover:border-gray-500 transition-colors'
-                >
-                  <div className='w-8 h-8 rounded mr-3 flex-shrink-0 flex items-center justify-center bg-gray-700'>
-                    <Icon icon={game.icon} className='text-purple-400 text-lg' />
-                  </div>
-                  <div className='flex-1 min-w-0'>
-                    <div className='flex items-center justify-between mb-1'>
-                      <div className='text-xs text-gray-300 font-medium'>{game.name}</div>
-                      <div className='text-xs text-gray-400'>Level {game.level || 'N/A'}</div>
-                    </div>
-                    <div className='flex items-center space-x-2 text-xs text-gray-500'>
-                      <span>{game.rank}</span>
-                      {game.region && (
-                        <>
-                          <span>•</span>
-                          <span>{game.region}</span>
-                        </>
-                      )}
-                      {game.skinCount > 0 && (
-                        <>
-                          <span>•</span>
-                          <span>{game.skinCount} skins</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className='text-center text-gray-500 text-sm py-4 bg-gray-800 rounded-lg border border-gray-600'>
-                <Icon icon='mdi:gamepad-off' className='text-2xl mb-1' />
-                <div>No games data available</div>
+        {/* Games Container - matching HTML structure */}
+        <div className='games-container space-y-2'>
+          {/* Valorant Game Info */}
+          {(account.riot_valorant_level ||
+            account.riot_valorant_skin_count ||
+            account.riot_valorant_region) && (
+            <div className='flex items-center justify-center space-x-4 bg-gray-800 p-2 rounded-lg'>
+              {/* Game Icon */}
+              <div className='column flex items-center justify-center px-2'>
+                <img
+                  src='/data/assets/valor.png'
+                  alt='Valorant'
+                  className='h-5 w-5'
+                  onError={e => {
+                    e.target.style.display = 'none'
+                    e.target.nextElementSibling.style.display = 'inline-block'
+                  }}
+                />
+                <Icon icon='simple-icons:valorant' className='text-red-500 h-5 w-5 hidden' />
               </div>
-            )}
-          </div>
+
+              {/* Region */}
+              {account.riot_valorant_region && (
+                <div className='column text-center'>
+                  <span className='text-sm text-white font-medium'>
+                    {account.valorantRegionPhrase || account.riot_valorant_region}
+                  </span>
+                </div>
+              )}
+
+              {/* Inventory Value */}
+              {account.riot_valorant_inventory_value && (
+                <div className='column text-center'>
+                  <span className='text-sm text-gray-300'>
+                    Inventory value ~ {account.riot_valorant_inventory_value} VP
+                  </span>
+                </div>
+              )}
+
+              {/* Skins */}
+              {account.riot_valorant_skin_count > 0 && (
+                <div className='column text-center'>
+                  <span className='text-sm text-gray-300'>
+                    {account.riot_valorant_skin_count} Skin
+                    {account.riot_valorant_skin_count !== 1 ? 's' : ''}
+                  </span>
+                </div>
+              )}
+
+              {/* Rank */}
+              <div className='column text-center'>
+                <span className='text-sm text-gray-300'>
+                  {account.valorantRankTitle || account.riot_valorant_rank_type || 'Unrated'}
+                </span>
+              </div>
+
+              {/* VP Wallet */}
+              {account.riot_valorant_wallet_vp && (
+                <div className='column text-center'>
+                  <span className='text-sm text-gray-300'>
+                    {account.riot_valorant_wallet_vp} VP
+                  </span>
+                </div>
+              )}
+
+              {/* Level */}
+              <div className='column text-center'>
+                <span className='text-sm text-gray-300'>
+                  {account.riot_valorant_level || 0} Level
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* League of Legends Game Info */}
+          {(account.riot_lol_level || account.riot_lol_skin_count || account.riot_lol_region) && (
+            <div className='flex items-center justify-center space-x-4 bg-gray-800 p-2 rounded-lg'>
+              {/* Game Icon */}
+              <div className='column flex items-center justify-center px-2'>
+                <Icon icon='simple-icons:leagueoflegends' className='text-blue-400 h-5 w-5' />
+              </div>
+
+              {/* Region */}
+              {account.riot_lol_region && (
+                <div className='column text-center'>
+                  <span className='text-sm text-white font-medium'>{account.riot_lol_region}</span>
+                </div>
+              )}
+
+              {/* Skins */}
+              {account.riot_lol_skin_count > 0 && (
+                <div className='column text-center'>
+                  <span className='text-sm text-gray-300'>
+                    {account.riot_lol_skin_count} Skin{account.riot_lol_skin_count !== 1 ? 's' : ''}
+                  </span>
+                </div>
+              )}
+
+              {/* Champions */}
+              {account.riot_lol_champion_count > 0 && (
+                <div className='column text-center'>
+                  <span className='text-sm text-gray-300'>
+                    {account.riot_lol_champion_count} Champions
+                  </span>
+                </div>
+              )}
+
+              {/* Rank */}
+              <div className='column text-center'>
+                <span className='text-sm text-gray-300'>{account.riot_lol_rank || 'Unranked'}</span>
+              </div>
+
+              {/* Level */}
+              <div className='column text-center'>
+                <span className='text-sm text-gray-300'>{account.riot_lol_level || 0} Level</span>
+              </div>
+            </div>
+          )}
+
+          {/* Show Riot Username if available */}
+          {account.riot_username && (
+            <div className='column text-center bg-gray-800 p-2 rounded-lg'>
+              <span className='text-sm text-purple-400 font-medium'>{account.riot_username}</span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Footer */}
-      <div className='bg-gray-800 px-4 py-3 border-t border-gray-700 flex items-center justify-between text-xs mt-auto'>
+      {/* Footer - Account Footer matching HTML structure */}
+      <div className='account-footer bg-gray-800 px-4 py-3 border-t border-gray-700 flex items-center justify-between text-xs mt-auto'>
         <div className='flex items-center space-x-2'>
-          <Icon icon='simple-icons:riotgames' className='text-red-400' />
+          <img
+            src='/data/assets/category/13.svg'
+            alt='Category Icon'
+            className='icon h-4 w-4'
+            onError={e => {
+              e.target.style.display = 'none'
+              e.target.nextElementSibling.style.display = 'inline-block'
+            }}
+          />
+          <Icon icon='simple-icons:riotgames' className='text-red-400 h-4 w-4 hidden' />
           <span className='text-gray-400'>Riot</span>
         </div>
-        <div className='flex items-center space-x-2 text-gray-400'>
+
+        <div className='uploaded flex items-center space-x-2 text-gray-400'>
+          {/* Upload Date */}
           <time className='hover:text-gray-300'>
-            {formatRelativeTime(
-              account.published_date ||
-                account.created_at ||
-                account.upload_date ||
-                account.createdAt
-            )}
+            {formatDate(account.published_date || account.created_at)}
           </time>
         </div>
       </div>
