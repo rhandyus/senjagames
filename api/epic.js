@@ -49,8 +49,7 @@ export default async function handler(req, res) {
     })
 
     // Get token from environment
-    const token =
-      process.env.LZT_TOKEN
+    const token = process.env.LZT_TOKEN
 
     if (!token) {
       console.error('❌ No LZT Market token found')
@@ -72,8 +71,10 @@ export default async function handler(req, res) {
           if (response.status === 429) {
             // Rate limited - wait before retrying
             const waitTime = Math.pow(2, attempt) * 1000 // Exponential backoff
-            console.log(`⏳ Rate limited (429), waiting ${waitTime}ms before retry ${attempt}/${maxRetries}`)
-            
+            console.log(
+              `⏳ Rate limited (429), waiting ${waitTime}ms before retry ${attempt}/${maxRetries}`
+            )
+
             if (attempt < maxRetries) {
               await new Promise(resolve => setTimeout(resolve, waitTime))
               continue

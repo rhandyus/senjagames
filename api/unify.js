@@ -19,13 +19,16 @@ export default async function handler(req, res) {
   try {
     const { name, ...queryParams } = req.query
 
-    console.log(`🔍 Unified API Request - name: ${name}, queryParams: ${JSON.stringify(queryParams)}`)
+    console.log(
+      `🔍 Unified API Request - name: ${name}, queryParams: ${JSON.stringify(queryParams)}`
+    )
 
     // Validate category name parameter
     if (!name) {
       return res.status(400).json({
         error: 'Missing category name',
-        message: 'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, or ?name=ea)',
+        message:
+          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, or ?name=ea)',
         supportedCategories: ['mihoyo', 'riot', 'telegram', 'ea', 'origin']
       })
     }
@@ -33,7 +36,7 @@ export default async function handler(req, res) {
     // Category mapping
     const categoryMapping = {
       mihoyo: 'mihoyo',
-      riot: 'riot', 
+      riot: 'riot',
       telegram: 'telegram',
       ea: 'ea',
       origin: 'ea' // Origin maps to EA

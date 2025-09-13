@@ -110,7 +110,8 @@ app.all('/api/*', async (req, res) => {
     // chatgpt: 'api/chatgpt.js', // disabled
     battlenet: 'api/battlenet.js',
     // vpn: 'api/vpn.js', // disabled
-    'lzt-proxy': 'api/lzt-proxy.js'
+    'lzt-proxy': 'api/lzt-proxy.js',
+    unify: 'api/unify.js'
   }
 
   // Handle nested LZT routes

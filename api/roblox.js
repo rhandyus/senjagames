@@ -59,8 +59,7 @@ export default async function handler(req, res) {
     })
 
     // Get token from environment
-    const token =
-      process.env.LZT_TOKEN
+    const token = process.env.LZT_TOKEN
 
     if (!token) {
       console.error('❌ No LZT Market token found')
