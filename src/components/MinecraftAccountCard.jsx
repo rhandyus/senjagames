@@ -9,9 +9,9 @@ const MinecraftAccountCard = ({ account }) => {
     e.preventDefault()
     e.stopPropagation()
 
-    // Convert price from RUB to IDR (API always returns RUB)
-    const RUB_TO_IDR = parseFloat(import.meta.env.VITE_RUB_TO_IDR_RATE) || 195
-    const convertedPrice = (parseFloat(account.price) || 0) * RUB_TO_IDR
+    // Convert price from USD to IDR (API returns USD)
+    const USD_TO_IDR = parseFloat(import.meta.env.VITE_USD_TO_IDR_RATE) || 15500
+    const convertedPrice = (parseFloat(account.price) || 0) * USD_TO_IDR
 
     addToCart({
       id: account.item_id || account.id,
@@ -27,19 +27,16 @@ const MinecraftAccountCard = ({ account }) => {
     // Add any click tracking here if needed
   }
 
-  // Format price - Convert RUB to IDR for display
-  const price = parseFloat(account.price) || 0
-  const RUB_TO_IDR = parseFloat(import.meta.env.VITE_RUB_TO_IDR_RATE) || 195 // 1 RUB = 195 IDR
+  // Format price - Convert USD to IDR for display
+  const priceUSD = parseFloat(account.price) || 0
+  const USD_TO_IDR = parseFloat(import.meta.env.VITE_USD_TO_IDR_RATE) || 15500 // 1 USD = 15500 IDR
 
-  // Convert price from RUB to IDR (API always returns RUB)
-  const displayPrice = price * RUB_TO_IDR
+  // Convert price from USD to IDR (API returns USD)
+  const displayPrice = priceUSD * USD_TO_IDR
 
   const formattedPrice =
     displayPrice > 0 ? `Rp ${Math.round(displayPrice).toLocaleString('id-ID')}` : 'Free'
 
-  // Convert to USD (approximate)
-  const exchangeRate = 0.000066 // 1 IDR ≈ 0.000066 USD
-  const priceUSD = displayPrice * exchangeRate
   const formatUSD = amount => amount.toFixed(2)
 
   // Get warranty info (standard for Minecraft accounts)

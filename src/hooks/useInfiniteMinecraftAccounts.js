@@ -20,7 +20,7 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
       item_id: account.item_id,
       title: account.title || 'Minecraft Account',
       price: account.price || 0,
-      currency: account.currency || 'RUB', // API returns prices in RUB
+      currency: account.currency || 'USD', // API returns prices in USD
       description: account.description || '',
 
       // Basic account info
@@ -84,7 +84,8 @@ export const useInfiniteMinecraftAccounts = (filters = {}) => {
     if (filterParams.pmax) params.append('pmax', filterParams.pmax)
 
     // Email access
-    if (filterParams.email_type) params.append('email_type', filterParams.email_type)
+    if (filterParams.email_login_data)
+      params.append('email_login_data', filterParams.email_login_data)
 
     // Name change
     if (filterParams.change_nickname) params.append('change_nickname', filterParams.change_nickname)
