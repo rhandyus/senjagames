@@ -10,7 +10,19 @@ const SearchableEpicGameDropdown = ({
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const dropdownRef = useRef(null)
-  const { games, loading, error } = useEpicGames()
+  const { games, loading, error, refetch } = useEpicGames()
+
+  // Handle dropdown open/close with refetch
+  const handleToggleDropdown = () => {
+    if (!isOpen) {
+      // When opening dropdown, refetch if there's an error or no games
+      if (error || games.length === 0) {
+        console.log('🔄 Refetching Epic Games on dropdown open...')
+        refetch()
+      }
+    }
+    setIsOpen(!isOpen)
+  }
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -27,8 +39,8 @@ const SearchableEpicGameDropdown = ({
   // Filter games based on search term
   const filteredGames = games.filter(
     game =>
-      game.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      game.abbr?.toLowerCase().includes(searchTerm.toLowerCase())
+      (game.label && typeof game.label === 'string' && game.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (game.abbr && typeof game.abbr === 'string' && game.abbr.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   const handleGameToggle = gameValue => {
@@ -59,7 +71,7 @@ const SearchableEpicGameDropdown = ({
       {/* Main dropdown button */}
       <button
         type='button'
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleDropdown}
         className='w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-left text-white hover:border-purple-500 focus:border-purple-500 focus:outline-none transition-colors'
       >
         <div className='flex items-center justify-between'>
@@ -109,19 +121,32 @@ const SearchableEpicGameDropdown = ({
         <div className='absolute z-50 w-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg max-h-64 overflow-hidden'>
           {/* Search input */}
           <div className='p-2 border-b border-gray-600'>
-            <div className='relative'>
-              <Icon
-                icon='mingcute:search-line'
-                className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400'
-              />
-              <input
-                type='text'
-                placeholder='Search games...'
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className='w-full bg-gray-700 border border-gray-600 rounded px-8 py-1.5 text-white placeholder-gray-400 text-sm focus:border-purple-500 focus:outline-none'
-                autoFocus
-              />
+            <div className='flex gap-2'>
+              <div className='relative flex-1'>
+                <Icon
+                  icon='mingcute:search-line'
+                  className='absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400'
+                />
+                <input
+                  type='text'
+                  placeholder='Search games...'
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  className='w-full bg-gray-700 border border-gray-600 rounded px-8 py-1.5 text-white placeholder-gray-400 text-sm focus:border-purple-500 focus:outline-none'
+                  autoFocus
+                />
+              </div>
+              <button
+                onClick={() => refetch()}
+                disabled={loading}
+                className='bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-300 hover:text-white px-2 py-1.5 rounded text-sm transition-colors'
+                title='Refresh games list'
+              >
+                <Icon 
+                  icon='mingcute:refresh-line' 
+                  className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} 
+                />
+              </button>
             </div>
           </div>
 
@@ -133,14 +158,28 @@ const SearchableEpicGameDropdown = ({
                 Loading Epic Games...
               </div>
             ) : error ? (
-              <div className='p-3 text-center text-red-400'>
-                <Icon icon='mingcute:warning-line' className='w-4 h-4 inline mr-2' />
-                Error loading games: {error}
+              <div className='p-3 text-center'>
+                <div className='text-red-400 mb-2'>
+                  <Icon icon='mingcute:warning-line' className='w-4 h-4 inline mr-2' />
+                  Error loading games: {error}
+                </div>
+                <button
+                  onClick={() => refetch()}
+                  className='bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded text-sm transition-colors'
+                >
+                  <Icon icon='mingcute:refresh-line' className='w-4 h-4 inline mr-1' />
+                  Retry
+                </button>
+              </div>
+            ) : filteredGames.length === 0 && searchTerm ? (
+              <div className='p-3 text-center text-gray-400'>
+                <Icon icon='mingcute:search-line' className='w-4 h-4 inline mr-2' />
+                No games found for "{searchTerm}"
               </div>
             ) : filteredGames.length === 0 ? (
               <div className='p-3 text-center text-gray-400'>
                 <Icon icon='mingcute:search-line' className='w-4 h-4 inline mr-2' />
-                No games found
+                No games available
               </div>
             ) : (
               filteredGames.map(game => (

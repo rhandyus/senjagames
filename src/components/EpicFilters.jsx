@@ -2,16 +2,16 @@ import { Icon } from '@iconify/react'
 import { useEffect, useState } from 'react'
 import SearchableEpicGameDropdown from './SearchableEpicGameDropdown'
 
-// Account origin options (from epic-filter.html)
-const originOptions = [
-  { value: 'brute', label: 'Brute' },
-  { value: 'phishing', label: 'Phishing' },
-  { value: 'stealer', label: 'Stealer' },
-  { value: 'personal', label: 'Personal' },
-  { value: 'resale', label: 'Resale' },
-  { value: 'autoreg', label: 'Autoreg' },
-  { value: 'dummy', label: 'Dummy' }
-]
+// Account origin options - REMOVED per user request
+// const originOptions = [
+//   { value: 'brute', label: 'Brute' },
+//   { value: 'phishing', label: 'Phishing' },
+//   { value: 'stealer', label: 'Stealer' },
+//   { value: 'personal', label: 'Personal' },
+//   { value: 'resale', label: 'Resale' },
+//   { value: 'autoreg', label: 'Autoreg' },
+//   { value: 'dummy', label: 'Dummy' }
+// ]
 
 // Popular Epic Games for quick filters
 const quickEpicGames = [
@@ -52,8 +52,6 @@ const EpicFilters = ({ onFiltersChange = () => {}, initialFilters = {} }) => {
     // Epic specific filters
     change_email: '',
     rl_purchases: false,
-    'origin[]': [],
-    'not_origin[]': [],
 
     // Location
     country: [],
@@ -68,13 +66,19 @@ const EpicFilters = ({ onFiltersChange = () => {}, initialFilters = {} }) => {
     advanced: true // Always expanded like requested
   })
 
-  // Apply filters whenever they change
-  useEffect(() => {
-    if (Object.keys(filters).length > 1) {
-      // Don't trigger on initial empty state
-      onFiltersChange(filters)
-    }
-  }, [filters, onFiltersChange])
+  // Apply filters function
+  const applyFilters = () => {
+    console.log('🎯 Applying Epic Games filters:', filters)
+    onFiltersChange(filters)
+  }
+
+  // Apply filters whenever they change - REMOVED auto-apply
+  // useEffect(() => {
+  //   if (Object.keys(filters).length > 1) {
+  //     // Don't trigger on initial empty state
+  //     onFiltersChange(filters)
+  //   }
+  // }, [filters, onFiltersChange])
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({
@@ -120,8 +124,6 @@ const EpicFilters = ({ onFiltersChange = () => {}, initialFilters = {} }) => {
       order_by: 'price_to_up',
       change_email: '',
       rl_purchases: false,
-      'origin[]': [],
-      'not_origin[]': [],
       country: [],
       games: []
     })
@@ -140,12 +142,20 @@ const EpicFilters = ({ onFiltersChange = () => {}, initialFilters = {} }) => {
       <div className='mb-6'>
         <div className='flex items-center justify-between mb-4'>
           <h3 className='text-lg font-semibold text-purple-400'>🎮 Quick Epic Game Filters</h3>
-          <button
-            onClick={clearAllFilters}
-            className='bg-red-700 hover:bg-red-600 text-red-100 hover:text-white px-3 py-1 rounded-lg text-sm transition-colors border border-red-600 hover:border-red-500'
-          >
-            Clear All Filters
-          </button>
+          <div className='flex gap-2'>
+            <button
+              onClick={applyFilters}
+              className='bg-purple-700 hover:bg-purple-600 text-purple-100 hover:text-white px-4 py-2 rounded-lg text-sm transition-colors border border-purple-600 hover:border-purple-500 font-medium'
+            >
+              Terapkan Filter
+            </button>
+            <button
+              onClick={clearAllFilters}
+              className='bg-red-700 hover:bg-red-600 text-red-100 hover:text-white px-3 py-1 rounded-lg text-sm transition-colors border border-red-600 hover:border-red-500'
+            >
+              Clear All Filters
+            </button>
+          </div>
         </div>
         <div className='grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2'>
           {quickEpicGames.map(game => (
@@ -259,26 +269,6 @@ const EpicFilters = ({ onFiltersChange = () => {}, initialFilters = {} }) => {
             </label>
           </div>
 
-          {/* Account Origin */}
-          <div>
-            <label className='block text-sm font-medium text-gray-300 mb-3'>Account Origin</label>
-            <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2'>
-              {originOptions.map(option => (
-                <label key={option.value} className='flex items-center space-x-2'>
-                  <input
-                    type='checkbox'
-                    checked={filters['origin[]'].includes(option.value)}
-                    onChange={e =>
-                      handleArrayFilterChange('origin[]', option.value, e.target.checked)
-                    }
-                    className='rounded border-gray-600 bg-gray-800 text-purple-600 focus:ring-purple-500'
-                  />
-                  <span className='text-sm text-gray-300'>{option.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
           {/* Country */}
           <div>
             <label className='block text-sm font-medium text-gray-300 mb-2'>Country</label>
@@ -309,6 +299,17 @@ const EpicFilters = ({ onFiltersChange = () => {}, initialFilters = {} }) => {
               <option value='pdate_to_up_upload'>Newest First</option>
               <option value='pdate_to_down_upload'>Oldest First</option>
             </select>
+          </div>
+
+          {/* Apply Filters Button */}
+          <div className='pt-4 border-t border-gray-700'>
+            <button
+              onClick={applyFilters}
+              className='w-full bg-purple-700 hover:bg-purple-600 text-white px-6 py-3 rounded-lg text-base font-medium transition-colors border border-purple-600 hover:border-purple-500 flex items-center justify-center gap-2'
+            >
+              <Icon icon='material-symbols:filter-alt' className='w-5 h-5' />
+              Terapkan Filter
+            </button>
           </div>
         </div>
       </div>

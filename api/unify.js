@@ -1,4 +1,4 @@
-// Unified API endpoint for multiple LZT categories (mihoyo, riot, telegram, ea)
+// Unified API endpoint for multiple LZT categories (mihoyo, riot, telegram, ea, epicgamesgames)
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -28,8 +28,8 @@ export default async function handler(req, res) {
       return res.status(400).json({
         error: 'Missing category name',
         message:
-          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, or ?name=ea)',
-        supportedCategories: ['mihoyo', 'riot', 'telegram', 'ea', 'origin']
+          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, ?name=ea, or ?name=epicgamesgames)',
+        supportedCategories: ['mihoyo', 'riot', 'telegram', 'ea', 'origin', 'epicgamesgames']
       })
     }
 
@@ -39,7 +39,8 @@ export default async function handler(req, res) {
       riot: 'riot',
       telegram: 'telegram',
       ea: 'ea',
-      origin: 'ea' // Origin maps to EA
+      origin: 'ea', // Origin maps to EA
+      epicgamesgames: 'epicgames/games' // Epic Games games list
     }
 
     const category = categoryMapping[name.toLowerCase()]
