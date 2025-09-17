@@ -13,7 +13,6 @@ const SocialClubFilters = ({ onFiltersChange, initialFilters = {} }) => {
     games: [],
     emailProvider: 'all',
     emailType: 'all',
-    itemOrigin: 'all',
     guarantee: false,
     allowDiscount: false,
     sortBy: 'published_date_desc',
@@ -64,7 +63,6 @@ const SocialClubFilters = ({ onFiltersChange, initialFilters = {} }) => {
       games: [],
       emailProvider: 'all',
       emailType: 'all',
-      itemOrigin: 'all',
       guarantee: false,
       allowDiscount: false,
       sortBy: 'published_date_desc',
@@ -244,23 +242,6 @@ const SocialClubFilters = ({ onFiltersChange, initialFilters = {} }) => {
             <option value='autoreg'>Auto Registration</option>
             <option value='manual'>Manual Registration</option>
             <option value='native'>Native Email</option>
-          </select>
-        </div>
-
-        {/* Item Origin */}
-        <div className='space-y-2'>
-          <label className='block text-sm font-medium text-gray-300'>Account Origin</label>
-          <select
-            value={filters.itemOrigin}
-            onChange={e => handleFilterChange('itemOrigin', e.target.value)}
-            className='w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent'
-          >
-            <option value='all'>All Origins</option>
-            <option value='personal'>Personal</option>
-            <option value='received'>Received</option>
-            <option value='purchased'>Purchased</option>
-            <option value='brute'>Brute</option>
-            <option value='stealed'>Stealed</option>
           </select>
         </div>
 
@@ -501,23 +482,6 @@ const SocialClubFilters = ({ onFiltersChange, initialFilters = {} }) => {
               <option value='autoreg'>Auto Registration</option>
               <option value='manual'>Manual Registration</option>
               <option value='native'>Native Email</option>
-            </select>
-          </div>
-
-          {/* Account Origin */}
-          <div className='space-y-2'>
-            <label className='block text-sm font-medium text-gray-300'>Account Origin</label>
-            <select
-              value={filters.itemOrigin}
-              onChange={e => handleFilterChange('itemOrigin', e.target.value)}
-              className='w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent'
-            >
-              <option value='all'>All Origins</option>
-              <option value='personal'>Personal</option>
-              <option value='received'>Received</option>
-              <option value='purchased'>Purchased</option>
-              <option value='brute'>Brute</option>
-              <option value='stealed'>Stealed</option>
             </select>
           </div>
 
