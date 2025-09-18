@@ -39,8 +39,12 @@ const SearchableEpicGameDropdown = ({
   // Filter games based on search term
   const filteredGames = games.filter(
     game =>
-      (game.label && typeof game.label === 'string' && game.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (game.abbr && typeof game.abbr === 'string' && game.abbr.toLowerCase().includes(searchTerm.toLowerCase()))
+      (game.label &&
+        typeof game.label === 'string' &&
+        game.label.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (game.abbr &&
+        typeof game.abbr === 'string' &&
+        game.abbr.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
   const handleGameToggle = gameValue => {
@@ -142,9 +146,9 @@ const SearchableEpicGameDropdown = ({
                 className='bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed text-gray-300 hover:text-white px-2 py-1.5 rounded text-sm transition-colors'
                 title='Refresh games list'
               >
-                <Icon 
-                  icon='mingcute:refresh-line' 
-                  className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} 
+                <Icon
+                  icon='mingcute:refresh-line'
+                  className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                 />
               </button>
             </div>

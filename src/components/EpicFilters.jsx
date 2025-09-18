@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import SearchableEpicGameDropdown from './SearchableEpicGameDropdown'
 
 // Account origin options - REMOVED per user request

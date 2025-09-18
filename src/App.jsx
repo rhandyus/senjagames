@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Link, Route, Routes, useSearchParams } from 'react-router-dom'
+import { Link, Route, Routes, useSearchParams, useNavigate } from 'react-router-dom'
 import AccountDetailPage from './components/AccountDetailPage'
 import BattleNetFilters from './components/BattleNetFilters'
 import CartModal from './components/CartModal'
@@ -107,6 +107,7 @@ function MainPage() {
   const { user, signOut, updateUserProfile } = useAuth()
   const { totalItems, addToCart } = useCart()
   const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
 
   // Local state for categories and accounts (removed useZelenkaAccounts)
   const [selectedCategory, setSelectedCategory] = useState('Steam')
@@ -170,103 +171,92 @@ function MainPage() {
 
   // Static categories only - no need to load from LZT API
 
-  const handleCategoryClick = useCallback(
+  // Handle category change without URL navigation (for URL parameter handling)
+  const setCategoryFromURL = useCallback(
     categoryName => {
       if (categoryName === 'Steam') {
-        // Stay on main page but set Steam mode
         setCurrentGameType('Steam')
-        changeCategory('Steam') // This will set the filters and context
+        changeCategory('Steam')
       } else if (categoryName === 'Fortnite') {
-        // Stay on main page but set Fortnite mode
         setCurrentGameType('Fortnite')
-        changeCategory('Fortnite') // This will set the filters and context
+        changeCategory('Fortnite')
       } else if (isEpicGamesCategory(categoryName)) {
-        // Stay on main page but set Epic Games mode
         setCurrentGameType('Epic Games')
-        changeCategory('Epic Games') // This will set the filters and context
+        changeCategory('Epic Games')
       } else if (isMiHoyoCategory(categoryName)) {
-        // Stay on main page but set MiHoYo mode
         setCurrentGameType('miHoYo')
-        changeCategory('miHoYo') // This will set the filters and context
+        changeCategory('miHoYo')
       } else if (isRiotCategory(categoryName)) {
-        // Stay on main page but set Riot mode
         setCurrentGameType('Riot')
-        changeCategory('Riot') // This will set the filters and context
+        changeCategory('Riot')
       } else if (isTelegramCategory(categoryName)) {
-        // Stay on main page but set Telegram mode
         setCurrentGameType('Telegram')
-        changeCategory('Telegram') // This will set the filters and context
+        changeCategory('Telegram')
       } else if (isSupercellCategory(categoryName)) {
-        // Stay on main page but set Supercell mode
         setCurrentGameType('Supercell')
-        changeCategory('Supercell') // This will set the filters and context
+        changeCategory('Supercell')
       } else if (isDiscordCategory(categoryName)) {
-        // Stay on main page but set Discord mode
         setCurrentGameType('Discord')
-        changeCategory('Discord') // This will set the filters and context
+        changeCategory('Discord')
       } else if (isInstagramCategory(categoryName)) {
-        // Stay on main page but set Instagram mode
         setCurrentGameType('Instagram')
-        changeCategory('Instagram') // This will set the filters and context
+        changeCategory('Instagram')
       } else if (isChatGPTCategory(categoryName)) {
-        // Stay on main page but set ChatGPT mode
         setCurrentGameType('ChatGPT')
-        changeCategory('ChatGPT') // This will set the filters and context
+        changeCategory('ChatGPT')
       } else if (isMinecraftCategory(categoryName)) {
-        // Stay on main page but set Minecraft mode
         setCurrentGameType('Minecraft')
-        changeCategory('Minecraft') // This will set the filters and context
+        changeCategory('Minecraft')
       } else if (isEscapeFromTarkovCategory(categoryName)) {
-        // Stay on main page but set Escape From Tarkov mode
         setCurrentGameType('Escape from Tarkov')
-        changeCategory('Escape from Tarkov') // This will set the filters and context
+        changeCategory('Escape from Tarkov')
       } else if (isSocialClubCategory(categoryName)) {
-        // Stay on main page but set Social Club mode
         setCurrentGameType('Social Club')
-        changeCategory('Social Club Rockstar') // This will set the filters and context
+        changeCategory('Social Club Rockstar')
       } else if (categoryName === 'Uplay') {
-        // Stay on main page but set Uplay mode
         setCurrentGameType('Uplay')
-        changeCategory('Uplay') // This will set the filters and context
+        changeCategory('Uplay')
       } else if (isDiscordCategory(categoryName)) {
-        // Stay on main page but set Discord mode
         setCurrentGameType('Discord')
-        changeCategory('Discord') // This will set the filters and context
+        changeCategory('Discord')
       } else if (isTikTokCategory(categoryName)) {
-        // Stay on main page but set TikTok mode
         setCurrentGameType('TikTok')
-        changeCategory('TikTok') // This will set the filters and context
+        changeCategory('TikTok')
       } else if (isRobloxCategory(categoryName)) {
-        // Stay on main page but set Roblox mode
         setCurrentGameType('Roblox')
-        changeCategory('Roblox') // This will set the filters and context
+        changeCategory('Roblox')
       } else if (isBattleNetCategory(categoryName)) {
-        // Stay on main page but set Battle.net mode
         setCurrentGameType('Battle.net')
-        changeCategory('Battle.net') // This will set the filters and context
+        changeCategory('Battle.net')
       } else if (isVPNCategory(categoryName)) {
-        // Stay on main page but set VPN mode
         setCurrentGameType('VPN')
-        changeCategory('VPN') // This will set the filters and context
+        changeCategory('VPN')
       } else if (isOriginCategory(categoryName)) {
-        // Stay on main page but set Origin mode (like Steam)
         setCurrentGameType('Origin')
-        changeCategory('Origin') // This will set the filters and context
+        changeCategory('Origin')
       } else if (isWotCategory(categoryName)) {
-        // Stay on main page but set World of Tanks mode
         setCurrentGameType('World of Tanks')
-        changeCategory('World of Tanks') // This will set the filters and context
+        changeCategory('World of Tanks')
       } else if (categoryName === 'ChatGPT') {
-        // Handle ChatGPT specifically
         setCurrentGameType('ChatGPT')
         changeCategory('ChatGPT')
       } else {
-        // For other categories, use the original changeCategory function
         setCurrentGameType('Other')
         changeCategory(categoryName)
       }
     },
     [changeCategory]
+  )
+
+  const handleCategoryClick = useCallback(
+    categoryName => {
+      // Update URL parameter to remember the category
+      navigate(`/?category=${encodeURIComponent(categoryName)}`, { replace: true })
+      
+      // Set the category
+      setCategoryFromURL(categoryName)
+    },
+    [setCategoryFromURL, navigate]
   )
 
   // Handle URL category parameter
@@ -275,17 +265,20 @@ function MainPage() {
     if (categoryParam) {
       // Decode URL encoded category names
       const decodedCategory = decodeURIComponent(categoryParam)
-      handleCategoryClick(decodedCategory)
+      setCategoryFromURL(decodedCategory)
     }
-  }, [searchParams, handleCategoryClick])
+  }, [searchParams, setCategoryFromURL])
 
   // Force Steam as default category only on initial load (not on category changes)
   useEffect(() => {
-    if (selectedCategory !== 'Steam' && !loading && selectedCategory === '') {
+    const categoryParam = searchParams.get('category')
+    if (!categoryParam && selectedCategory !== 'Steam' && !loading && selectedCategory === '') {
+      // Only set Steam as default if there's no category in URL
+      navigate('/?category=Steam', { replace: true })
       changeCategory('Steam')
       setCurrentGameType('Steam')
     }
-  }, [loading, changeCategory]) // Removed selectedCategory from dependencies
+  }, [loading, changeCategory, navigate, searchParams, selectedCategory])
 
   // Clear accounts when switching to custom categories that have their own components
   useEffect(() => {

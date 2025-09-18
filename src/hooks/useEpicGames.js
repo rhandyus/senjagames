@@ -15,12 +15,12 @@ export const useEpicGames = () => {
       } else {
         console.log('🎮 Fetching Epic Games list...')
       }
-      
+
       // Add cache busting parameter when force refreshing
-      const apiUrl = forceRefresh 
+      const apiUrl = forceRefresh
         ? `/api/unify?name=epicgamesgames&_t=${Date.now()}`
         : '/api/unify?name=epicgamesgames'
-        
+
       const response = await fetch(apiUrl)
 
       if (!response.ok) {
@@ -46,38 +46,40 @@ export const useEpicGames = () => {
 
       // Transform the data to the expected format for dropdowns
       const transformedGames = Array.isArray(gamesList)
-        ? gamesList.map((game, index) => {
-            // Handle if game is a string or object
-            if (typeof game === 'string') {
-              return {
-                value: index.toString(),
-                label: game,
-                abbr: '',
-                url: ''
+        ? gamesList
+            .map((game, index) => {
+              // Handle if game is a string or object
+              if (typeof game === 'string') {
+                return {
+                  value: index.toString(),
+                  label: game,
+                  abbr: '',
+                  url: ''
+                }
+              } else if (typeof game === 'object' && game !== null) {
+                return {
+                  value: game.app_id || index.toString(),
+                  label: game.title || game.name || `Game ${index}`,
+                  abbr: game.abbr || '',
+                  url: game.url || ''
+                }
+              } else {
+                return {
+                  value: index.toString(),
+                  label: `Game ${index}`,
+                  abbr: '',
+                  url: ''
+                }
               }
-            } else if (typeof game === 'object' && game !== null) {
-              return {
-                value: game.app_id || index.toString(),
-                label: game.title || game.name || `Game ${index}`,
-                abbr: game.abbr || '',
-                url: game.url || ''
-              }
-            } else {
-              return {
-                value: index.toString(),
-                label: `Game ${index}`,
-                abbr: '',
-                url: ''
-              }
-            }
-          }).filter(game => game.label && game.label.trim() !== '') // Filter out empty labels
+            })
+            .filter(game => game.label && game.label.trim() !== '') // Filter out empty labels
         : []
 
       console.log('🎯 Transformed games sample:', transformedGames.slice(0, 3))
       setGames(transformedGames)
     } catch (err) {
       console.error('❌ Failed to fetch Epic Games:', err)
-      
+
       // Set user-friendly error messages
       let errorMessage = err.message
       if (err.message.includes('429') || err.message.includes('Too Many Requests')) {
@@ -85,7 +87,7 @@ export const useEpicGames = () => {
       } else if (err.message.includes('No games data')) {
         errorMessage = 'No games available. Try refreshing.'
       }
-      
+
       setError(errorMessage)
       setGames([])
     } finally {
