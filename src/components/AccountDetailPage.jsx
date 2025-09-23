@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
-import ZelenkaAPI from '../services/zelenkaAPI'
 import { convertToIDR, formatCurrency } from '../utils/currency'
 import CartModal from './CartModal'
 import PaymentModal from './PaymentModal'
@@ -27,8 +26,6 @@ const AccountDetailPage = () => {
   const [toast, setToast] = useState({ show: false, message: '', type: '' })
   const [cartModal, setCartModal] = useState(false)
   const [showAllGames, setShowAllGames] = useState(false)
-
-  const api = new ZelenkaAPI()
 
   // Show toast notification
   const showToast = (message, type = 'success') => {
@@ -71,39 +68,78 @@ const AccountDetailPage = () => {
       setError(null)
 
       try {
-        // If we have account data from state (Steam, Epic, or Fortnite cards), use it directly
-        if (accountFromState) {
+        // Always fetch from unify API if we have an account ID for better data accuracy
+        if (accountId) {
+          console.log(`🔍 Fetching account details for ID: ${accountId}`)
+
+          const response = await fetch(`/api/unify?name=search&id=${accountId}`)
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch account details: ${response.status} ${response.statusText}`
+            )
+          }
+
+          const accountData = await response.json()
+          console.log('✅ Account data fetched:', accountData)
+
+          if (accountData && accountData.item) {
+            // LZT Market API returns account data in 'item' property
+            console.log('📊 Social Club data check:', {
+              category_id: accountData.item.category_id,
+              socialclub_level: accountData.item.socialclub_level,
+              socialclub_cash: accountData.item.socialclub_cash,
+              socialclub_bank_cash: accountData.item.socialclub_bank_cash,
+              socialclub_last_activity: accountData.item.socialclub_last_activity,
+              socialclubGames: accountData.item.socialclubGames,
+              socialclub_games: accountData.item.socialclub_games
+            })
+            setAccount(accountData.item)
+
+            // Set appropriate default tab - Social Club accounts don't use tabs, show overview directly
+            if (accountData.item.category_id === 7) {
+              // Social Club accounts show overview section directly (no tabs)
+              console.log('🎮 Social Club account detected - showing overview')
+            } else if (
+              accountData.item.category_id === 9 ||
+              accountData.item.fortnite_level !== undefined
+            ) {
+              setActiveTab('cosmetics')
+            } else if (accountData.item.category_id === 12 || accountData.item.eg_games) {
+              setActiveTab('games') // Epic Games accounts should show games tab
+            } else if (accountData.item.category_id === 31 || accountData.item.roblox_id) {
+              setActiveTab('overview') // Roblox accounts should show overview tab
+            } else if (accountData.item.category_id === 4 || accountData.item.minecraft_username) {
+              setActiveTab('overview') // Minecraft accounts should show overview tab
+            }
+          } else if (accountData) {
+            // Fallback if data structure is different
+            setAccount(accountData)
+          } else {
+            setError(
+              'Akun tidak ditemukan - silakan coba akun lain atau periksa apakah ID sudah benar'
+            )
+          }
+        }
+        // Fallback to state data if no ID but we have account data from state
+        else if (accountFromState) {
+          console.log('📦 Using account data from state as fallback')
           setAccount(accountFromState)
-          setLoading(false)
 
           // Set appropriate default tab based on account type
           if (accountFromState.category_id === 9 || accountFromState.fortnite_level !== undefined) {
             setActiveTab('cosmetics')
           } else if (
             accountFromState.category_id === 7 ||
-            accountFromState.category_id === 12 ||
-            accountFromState.eg_games
+            accountFromState.socialclub_level !== undefined
           ) {
+            setActiveTab('games') // Social Club accounts should show games tab
+          } else if (accountFromState.category_id === 12 || accountFromState.eg_games) {
             setActiveTab('games') // Epic Games accounts should show games tab
           } else if (accountFromState.category_id === 31 || accountFromState.roblox_id) {
             setActiveTab('overview') // Roblox accounts should show overview tab
           } else if (accountFromState.category_id === 4 || accountFromState.minecraft_username) {
             setActiveTab('overview') // Minecraft accounts should show overview tab
-          }
-          return
-        }
-
-        // Fetch account details from API if we have an ID
-        if (accountId) {
-          const api = new ZelenkaAPI()
-          const accountData = await api.getAccountDetails(accountId)
-
-          if (accountData) {
-            setAccount(accountData)
-          } else {
-            setError(
-              'Akun tidak ditemukan - silakan coba akun lain atau periksa apakah ID sudah benar'
-            )
           }
         } else {
           setError('ID akun tidak tersedia')
@@ -134,14 +170,21 @@ const AccountDetailPage = () => {
       return 'Gifts'
     }
 
-    // Check for Epic Games account indicators
+    // Check for Social Club account indicators
     if (
-      account.eg_games ||
       account.category_id === 7 ||
-      account.category_id === 12 ||
-      account.eg_country ||
-      account.epic_data
+      account.socialclub_level !== undefined ||
+      account.socialclub_cash !== undefined ||
+      account.socialclub_bank_cash !== undefined ||
+      account.socialclub_last_activity !== undefined ||
+      account.socialclub_games ||
+      account.socialclubGames
     ) {
+      return 'Social Club'
+    }
+
+    // Check for Epic Games account indicators
+    if (account.eg_games || account.category_id === 12 || account.eg_country || account.epic_data) {
       return 'Epic Games'
     }
 
@@ -392,8 +435,11 @@ const AccountDetailPage = () => {
     account && (account.category_id === 9 || account.fortnite_level !== undefined)
 
   // Check if this is an Epic Games account
-  const isEpicAccount =
-    account && (account.category_id === 7 || account.category_id === 12 || account.eg_games)
+  const isEpicAccount = account && (account.category_id === 12 || account.eg_games)
+
+  // Check if this is a Social Club account
+  const isSocialClubAccount =
+    account && (account.category_id === 7 || account.socialclub_level !== undefined)
 
   // Generate Fortnite cosmetics for display using real LZT Market API structure
   const generateFortniteCosmetics = () => {
@@ -966,38 +1012,38 @@ const AccountDetailPage = () => {
               </div>
 
               {/* Tabs */}
-              <div className='border-b border-gray-700'>
-                <nav className='flex space-x-8 px-6'>
-                  {(isFortniteAccount
-                    ? ['overview', 'cosmetics']
-                    : isEpicAccount
-                      ? ['overview', 'games']
+              {!isSocialClubAccount && !isEpicAccount && (
+                <div className='border-b border-gray-700'>
+                  <nav className='flex space-x-8 px-6'>
+                    {(isFortniteAccount
+                      ? ['overview', 'cosmetics']
                       : ['overview']
-                  ).map(tab => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
-                        activeTab === tab
-                          ? 'border-purple-500 text-purple-400'
-                          : 'border-transparent text-gray-400 hover:text-gray-300'
-                      }`}
-                    >
-                      {tab === 'cosmetics' && (
-                        <Icon icon='mdi:tshirt-crew' className='inline mr-1' />
-                      )}
-                      {tab === 'games' && (
-                        <Icon icon='mdi:gamepad-variant' className='inline mr-1' />
-                      )}
-                      {tab}
-                    </button>
-                  ))}
-                </nav>
-              </div>
+                    ).map(tab => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
+                          activeTab === tab
+                            ? 'border-purple-500 text-purple-400'
+                            : 'border-transparent text-gray-400 hover:text-gray-300'
+                        }`}
+                      >
+                        {tab === 'cosmetics' && (
+                          <Icon icon='mdi:tshirt-crew' className='inline mr-1' />
+                        )}
+                        {tab === 'games' && (
+                          <Icon icon='mdi:gamepad-variant' className='inline mr-1' />
+                        )}
+                        {tab}
+                      </button>
+                    ))}
+                  </nav>
+                </div>
+              )}
 
               {/* Tab Content */}
               <div className='p-6'>
-                {activeTab === 'overview' && (
+                {(isSocialClubAccount || isEpicAccount || activeTab === 'overview') && (
                   <div className='space-y-6'>
                     {getAccountPlatform() === 'Fortnite' ? (
                       // Fortnite-specific stats
@@ -1090,6 +1136,12 @@ const AccountDetailPage = () => {
                       // Epic Games specific stats
                       <>
                         <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+                          {account.eg_username && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Username</div>
+                              <div className='text-white font-medium'>{account.eg_username}</div>
+                            </div>
+                          )}
                           {account.eg_country && (
                             <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
                               <div className='text-gray-400 text-sm'>Country</div>
@@ -1112,17 +1164,54 @@ const AccountDetailPage = () => {
                               </div>
                             </div>
                           )}
-                          {account.epic_data?.email_changeable !== undefined && (
+                          {(account.eg_balance !== undefined || account.egBalance) && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Balance</div>
+                              <div className='text-green-400 font-medium'>
+                                {account.egBalance || `$${account.eg_balance}`}
+                              </div>
+                            </div>
+                          )}
+                          {account.eg_change_email !== undefined && (
                             <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
                               <div className='text-gray-400 text-sm'>Email Status</div>
                               <div
                                 className={`font-medium text-sm ${
-                                  account.epic_data.email_changeable
+                                  account.eg_change_email === 1
                                     ? 'text-green-400'
                                     : 'text-yellow-400'
                                 }`}
                               >
-                                {account.epic_data.email_changeable ? 'Changeable' : 'Fixed'}
+                                {account.eg_change_email === 1 ? 'Changeable' : 'Fixed'}
+                              </div>
+                            </div>
+                          )}
+                          {account.epic_data?.email_changeable !== undefined &&
+                            account.eg_change_email === undefined && (
+                              <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                                <div className='text-gray-400 text-sm'>Email Status</div>
+                                <div
+                                  className={`font-medium text-sm ${
+                                    account.epic_data.email_changeable
+                                      ? 'text-green-400'
+                                      : 'text-yellow-400'
+                                  }`}
+                                >
+                                  {account.epic_data.email_changeable ? 'Changeable' : 'Fixed'}
+                                </div>
+                              </div>
+                            )}
+                          {account.eg_can_update_display_name !== undefined && (
+                            <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                              <div className='text-gray-400 text-sm'>Display Name</div>
+                              <div
+                                className={`font-medium text-sm ${
+                                  account.eg_can_update_display_name === 1
+                                    ? 'text-green-400'
+                                    : 'text-yellow-400'
+                                }`}
+                              >
+                                {account.eg_can_update_display_name === 1 ? 'Changeable' : 'Fixed'}
                               </div>
                             </div>
                           )}
@@ -1186,11 +1275,15 @@ const AccountDetailPage = () => {
                               </div>
                             </div>
                           )}
-                          {(account.eg_last_seen || account.epic_data?.last_seen) && (
+                          {(account.eg_last_activity ||
+                            account.eg_last_seen ||
+                            account.epic_data?.last_seen) && (
                             <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
-                              <div className='text-gray-400 text-sm'>Last Seen</div>
+                              <div className='text-gray-400 text-sm'>Last Activity</div>
                               <div className='text-white font-medium'>
-                                {account.eg_last_seen || account.epic_data.last_seen}
+                                {account.eg_last_activity
+                                  ? new Date(account.eg_last_activity * 1000).toLocaleDateString()
+                                  : account.eg_last_seen || account.epic_data?.last_seen}
                               </div>
                             </div>
                           )}
@@ -1201,27 +1294,53 @@ const AccountDetailPage = () => {
                           account.eg_code_redemption_history.length > 0 && (
                             <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
                               <h4 className='text-white font-medium mb-3'>
-                                Recent Code Redemptions
+                                Code Redemption History
                               </h4>
                               <div className='space-y-2'>
-                                {account.eg_code_redemption_history
-                                  .slice(0, 3)
-                                  .map((redemption, index) => (
-                                    <div
-                                      key={index}
-                                      className='flex justify-between items-center text-sm'
-                                    >
-                                      <span className='text-gray-300'>
-                                        {redemption.description}
-                                      </span>
-                                      <span className='text-gray-400'>
-                                        {new Date(redemption.redeemDate).toLocaleDateString()}
-                                      </span>
-                                    </div>
-                                  ))}
+                                {account.eg_code_redemption_history.map((code, index) => (
+                                  <div
+                                    key={index}
+                                    className='flex justify-between items-center bg-gray-700 p-2 rounded'
+                                  >
+                                    <span className='text-white text-sm'>{code.title}</span>
+                                    <span className='text-gray-400 text-xs'>{code.date}</span>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           )}
+
+                        {/* Purchase/Transaction History */}
+                        {account.egTransactions && account.egTransactions.length > 0 && (
+                          <div className='bg-gray-800 p-4 rounded-lg border border-gray-600'>
+                            <h4 className='text-white font-medium mb-3'>Transaction History</h4>
+                            <div className='space-y-2'>
+                              {account.egTransactions.map((transaction, index) => (
+                                <div
+                                  key={index}
+                                  className='flex justify-between items-center bg-gray-700 p-3 rounded'
+                                >
+                                  <div>
+                                    <div className='text-white text-sm font-medium'>
+                                      {transaction.title}
+                                    </div>
+                                    <div className='text-gray-400 text-xs'>
+                                      {new Date(transaction.date * 1000).toLocaleDateString()}
+                                    </div>
+                                  </div>
+                                  <div className='text-right'>
+                                    <div className='text-green-400 text-sm font-medium'>
+                                      {transaction.presentmentTotal}
+                                    </div>
+                                    <div className='text-gray-400 text-xs'>
+                                      {transaction.orderType}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </>
                     ) : getAccountPlatform() === 'Gifts' ? (
                       // Gifts specific stats
@@ -3109,6 +3228,110 @@ const AccountDetailPage = () => {
                           </div>
                         )}
                       </>
+                    ) : getAccountPlatform() === 'Social Club' ? (
+                      // Social Club specific stats
+                      <>
+                        <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                          <div className='flex items-center justify-between mb-4'>
+                            <h3 className='text-lg font-semibold text-white flex items-center'>
+                              <Icon
+                                icon='simple-icons:rockstargames'
+                                className='mr-2 text-orange-400'
+                              />
+                              Social Club Account
+                            </h3>
+                            <div className='text-sm text-gray-400'>
+                              Level {account.socialclub_level || 'N/A'}
+                            </div>
+                          </div>
+
+                          {/* Stats Grid */}
+                          <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
+                            <div className='bg-gray-700 p-3 rounded-lg text-center'>
+                              <div className='text-white font-bold text-lg'>
+                                {account.socialclub_level || 'N/A'}
+                              </div>
+                              <div className='text-gray-400 text-xs'>GTA Online Level</div>
+                            </div>
+                            <div className='bg-gray-700 p-3 rounded-lg text-center'>
+                              <div className='text-green-400 font-bold text-lg'>
+                                ${account.socialclub_cash?.toLocaleString() || '0'}
+                              </div>
+                              <div className='text-gray-400 text-xs'>GTA Online Cash</div>
+                            </div>
+                            <div className='bg-gray-700 p-3 rounded-lg text-center'>
+                              <div className='text-blue-400 font-bold text-lg'>
+                                ${account.socialclub_bank_cash?.toLocaleString() || '0'}
+                              </div>
+                              <div className='text-gray-400 text-xs'>GTA Online Bank Cash</div>
+                            </div>
+                            <div className='bg-gray-700 p-3 rounded-lg text-center'>
+                              <div className='text-purple-400 font-bold text-lg'>
+                                {account.socialclub_last_activity
+                                  ? new Date(
+                                      account.socialclub_last_activity * 1000
+                                    ).toLocaleDateString()
+                                  : 'N/A'}
+                              </div>
+                              <div className='text-gray-400 text-xs'>Last Activity</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Games Section */}
+                        {account.socialclubGames && account.socialclubGames.length > 0 && (
+                          <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
+                            <div className='flex items-center justify-between mb-4'>
+                              <h3 className='text-lg font-semibold text-white flex items-center'>
+                                <Icon icon='mdi:gamepad-variant' className='mr-2 text-orange-400' />
+                                Games Library
+                              </h3>
+                              <div className='text-sm text-gray-400'>
+                                {account.socialclubGames.length} games
+                              </div>
+                            </div>
+
+                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                              {account.socialclubGames.map((game, index) => (
+                                <div
+                                  key={index}
+                                  className='bg-gray-700 p-4 rounded-lg border border-gray-600 hover:border-orange-500 transition-all duration-300'
+                                >
+                                  <div className='flex items-center space-x-3'>
+                                    {game.img ? (
+                                      <img
+                                        src={game.img}
+                                        alt={game.title}
+                                        className='w-12 h-12 rounded object-cover'
+                                        onError={e => {
+                                          e.target.style.display = 'none'
+                                          e.target.nextSibling.style.display = 'flex'
+                                        }}
+                                      />
+                                    ) : null}
+                                    <div
+                                      className={`w-12 h-12 bg-gray-600 rounded flex items-center justify-center ${game.img ? 'hidden' : ''}`}
+                                    >
+                                      <Icon
+                                        icon='mdi:gamepad-variant'
+                                        className='text-gray-400 text-xl'
+                                      />
+                                    </div>
+                                    <div className='flex-1'>
+                                      <h4 className='text-white font-medium text-sm'>
+                                        {game.title}
+                                      </h4>
+                                      <div className='text-xs text-gray-400 mt-1'>
+                                        {game.abbr || 'Rockstar Game'}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     ) : (
                       // Steam-specific stats (keep existing logic)
                       <>
@@ -3384,77 +3607,7 @@ const AccountDetailPage = () => {
                   </div>
                 )}
 
-                {/* Games Tab for Epic Games Accounts */}
-                {activeTab === 'games' && isEpicAccount && (
-                  <div className='space-y-6'>
-                    {/* Games Header */}
-                    <div className='bg-gray-800 p-6 rounded-lg border border-gray-600'>
-                      <div className='flex items-center justify-between mb-4'>
-                        <h3 className='text-lg font-semibold text-white flex items-center'>
-                          <Icon icon='mdi:gamepad-variant' className='mr-2 text-blue-400' />
-                          Epic Games Library
-                        </h3>
-                        <div className='text-sm text-gray-400'>
-                          {account.eg_games ? Object.keys(account.eg_games).length : 0} games
-                        </div>
-                      </div>
-                      <p className='text-gray-300 text-sm'>
-                        Games owned and hours played on this Epic Games account
-                      </p>
-                    </div>
 
-                    {/* Games Grid */}
-                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                      {account.eg_games &&
-                        Object.entries(account.eg_games).map(([gameId, game]) => (
-                          <div
-                            key={gameId}
-                            className='bg-gray-800 p-4 rounded-lg border border-gray-600 hover:border-blue-500 transition-all duration-300'
-                          >
-                            <div className='flex items-center space-x-3'>
-                              {game.img ? (
-                                <img
-                                  src={game.img}
-                                  alt={game.title}
-                                  className='w-12 h-12 rounded object-cover'
-                                  onError={e => {
-                                    e.target.style.display = 'none'
-                                    e.target.nextSibling.style.display = 'flex'
-                                  }}
-                                />
-                              ) : null}
-                              <div
-                                className={`w-12 h-12 bg-gray-700 rounded flex items-center justify-center ${game.img ? 'hidden' : ''}`}
-                              >
-                                <Icon
-                                  icon='mdi:gamepad-variant'
-                                  className='text-gray-400 text-xl'
-                                />
-                              </div>
-                              <div className='flex-1'>
-                                <h4 className='text-white font-medium text-sm truncate'>
-                                  {game.title}
-                                </h4>
-                                <div className='text-xs text-gray-400 mt-1'>
-                                  {game.hours_played
-                                    ? `${game.hours_played.toFixed(1)}h played`
-                                    : 'No playtime'}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-
-                      {/* Empty State */}
-                      {(!account.eg_games || Object.keys(account.eg_games).length === 0) && (
-                        <div className='col-span-full text-center text-gray-400 py-8'>
-                          <Icon icon='mdi:gamepad-variant' className='text-4xl mb-4 mx-auto' />
-                          <p>No games data available for this account</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>

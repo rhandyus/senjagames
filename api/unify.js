@@ -28,8 +28,16 @@ export default async function handler(req, res) {
       return res.status(400).json({
         error: 'Missing category name',
         message:
-          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, ?name=ea, or ?name=epicgamesgames)',
-        supportedCategories: ['mihoyo', 'riot', 'telegram', 'ea', 'origin', 'epicgamesgames']
+          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, ?name=ea, ?name=epicgamesgames, or ?name=search with &id=ITEM_ID)',
+        supportedCategories: [
+          'mihoyo',
+          'riot',
+          'telegram',
+          'ea',
+          'origin',
+          'epicgamesgames',
+          'search'
+        ]
       })
     }
 
@@ -40,7 +48,8 @@ export default async function handler(req, res) {
       telegram: 'telegram',
       ea: 'ea',
       origin: 'ea', // Origin maps to EA
-      epicgamesgames: 'epicgames/games' // Epic Games games list
+      epicgamesgames: 'epicgames/games', // Epic Games games list
+      search: 'search' // Search for account details by item ID
     }
 
     const category = categoryMapping[name.toLowerCase()]
@@ -56,7 +65,69 @@ export default async function handler(req, res) {
 
     console.log(`✅ Category mapping: ${name} -> ${category}`)
 
-    // Build LZT Market API URL
+    // Special handling for search endpoint
+    if (name.toLowerCase() === 'search') {
+      const { id } = queryParams
+
+      if (!id) {
+        return res.status(400).json({
+          error: 'Missing item ID',
+          message: 'Search requires an item ID parameter (?name=search&id=ITEM_ID)',
+          example: '?name=search&id=188770198'
+        })
+      }
+
+      console.log(`🔍 Searching for account details with ID: ${id}`)
+
+      // Build LZT Market API URL for specific item details
+      const baseURL = 'https://prod-api.lzt.market'
+      const apiURL = new URL(id, baseURL)
+
+      // Get token from environment
+      const token = process.env.LZT_TOKEN
+
+      if (!token) {
+        console.error('❌ No LZT Market token found')
+        return res.status(500).json({
+          error: 'Server configuration error',
+          message: 'Missing API token'
+        })
+      }
+
+      console.log(`🎮 LZT API Request for item details:`, apiURL.toString())
+
+      // Make request to LZT Market API for specific item
+      const response = await fetch(apiURL.toString(), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'SenjaGames-API/1.0'
+        }
+      })
+
+      if (!response.ok) {
+        console.error('❌ LZT API Error:', response.status, response.statusText)
+        const errorText = await response.text()
+        console.error('Error details:', errorText)
+
+        return res.status(response.status).json({
+          error: 'LZT Market API error',
+          status: response.status,
+          message: errorText,
+          itemId: id,
+          requestedName: name
+        })
+      }
+
+      const data = await response.json()
+      console.log(`✅ LZT API Success for item ${id}: Account details retrieved`)
+
+      // Return the account details
+      return res.status(200).json(data)
+    }
+
+    // Build LZT Market API URL for category listings
     const baseURL = 'https://prod-api.lzt.market'
     const apiURL = new URL(category, baseURL)
 

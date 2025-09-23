@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Link, Route, Routes, useSearchParams, useNavigate } from 'react-router-dom'
+import { Link, Route, Routes, useNavigate, useSearchParams } from 'react-router-dom'
 import AccountDetailPage from './components/AccountDetailPage'
 import BattleNetFilters from './components/BattleNetFilters'
 import CartModal from './components/CartModal'
@@ -252,7 +252,7 @@ function MainPage() {
     categoryName => {
       // Update URL parameter to remember the category
       navigate(`/?category=${encodeURIComponent(categoryName)}`, { replace: true })
-      
+
       // Set the category
       setCategoryFromURL(categoryName)
     },
