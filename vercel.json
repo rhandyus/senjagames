@@ -4,9 +4,6 @@
   "installCommand": "npm ci",
   "framework": "vite",
   "functions": {
-    "api/lzt-proxy.js": {
-      "maxDuration": 30
-    },
     "api/unify.js": {
       "maxDuration": 30
     },
