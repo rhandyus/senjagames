@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react'
-import { getPriceValue, convertToIDR } from '../utils/currency'
+import { createContext, useContext, useEffect, useReducer } from 'react'
+import { convertToIDR, getPriceValue } from '../utils/currency'
 
 const CartContext = createContext()
 
@@ -124,7 +124,18 @@ export const CartProvider = ({ children }) => {
   const totalItems = state.items.reduce((total, item) => total + item.quantity, 0)
   const totalPrice = state.items.reduce((total, item) => {
     const priceUSD = getPriceValue(item)
-    const priceIDR = convertToIDR(priceUSD)
+
+    // Detect if it's a Steam account and apply 1.75x multiplier
+    const isSteamAccount =
+      item.steam_level !== undefined ||
+      item.steam_country ||
+      item.steam_game_count !== undefined ||
+      item.steam_mfa !== undefined ||
+      item.category?.category_name === 'steam' ||
+      item.category?.category_url === 'steam'
+
+    const adjustedPriceUSD = isSteamAccount ? priceUSD * 1.75 : priceUSD
+    const priceIDR = convertToIDR(adjustedPriceUSD)
     return total + priceIDR * item.quantity
   }, 0)
 

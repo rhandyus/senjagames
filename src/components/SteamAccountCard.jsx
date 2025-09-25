@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 import { convertToIDR, formatCurrency, formatUSD, getPriceValue } from '../utils/currency'
 
 const SteamAccountCard = ({ account }) => {
-  // Get formatted price in IDR
+  // Get formatted price in IDR with 1.75x multiplier for Steam accounts
   const priceUSD = getPriceValue(account)
-  const priceIDR = convertToIDR(priceUSD)
+  const adjustedPriceUSD = priceUSD * 1.75 // Apply 1.75x multiplier for Steam accounts
+  const priceIDR = convertToIDR(adjustedPriceUSD)
   const formattedPrice = formatCurrency(priceIDR)
 
   // Add a click handler to log what's being passed to detail page

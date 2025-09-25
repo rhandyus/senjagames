@@ -7,13 +7,7 @@ export const getExchangeRate = () => {
 
 // Helper function to safely parse price from various formats
 export const getPriceValue = item => {
-  // Check for priceWithSellerFeeLabel first (formatted string like "$15.99")
-  if (item.priceWithSellerFeeLabel) {
-    const parsed = parseFloat(item.priceWithSellerFeeLabel.replace(/[$,]/g, ''))
-    return isNaN(parsed) ? 0 : parsed
-  }
-
-  // Check for direct price field
+  // Check for direct price field first (this is the actual item price)
   if (item.price !== undefined && item.price !== null) {
     // If price is already a number, use it directly
     if (typeof item.price === 'number') {
@@ -24,6 +18,12 @@ export const getPriceValue = item => {
       const parsed = parseFloat(item.price.replace(/[$,]/g, ''))
       return isNaN(parsed) ? 0 : parsed
     }
+  }
+
+  // Fallback to priceWithSellerFeeLabel if price field is not available
+  if (item.priceWithSellerFeeLabel) {
+    const parsed = parseFloat(item.priceWithSellerFeeLabel.replace(/[$,]/g, ''))
+    return isNaN(parsed) ? 0 : parsed
   }
 
   return 0

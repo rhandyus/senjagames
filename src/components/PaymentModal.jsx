@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import { useState } from 'react'
+import { db } from '../config/firebase'
 import { useAuth } from '../context/AuthContext'
 import WinPayAPI from '../services/winpayAPI'
-import { doc, updateDoc, arrayUnion } from 'firebase/firestore'
-import { db } from '../config/firebase'
 
 const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
   const { user } = useAuth()
@@ -15,16 +15,16 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
 
   if (!isOpen || !item) return null
 
-  // Handle price parsing - account.price might be a number or string, priceWithSellerFeeLabel is always a string
+  // Handle price parsing - prioritize price field over priceWithSellerFeeLabel (for Steam multiplier)
   const getPriceValue = () => {
-    if (item.priceWithSellerFeeLabel) {
-      return parseFloat(item.priceWithSellerFeeLabel.replace(/[$,]/g, ''))
-    }
-    if (item.price) {
+    if (item.price !== undefined && item.price !== null) {
       // If price is already a number, use it directly; if it's a string, parse it
       return typeof item.price === 'number'
         ? item.price
         : parseFloat(item.price.toString().replace(/[$,]/g, ''))
+    }
+    if (item.priceWithSellerFeeLabel) {
+      return parseFloat(item.priceWithSellerFeeLabel.replace(/[$,]/g, ''))
     }
     return 0
   }

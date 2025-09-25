@@ -43,7 +43,13 @@ const AccountDetailPage = () => {
       return
     }
 
-    const success = addToCart(account)
+    // Create cart item with ID as title instead of account name
+    const cartItem = {
+      ...account,
+      title: `ID: ${account.item_id || account.id || 'Unknown'}`
+    }
+
+    const success = addToCart(cartItem)
     if (success) {
       showToast('Akun berhasil ditambahkan ke keranjang!', 'success')
     } else {
@@ -59,7 +65,28 @@ const AccountDetailPage = () => {
       return
     }
 
-    setPaymentModal({ isOpen: true, item: account })
+    // Apply Steam multiplier before sending to PaymentModal
+    const priceUSD = account.price || 0
+
+    // Detect if it's a Steam account and apply 1.75x multiplier
+    const isSteamAccount =
+      account.steam_level !== undefined ||
+      account.steam_country ||
+      account.steam_game_count !== undefined ||
+      account.steam_mfa !== undefined ||
+      account.category?.category_name === 'steam' ||
+      account.category?.category_url === 'steam'
+
+    const adjustedPriceUSD = isSteamAccount ? priceUSD * 1.75 : priceUSD
+
+    // Create item with adjusted price and ID title for PaymentModal
+    const paymentItem = {
+      ...account,
+      price: adjustedPriceUSD,
+      title: `ID: ${account.item_id || account.id || 'Unknown'}`
+    }
+
+    setPaymentModal({ isOpen: true, item: paymentItem })
   }
 
   useEffect(() => {
@@ -389,7 +416,20 @@ const AccountDetailPage = () => {
 
     // Convert USD to IDR like the account cards do
     const priceUSD = account.price || 0
-    const priceIDR = convertToIDR(priceUSD)
+
+    // Detect if it's a Steam account from the account data itself
+    const isSteamAccount =
+      account.steam_level !== undefined ||
+      account.steam_country ||
+      account.steam_game_count !== undefined ||
+      account.steam_mfa !== undefined ||
+      account.category?.category_name === 'steam' ||
+      account.category?.category_url === 'steam'
+
+    // Apply 1.75x multiplier for Steam accounts
+    const adjustedPriceUSD = isSteamAccount ? priceUSD * 1.75 : priceUSD
+
+    const priceIDR = convertToIDR(adjustedPriceUSD)
     return formatCurrency(priceIDR)
   }
 
@@ -1015,10 +1055,7 @@ const AccountDetailPage = () => {
               {!isSocialClubAccount && !isEpicAccount && (
                 <div className='border-b border-gray-700'>
                   <nav className='flex space-x-8 px-6'>
-                    {(isFortniteAccount
-                      ? ['overview', 'cosmetics']
-                      : ['overview']
-                    ).map(tab => (
+                    {(isFortniteAccount ? ['overview', 'cosmetics'] : ['overview']).map(tab => (
                       <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -3606,8 +3643,6 @@ const AccountDetailPage = () => {
                     </div>
                   </div>
                 )}
-
-
               </div>
             </div>
           </div>

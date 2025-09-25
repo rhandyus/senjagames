@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
 import { Icon } from '@iconify/react'
+import { useState } from 'react'
 import { useCart } from '../context/CartContext'
+import { convertToIDR, formatCurrency, getPriceValue } from '../utils/currency'
 import PaymentModal from './PaymentModal'
-import { getPriceValue, convertToIDR, formatCurrency } from '../utils/currency'
 
 const CartModal = ({ isOpen, onClose }) => {
   const { items, totalItems, totalPrice, removeFromCart, updateQuantity, clearCart } = useCart()
@@ -11,7 +11,28 @@ const CartModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null
 
   const handleBuyNow = item => {
-    setPaymentModal({ isOpen: true, item, quantity: item.quantity })
+    // Apply Steam multiplier before sending to PaymentModal
+    const priceUSD = getPriceValue(item)
+
+    // Detect if it's a Steam account and apply 1.75x multiplier
+    const isSteamAccount =
+      item.steam_level !== undefined ||
+      item.steam_country ||
+      item.steam_game_count !== undefined ||
+      item.steam_mfa !== undefined ||
+      item.category?.category_name === 'steam' ||
+      item.category?.category_url === 'steam'
+
+    const adjustedPriceUSD = isSteamAccount ? priceUSD * 1.75 : priceUSD
+
+    // Create item with adjusted price and ID title for PaymentModal
+    const paymentItem = {
+      ...item,
+      price: adjustedPriceUSD.toString(),
+      title: `ID: ${item.item_id || item.id || 'Unknown'}`
+    }
+
+    setPaymentModal({ isOpen: true, item: paymentItem, quantity: item.quantity })
   }
 
   const handleCheckoutAll = () => {
@@ -20,7 +41,18 @@ const CartModal = ({ isOpen, onClose }) => {
     if (items.length > 0) {
       const totalUSD = items.reduce((total, item) => {
         const priceUSD = getPriceValue(item)
-        return total + priceUSD * item.quantity
+
+        // Detect if it's a Steam account and apply 1.75x multiplier
+        const isSteamAccount =
+          item.steam_level !== undefined ||
+          item.steam_country ||
+          item.steam_game_count !== undefined ||
+          item.steam_mfa !== undefined ||
+          item.category?.category_name === 'steam' ||
+          item.category?.category_url === 'steam'
+
+        const adjustedPriceUSD = isSteamAccount ? priceUSD * 1.75 : priceUSD
+        return total + adjustedPriceUSD * item.quantity
       }, 0)
 
       const combinedItem = {
@@ -76,8 +108,22 @@ const CartModal = ({ isOpen, onClose }) => {
                 <div className='flex-1 overflow-y-auto p-6 space-y-4'>
                   {items.map(item => {
                     const priceUSD = getPriceValue(item)
-                    const priceIDR = convertToIDR(priceUSD)
+
+                    // Detect if it's a Steam account and apply 1.75x multiplier
+                    const isSteamAccount =
+                      item.steam_level !== undefined ||
+                      item.steam_country ||
+                      item.steam_game_count !== undefined ||
+                      item.steam_mfa !== undefined ||
+                      item.category?.category_name === 'steam' ||
+                      item.category?.category_url === 'steam'
+
+                    const adjustedPriceUSD = isSteamAccount ? priceUSD * 1.75 : priceUSD
+                    const priceIDR = convertToIDR(adjustedPriceUSD)
                     const itemTotal = priceIDR * item.quantity
+
+                    // Format title as "ID: XXXXX" instead of account name
+                    const displayTitle = `ID: ${item.item_id || item.id || 'Unknown'}`
 
                     return (
                       <div
@@ -86,9 +132,7 @@ const CartModal = ({ isOpen, onClose }) => {
                       >
                         <div className='flex items-start justify-between'>
                           <div className='flex-1'>
-                            <h4 className='font-medium text-white mb-1'>
-                              {item.title || 'Gaming Account'}
-                            </h4>
+                            <h4 className='font-medium text-white mb-1'>{displayTitle}</h4>
                             <div className='mb-3'>
                               <p className='text-sm text-white font-medium'>
                                 {formatCurrency(priceIDR)} × {item.quantity}
