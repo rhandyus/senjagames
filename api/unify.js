@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       return res.status(400).json({
         error: 'Missing category name',
         message:
-          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, ?name=ea, ?name=epicgamesgames, or ?name=search with &id=ITEM_ID)',
+          'Please provide a category name parameter (?name=mihoyo, ?name=riot, ?name=telegram, ?name=ea, ?name=epicgamesgames, ?name=steamgames, or ?name=search with &id=ITEM_ID)',
         supportedCategories: [
           'mihoyo',
           'riot',
@@ -36,6 +36,7 @@ export default async function handler(req, res) {
           'ea',
           'origin',
           'epicgamesgames',
+          'steamgames',
           'search'
         ]
       })
@@ -49,6 +50,7 @@ export default async function handler(req, res) {
       ea: 'ea',
       origin: 'ea', // Origin maps to EA
       epicgamesgames: 'epicgames/games', // Epic Games games list
+      steamgames: 'steam/games', // Steam games list
       search: 'search' // Search for account details by item ID
     }
 
@@ -176,6 +178,32 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json()
+
+    // Special handling for Steam games endpoint
+    // The steam/games endpoint returns { games: [...], system_info: {...} }
+    // but we need to transform it to { "app_id": {...}, ... } format
+    if (name.toLowerCase() === 'steamgames' && data.games && Array.isArray(data.games)) {
+      console.log(`✅ LZT API Success for ${category}: ${data.games.length} games returned`)
+
+      // Transform games array to object with app_id as key
+      const gamesObject = {}
+      data.games.forEach(game => {
+        if (game.app_id) {
+          gamesObject[game.app_id] = {
+            name: game.title || game.abbr || `Game ${game.app_id}`,
+            title: game.title,
+            abbr: game.abbr,
+            app_id: game.app_id,
+            category_id: game.category_id,
+            img: game.img,
+            url: game.url
+          }
+        }
+      })
+
+      return res.status(200).json(gamesObject)
+    }
+
     console.log(`✅ LZT API Success for ${category}: ${data.items?.length || 0} items returned`)
 
     // Return the data

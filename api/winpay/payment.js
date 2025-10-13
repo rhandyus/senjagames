@@ -73,7 +73,7 @@ export default async function handler(req, res) {
       })
     }
 
-    // Extract payment data from callback payload
+    // Extract payment data from callback payload according to WinPay VA specification
     const {
       partnerServiceId,
       customerNo,
@@ -87,10 +87,16 @@ export default async function handler(req, res) {
       additionalInfo
     } = req.body
 
-    console.log('Payment Data:', {
-      trxId,
+    console.log('WinPay VA Payment Callback Data:', {
+      partnerServiceId,
+      customerNo,
       virtualAccountNo,
+      virtualAccountName,
+      trxId,
+      paymentRequestId,
       paidAmount: paidAmount?.value,
+      trxDateTime,
+      referenceNo,
       contractId: additionalInfo?.contractId,
       channel: additionalInfo?.channel
     })

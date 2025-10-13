@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js'
+import { generateWinPaySignature } from '../utils/winpaySignature.js'
 
 class WinPayAPI {
   constructor() {
@@ -38,24 +39,16 @@ class WinPayAPI {
   }
 
   // Generate signature according to WinPay SNAP standard
-  generateSignature(httpMethod, endpointUrl, hashedBody, timestamp) {
-    // SNAP signature format: HTTPMethod:URL:AccessToken:HashedBody:Timestamp
-    const stringToSign = `${httpMethod}:${endpointUrl}:${this.partnerId}:${hashedBody}:${timestamp}`
-
-    // For WinPay SNAP, we use HMAC-SHA256 with partner ID as key
-    const signature = CryptoJS.HmacSHA256(stringToSign, this.partnerId).toString(
-      CryptoJS.enc.Base64
-    )
-
-    return signature
+  generateSignature(httpMethod, endpointUrl, requestBody, timestamp) {
+    // Use the WinPay signature generation utility
+    return generateWinPaySignature(httpMethod, endpointUrl, requestBody, timestamp, this.privateKey)
   }
 
   // Create headers for API requests according to WinPay SNAP standard
   createHeaders(httpMethod, endpointUrl, body) {
     const timestamp = this.generateTimestamp()
     const externalId = this.generateExternalId()
-    const hashedBody = this.hashBody(body)
-    const signature = this.generateSignature(httpMethod, endpointUrl, hashedBody, timestamp)
+    const signature = this.generateSignature(httpMethod, endpointUrl, body, timestamp)
 
     const headers = {
       'Content-Type': 'application/json',
@@ -70,35 +63,46 @@ class WinPayAPI {
     return headers
   }
 
-  // Create Virtual Account for payment
+  // Create Virtual Account for payment according to WinPay VA specification
   async createVirtualAccount(paymentData) {
     const endpointUrl = '/v1.0/transfer-va/create-va'
     const httpMethod = 'POST'
 
+    // Prepare request body according to WinPay VA documentation
     const body = {
+      // customerNo is optional for ONE OFF (c) type - will be auto-generated if not provided
       virtualAccountName: paymentData.customerName,
       trxId: this.generateTrxId(),
       totalAmount: {
-        value: paymentData.amount.toString(),
+        value: paymentData.amount.toFixed(2), // Must be string with 2 decimal places
         currency: 'IDR'
       },
-      virtualAccountTrxType: 'c', // ONE OFF payment
-      expiredDate: this.getExpiryDate(),
+      virtualAccountTrxType: 'c', // ONE OFF payment (c = one-time use)
+      expiredDate: this.getExpiryDate(), // Required for ONE OFF payments
       additionalInfo: {
-        channel: paymentData.channel || 'BCA'
+        channel: paymentData.channel || 'BCA' // Channel code (BCA, BRI, BNI, etc.)
       }
     }
+
+    console.log('Creating WinPay Virtual Account:', {
+      endpoint: endpointUrl,
+      channel: body.additionalInfo.channel,
+      amount: body.totalAmount.value,
+      trxId: body.trxId,
+      customer: body.virtualAccountName
+    })
 
     const headers = this.createHeaders(httpMethod, endpointUrl, body)
 
     try {
       // Use demo mode if credentials are missing or demo mode is enabled
-      if (this.demoMode || !this.privateKey || !this.clientSecret) {
+      if (this.demoMode || !this.privateKey) {
+        console.log('Using demo mode for Virtual Account creation')
         return this.simulateVirtualAccountResponse(body, paymentData)
       }
 
-      // Real API call
-
+      // Real API call to WinPay
+      console.log('Making real WinPay API call...')
       const response = await fetch(`${this.baseURL}${endpointUrl}`, {
         method: httpMethod,
         headers: headers,
@@ -107,7 +111,7 @@ class WinPayAPI {
 
       if (!response.ok) {
         const errorText = await response.text()
-        console.error('Error response:', errorText)
+        console.error('WinPay API Error Response:', errorText)
 
         // Try to parse error response as JSON
         let errorData
@@ -122,40 +126,50 @@ class WinPayAPI {
 
       const result = await response.json()
 
+      console.log('WinPay API Success Response:', result)
+
+      // Validate response according to WinPay specification
+      if (result.responseCode !== '2002700') {
+        console.error('WinPay API returned error:', result)
+        throw new Error(`WinPay Error ${result.responseCode}: ${result.responseMessage}`)
+      }
+
       return result
     } catch (error) {
-      console.error('WinPay API Error:', error)
+      console.error('WinPay Virtual Account Creation Error:', error)
       throw new Error('Failed to create virtual account: ' + error.message)
     }
   }
 
-  // Simulate API response for development/testing
+  // Simulate API response for development/testing according to WinPay VA specification
   simulateVirtualAccountResponse(body, paymentData) {
     const mockVANumber = this.generateMockVANumber(paymentData.channel)
+    const partnerServiceId = this.getBankCode(paymentData.channel).padStart(8, ' ') // Bank BIN with padding
+    const contractId = `ci${Math.random().toString(36).substring(2, 15)}-${Date.now()}`
 
     return new Promise(resolve => {
       setTimeout(() => {
         resolve({
-          responseCode: '2000000',
-          responseMessage: 'Successful',
+          responseCode: '2002700', // Success code according to WinPay spec
+          responseMessage: 'Success',
           virtualAccountData: {
-            partnerServiceId: this.partnerId,
-            customerNumber: mockVANumber,
-            virtualAccountNumber: mockVANumber,
-            virtualAccountNo: mockVANumber, // Add this for compatibility
+            partnerServiceId: partnerServiceId,
+            customerNo: mockVANumber.replace(partnerServiceId.trim(), ''), // Customer number without BIN
+            virtualAccountNo: mockVANumber, // Full VA number including BIN
             virtualAccountName: body.virtualAccountName,
             trxId: body.trxId,
             totalAmount: body.totalAmount,
+            virtualAccountTrxType: body.virtualAccountTrxType,
             expiredDate: body.expiredDate,
             additionalInfo: {
               channel: paymentData.channel,
+              contractId: contractId, // Contract ID for tracking
               instructions: this.getPaymentInstructions(paymentData.channel),
-              bankCode: this.getBankCode(paymentData.channel),
-              contractId: `CONTRACT-${Date.now()}` // Add contract ID for demo
+              bankCode: this.getBankCode(paymentData.channel)
             }
           }
         })
-      }, 1500) // Simulate API delay
+      }, 1000) // Simulate API delay
     })
   }
 
@@ -189,20 +203,23 @@ class WinPayAPI {
     return vaNumber
   }
 
-  // Get bank code for channel
+  // Get bank code for channel according to WinPay VA specification
   getBankCode(channel) {
     const bankCodes = {
-      BCA: '014',
-      BNI: '009',
-      BRI: '002',
-      MANDIRI: '008',
-      CIMB: '022',
-      PERMATA: '013',
-      BSI: '451',
+      BCA: '22691', // Bank Central Asia
+      BRI: '22689', // Bank Rakyat Indonesia
+      BNI: '22688', // Bank Negara Indonesia
+      MANDIRI: '22687', // Bank Mandiri
+      CIMB: '22692', // Bank CIMB Niaga
+      PERMATA: '22690', // Bank Permata
+      BSI: '22693', // Bank Syariah Indonesia
+      MUAMALAT: '22694', // Bank Muamalat
+      SINARMAS: '22695', // Bank Sinarmas
+      BNC: '22696', // Bank Neo Commerce
       INDOMARET: 'INDOMARET',
       ALFAMART: 'ALFAMART'
     }
-    return bankCodes[channel] || '014'
+    return bankCodes[channel] || '22691' // Default to BCA
   }
 
   // Get payment instructions for each channel
@@ -248,8 +265,8 @@ class WinPayAPI {
     return expiry.toISOString().replace('Z', '+07:00')
   }
 
-  // Check payment status
-  async checkPaymentStatus(virtualAccountNo, trxId, contractId) {
+  // Check payment status according to WinPay VA specification
+  async checkPaymentStatus(virtualAccountNo, trxId, contractId, channel = 'BCA') {
     const endpointUrl = '/v1.0/transfer-va/status'
     const httpMethod = 'POST'
 
@@ -258,39 +275,95 @@ class WinPayAPI {
       trxId: trxId,
       additionalInfo: {
         contractId: contractId,
-        channel: 'BCA'
+        channel: channel
       }
     }
+
+    console.log('Checking WinPay VA Payment Status:', {
+      virtualAccountNo,
+      trxId,
+      contractId,
+      channel
+    })
 
     const headers = this.createHeaders(httpMethod, endpointUrl, body)
 
     try {
+      if (this.demoMode || !this.privateKey) {
+        console.log('Using demo mode for status check')
+        return this.simulateStatusResponse(body)
+      }
+
       const response = await fetch(`${this.baseURL}${endpointUrl}`, {
         method: httpMethod,
         headers: headers,
         body: JSON.stringify(body)
       })
 
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('WinPay Status Check Error Response:', errorText)
+        throw new Error(`HTTP ${response.status}: ${errorText}`)
+      }
+
       const result = await response.json()
+
+      console.log('WinPay Status Check Response:', result)
+
+      // Validate response according to WinPay specification
+      if (result.responseCode !== '2002600') {
+        console.error('WinPay Status API returned error:', result)
+        throw new Error(`WinPay Error ${result.responseCode}: ${result.responseMessage}`)
+      }
+
       return result
     } catch (error) {
       console.error('WinPay Status Check Error:', error)
-      throw new Error('Failed to check payment status')
+      throw new Error('Failed to check payment status: ' + error.message)
     }
   }
 
-  // Get supported payment channels
+  // Simulate status response for development/testing
+  simulateStatusResponse(body) {
+    const isPaid = Math.random() > 0.7 // 30% chance of being paid for demo
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve({
+          responseCode: '2002600', // Success code for status inquiry
+          responseMessage: 'Successful',
+          virtualAccountData: {
+            virtualAccountNo: body.virtualAccountNo,
+            virtualAccountName: 'Demo Payment',
+            paymentFlagStatus: isPaid ? '00' : '01', // 00 = paid, 01 = unpaid, 02 = check
+            transactionDate: isPaid ? new Date().toISOString().replace('Z', '+00:00') : null,
+            referenceNo: isPaid ? Math.floor(Math.random() * 100000).toString() : null,
+            totalAmount: {
+              value: '15000.00',
+              currency: 'IDR'
+            }
+          },
+          additionalInfo: body.additionalInfo
+        })
+      }, 800)
+    })
+  }
+
+  // Get supported payment channels according to WinPay VA specification
   getSupportedChannels() {
     return [
-      { code: 'BCA', name: 'Bank Central Asia', type: 'VA' },
-      { code: 'BNI', name: 'Bank Negara Indonesia', type: 'VA' },
-      { code: 'BRI', name: 'Bank Rakyat Indonesia', type: 'VA' },
-      { code: 'MANDIRI', name: 'Bank Mandiri', type: 'VA' },
-      { code: 'PERMATA', name: 'Bank Permata', type: 'VA' },
-      { code: 'BSI', name: 'Bank Syariah Indonesia', type: 'VA' },
-      { code: 'CIMB', name: 'Bank CIMB Niaga', type: 'VA' },
-      { code: 'INDOMARET', name: 'Indomaret', type: 'VA' },
-      { code: 'ALFAMART', name: 'Alfamart', type: 'VA' }
+      { code: 'BCA', name: 'Bank Central Asia', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'BRI', name: 'Bank Rakyat Indonesia', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'BNI', name: 'Bank Negara Indonesia', type: 'VA', supportedTypes: ['c'] }, // Only ONE OFF
+      { code: 'MANDIRI', name: 'Bank Mandiri', type: 'VA', supportedTypes: ['c'] }, // Only ONE OFF
+      { code: 'PERMATA', name: 'Bank Permata', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'BSI', name: 'Bank Syariah Indonesia', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'MUAMALAT', name: 'Bank Muamalat', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'CIMB', name: 'Bank CIMB Niaga', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'SINARMAS', name: 'Bank Sinarmas', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'BNC', name: 'Bank Neo Commerce', type: 'VA', supportedTypes: ['c', 'o', 'r'] },
+      { code: 'INDOMARET', name: 'Indomaret', type: 'VA', supportedTypes: ['c'] }, // Only ONE OFF
+      { code: 'ALFAMART', name: 'Alfamart', type: 'VA', supportedTypes: ['c'] } // Only ONE OFF
     ]
   }
 }

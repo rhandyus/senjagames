@@ -195,8 +195,8 @@ const SteamFilters = ({ onFilterChange, loading }) => {
       setGamesLoading(true)
 
       try {
-        // Fetch directly from our server endpoint via Vite proxy
-        const response = await fetch('/api/lzt/steam/games')
+        // Fetch from unified API endpoint to avoid serverless function limits
+        const response = await fetch('/api/unify?name=steamgames')
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -463,7 +463,7 @@ const SteamFilters = ({ onFilterChange, loading }) => {
                   label=''
                   disabled={gamesLoading}
                   enableServerSearch={true}
-                  searchEndpoint='/api/lzt/steam/games'
+                  searchEndpoint='/api/unify?name=steamgames'
                 />
               </div>
 
