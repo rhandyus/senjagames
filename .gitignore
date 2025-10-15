@@ -9,6 +9,11 @@ dist/
 
 # Environment variables
 .env
+.env.local
+
+# Private keys and certificates
+private-key.pem
+*.pem
 
 # OS generated files
 .DS_Store
