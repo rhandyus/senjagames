@@ -7,7 +7,20 @@ class WinPayAPI {
     this.baseURL = import.meta.env.DEV ? '/winpay-api' : import.meta.env.VITE_WINPAY_BASE_URL
     this.partnerId = import.meta.env.VITE_WINPAY_PARTNER_ID
     this.channelId = import.meta.env.VITE_WINPAY_CHANNEL_ID
-    this.privateKey = import.meta.env.VITE_WINPAY_PRIVATE_KEY
+
+    // Decode private key from Base64 if needed (for Vercel environment variables)
+    let privateKey = import.meta.env.VITE_WINPAY_PRIVATE_KEY
+    if (privateKey && !privateKey.includes('-----BEGIN')) {
+      // If it doesn't contain PEM header, assume it's Base64 encoded
+      try {
+        privateKey = atob(privateKey)
+        console.log('Decoded Base64 private key for WinPay')
+      } catch (e) {
+        console.error('Failed to decode Base64 private key:', e)
+      }
+    }
+    this.privateKey = privateKey
+
     this.clientSecret = import.meta.env.VITE_WINPAY_CLIENT_SECRET
     this.demoMode = import.meta.env.VITE_WINPAY_DEMO_MODE === 'true'
   }

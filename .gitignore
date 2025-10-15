@@ -14,6 +14,8 @@ dist/
 # Private keys and certificates
 private-key.pem
 *.pem
+private-key-base64.txt
+encode-private-key.js
 
 # OS generated files
 .DS_Store
