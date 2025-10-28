@@ -3431,6 +3431,68 @@ const AccountDetailPage = () => {
                   </div>
                 )}
 
+                {/* VAC Bans Section for Steam accounts */}
+                {getAccountPlatform() === 'Steam' &&
+                  account.steam_full_games?.list &&
+                  (() => {
+                    const vacBannedGames = Object.values(account.steam_full_games.list).filter(
+                      game => game.vac === true
+                    )
+                    return vacBannedGames.length > 0 ? (
+                      <div className='bg-red-900/20 border-2 border-red-500 rounded-lg p-6'>
+                        <h3 className='text-xl font-bold text-red-400 flex items-center gap-3 mb-4'>
+                          <svg className='w-6 h-6' fill='currentColor' viewBox='0 0 20 20'>
+                            <path
+                              fillRule='evenodd'
+                              d='M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z'
+                              clipRule='evenodd'
+                            />
+                          </svg>
+                          VAC Banned Games
+                          <span className='bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium'>
+                            {vacBannedGames.length}
+                          </span>
+                        </h3>
+                        <div className='bg-red-950/30 rounded-lg p-4'>
+                          <p className='text-red-300 text-sm mb-3'>
+                            ⚠️ The following games have VAC (Valve Anti-Cheat) bans on this account:
+                          </p>
+                          <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                            {vacBannedGames.map((game, index) => (
+                              <div
+                                key={index}
+                                className='flex items-center gap-3 bg-gray-800/50 border-2 border-red-500 rounded-lg p-3'
+                              >
+                                <img
+                                  src={
+                                    game.img ||
+                                    `https://cdn.akamai.steamstatic.com/steam/apps/${game.appid}/header.jpg`
+                                  }
+                                  alt={game.title}
+                                  className='w-16 h-16 rounded object-cover'
+                                  onError={e => {
+                                    e.target.src = `https://nztcdn.com/steam/icon/${game.appid}.webp`
+                                  }}
+                                />
+                                <div className='flex-1'>
+                                  <div className='text-red-400 font-medium text-sm'>
+                                    {game.title}
+                                  </div>
+                                  <div className='text-red-300 text-xs mt-1'>VAC Banned</div>
+                                  {game.playtime_forever > 0 && (
+                                    <div className='text-gray-400 text-xs mt-1'>
+                                      Playtime: {formatPlaytime(game.playtime_forever)}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    ) : null
+                  })()}
+
                 {/* Games Library Section for Steam accounts */}
                 {getAccountPlatform() === 'Steam' &&
                   account.steam_full_games?.list &&
@@ -3460,9 +3522,30 @@ const AccountDetailPage = () => {
                           .map((game, index) => (
                             <div
                               key={index}
-                              className='group bg-gray-800 rounded-lg border border-gray-600 overflow-hidden hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 cursor-pointer'
+                              className={`group bg-gray-800 rounded-lg border-2 ${
+                                game.vac
+                                  ? 'border-red-500 hover:border-red-400 hover:shadow-lg hover:shadow-red-500/30'
+                                  : 'border-gray-600 hover:border-blue-400 hover:shadow-lg hover:shadow-blue-500/20'
+                              } overflow-hidden transition-all duration-300 cursor-pointer`}
                             >
                               <div className='relative aspect-video overflow-hidden'>
+                                {/* VAC Ban Badge */}
+                                {game.vac && (
+                                  <div className='absolute top-1 left-1 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold z-10 flex items-center gap-1'>
+                                    <svg
+                                      className='w-3 h-3'
+                                      fill='currentColor'
+                                      viewBox='0 0 20 20'
+                                    >
+                                      <path
+                                        fillRule='evenodd'
+                                        d='M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z'
+                                        clipRule='evenodd'
+                                      />
+                                    </svg>
+                                    VAC
+                                  </div>
+                                )}
                                 <img
                                   src={
                                     game.img ||
@@ -3486,9 +3569,20 @@ const AccountDetailPage = () => {
                                 )}
                               </div>
                               <div className='p-2'>
-                                <h4 className='text-white font-medium text-xs leading-tight line-clamp-2 group-hover:text-blue-400 transition-colors'>
+                                <h4
+                                  className={`font-medium text-xs leading-tight line-clamp-2 transition-colors ${
+                                    game.vac
+                                      ? 'text-red-400 group-hover:text-red-300'
+                                      : 'text-white group-hover:text-blue-400'
+                                  }`}
+                                >
                                   {game.title}
                                 </h4>
+                                {game.vac && (
+                                  <div className='text-red-500 text-xs font-bold mt-1'>
+                                    ⚠️ VAC BANNED
+                                  </div>
+                                )}
                               </div>
                             </div>
                           ))}
