@@ -3,8 +3,8 @@ import { generateWinPaySignature } from '../utils/winpaySignature.js'
 
 class WinPayAPI {
   constructor() {
-    // Use proxy in development, direct URL in production
-    this.baseURL = import.meta.env.DEV ? '/winpay-api' : import.meta.env.VITE_WINPAY_BASE_URL
+    // Always use server-side API routes to avoid CORS issues
+    this.baseURL = '/api/winpay'
     this.partnerId = import.meta.env.VITE_WINPAY_PARTNER_ID
     this.channelId = import.meta.env.VITE_WINPAY_CHANNEL_ID
 
@@ -114,12 +114,22 @@ class WinPayAPI {
         return this.simulateVirtualAccountResponse(body, paymentData)
       }
 
-      // Real API call to WinPay
-      console.log('Making real WinPay API call...')
-      const response = await fetch(`${this.baseURL}${endpointUrl}`, {
-        method: httpMethod,
-        headers: headers,
-        body: JSON.stringify(body)
+      // Real API call to WinPay via server-side proxy
+      console.log('Making WinPay API call via server proxy...')
+      const response = await fetch(`${this.baseURL}/create-va`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          customerNo: body.customerNo,
+          virtualAccountName: body.virtualAccountName,
+          trxId: body.trxId,
+          totalAmount: body.totalAmount,
+          virtualAccountTrxType: body.virtualAccountTrxType,
+          expiredDate: body.expiredDate,
+          channel: body.additionalInfo.channel
+        })
       })
 
       if (!response.ok) {

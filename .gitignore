@@ -32,3 +32,4 @@ coverage/
 
 # Optional: Ignore public assets if not needed
 # public/
+nouse-public-key.pem

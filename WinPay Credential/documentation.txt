@@ -1,0 +1,207 @@
+WinPay SNAP API - Overview
+===========================
+
+Source: https://docs.winpay.id/docs/payments/snap-api/overview
+
+Ringkasan
+---------
+SNAP API (Standar Nasional API Pembayaran) adalah standar yang dikeluarkan oleh Bank Indonesia untuk layanan pembayaran berbasis API. WinPay mendukung SNAP API agar merchant dapat mengintegrasikan layanan pembayaran dengan lebih mudah.
+
+Apa itu SNAP API?
+------------------
+SNAP API memungkinkan integrasi fasilitas pembayaran seperti Virtual Account, eWallet, QRIS, dan payment code melalui endpoint yang terstandarisasi.
+
+Sequence (Alur Utama)
+---------------------
+1. Generate Signature
+   - Merchant harus menghasilkan signature sebelum melakukan request Create VA.
+2. Sertakan signature di header `X-SIGNATURE` saat membuat permintaan Create VA.
+3. Lengkapi header dan body request Create VA (mis. X-TIMESTAMP, X-PARTNER-ID, X-EXTERNAL-ID, CHANNEL-ID).
+4. Request Create VA dikirim ke WinPay untuk membuat Virtual Account.
+5. WinPay mengembalikan nomor Virtual Account.
+6. User melakukan pembayaran ke bank terkait.
+7. Bank memproses pembayaran dan mengirim informasi ke WinPay.
+8. WinPay memberi respon sukses ke Bank.
+9. Bank memberi respon sukses ke User.
+10. WinPay mengirimkan notifikasi pembayaran (callback) ke merchant.
+
+Metode Pembayaran yang Didukung
+--------------------------------
+- QRIS
+- Speedcash (SC)
+- eWallet: OVO, DANA, ShopeePay (SPAY), dll.
+- Virtual Account: BCA, BRI, BNI, MANDIRI, PERMATA, BSI, CIMB, SINARMAS, BNC, serta gerai seperti INDOMARET, ALFAMART
+- Payment Code (contoh: BCA Payment Code, Mandiri Payment Code)
+
+Standar Keamanan Transaksi
+--------------------------
+- WinPay menggunakan tipe signature: "Asymmetric Without Get Token" (RSA-SHA256). Merchant tidak perlu request token terlebih dahulu untuk membuat signature.
+- Signature harus dikirim di header `X-SIGNATURE`.
+- Header wajib lain:
+  - `X-TIMESTAMP`: Timestamp ISO8601 (mis. 2023-08-24T17:07:05+07:00)
+  - `X-PARTNER-ID`: Partner / client key Anda
+  - `X-EXTERNAL-ID`: ID unik eksternal (tidak boleh sama di hari yang sama)
+  - `CHANNEL-ID` (kadang disebut `X-CHANNEL-ID` atau `CHANNEL-ID`): Channel merchant (nilai bebas, bisa "WEB" dll.)
+
+Rumus Signature (ringkas)
+-------------------------
+1. Buat body request yang sudah diminify (JSON tanpa whitespace) dan hitung SHA-256 lalu ambil hex (lowercase).
+2. stringToSign = HTTPMethod + ':' + EndpointUrl + ':' + bodyHash + ':' + TimeStamp
+3. signature = Base64( SHA256withRSA(private_key, stringToSign) )
+
+Contoh header minimal (kewajiban):
+- X-TIMESTAMP: <timestamp ISO8601>
+- X-SIGNATURE: <signature base64>
+- X-PARTNER-ID: <partner-id>
+- X-EXTERNAL-ID: <external-id>
+- CHANNEL-ID: <channel-id>
+
+Catatan Penting
+---------------
+- Pastikan private key RSA Anda tersimpan aman (digunakan untuk sign). Upload public key ke WinPay agar mereka dapat memverifikasi signature.
+- `X-EXTERNAL-ID` harus unik per hari untuk menghindari duplikasi transaksi.
+- Jika signature tidak valid atau header tidak lengkap, request akan ditolak.
+
+Callback (Notifikasi Pembayaran)
+--------------------------------
+- Setelah pembayaran selesai, WinPay akan mengirim callback ke endpoint yang Anda tentukan (merchant). Callback memberi tahu merchant bahwa VA telah dibayar.
+- Implementasikan verifikasi signature pada callback jika diperlukan (cek dokumentasi endpoint callback untuk detail).
+
+Referensi & Link Tambahan
+-------------------------
+- Dokumentasi utama WinPay: https://docs.winpay.id/
+- SNAP API category: https://docs.winpay.id/docs/category/snap-api
+- Signature generation (lanjutan): https://docs.winpay.id/docs/payments/snap-api/signature-generation
+
+Hak Cipta
+---------
+Sumber asli dokumentasi: WinPay (https://docs.winpay.id). Konten di sini adalah ringkasan untuk keperluan integrasi.
+
+Akun Virtual (VA)
+=================
+
+Sumber: https://docs.winpay.id/docs/payments/snap-api/virtual-account
+
+Ringkasan
+---------
+Akun Virtual (VA) adalah salah satu metode pembayaran WinPay yang memungkinkan merchant membuat nomor VA untuk menerima pembayaran lewat perbankan (mobile/internet banking, ATM) dan gerai ritel.
+
+Jenis VA
+--------
+- ONE OFF (c): VA untuk 1 kali pembayaran (closed single payment).
+- OPEN RECURRING (o): VA untuk pembayaran berkala open payment (customer dapat memasukkan nominal sendiri).
+- CLOSE RECURRING (r): VA untuk pembayaran berkala close payment (nominal ditentukan oleh merchant).
+
+Metode Pembayaran yang Didukung per Jenis VA
+-------------------------------------------
+Berbagai bank dan gerai mendukung jenis VA berbeda (contoh: BRI, BNI, MANDIRI, PERMATA, BSI, MUAMALAT, BCA, CIMB, SINARMAS, BNC, INDOMARET, ALFAMART). Periksa tabel di dokumentasi untuk detail per bank dan jenis VA.
+
+Transaksi Akun Virtual - Endpoints Utama
+----------------------------------------
+1. Create VA
+  - Service Code: 27
+  - Method: POST
+  - Path: /v1.0/transfer-va/create-va
+  - Fungsi: Membuat VA baru
+  - Payload (ringkasan):
+    - customerNo (String) — Wajib jika virtualAccountTrxType = o / r; jika c dan nomor tidak disediakan, WinPay dapat generate VA
+    - virtualAccountName (String) — Nama VA (5-24 chars)
+    - trxId (String) — ID transaksi merchant (5-50 chars)
+    - totalAmount (Object) — { value, currency } (wajib untuk type c / r)
+    - virtualAccountTrxType (String) — c / o / r
+    - expiredDate (String) — ISO8601, wajib untuk c / r (min 1 menit, max 3 bulan)
+    - additionalInfo (Object) — { channel, contractId, ... }
+  - Contoh response fields:
+    - responseCode, responseMessage
+    - virtualAccountData: { partnerServiceId, customerNo, virtualAccountNo, virtualAccountName, trxId, totalAmount, virtualAccountTrxType, expiredDate, additionalInfo }
+  - Important response codes (partial):
+    - 2002700: Success
+    - 4002700: Invalid response from biller
+    - 4012700: Invalid signature
+    - 4092700: Cannot use same X-EXTERNAL-ID in same day
+    - 4092701: Duplicate trxId
+
+2. Inquiry VA
+  - Service Code: 30
+  - Path: /v1.0/transfer-va/inquiry-va
+  - Fungsi: Mengecek data VA yang dibuat (by trxId & contractId)
+  - Payload ringkasan: trxId, additionalInfo, contractId
+  - Response: virtualAccountData similar to Create VA
+  - Response codes (partial): 2003000 Success, 4013000 Invalid signature, 4043001 Transaction tidak ada
+
+3. Inquiry Status
+  - Service Code: 26
+  - Path: /v1.0/transfer-va/status
+  - Fungsi: Mengecek status transaksi VA (paid/unpaid/check)
+  - Payload ringkasan: virtualAccountNo, trxId, additionalInfo, contractId
+  - Response includes: paymentFlagStatus (00 paid, 01 unpaid, 02 check), transactionDate, referenceNo, totalAmount
+  - Response codes (partial): 2002600 Success, 4012600 Invalid signature, 4042601 Transaction tidak ada
+
+4. Delete VA
+  - Service Code: 31
+  - Path: /v1.0/transfer-va/delete-va
+  - Fungsi: Membatalkan VA yang statusnya unpaid
+  - Payload ringkasan: virtualAccountNo, trxId, additionalInfo, contractId, channel
+  - Response codes (partial): 2003100 Success, 4013100 Invalid signature
+
+5. Balance Inquiry
+  - Service Code: 11
+  - Path: /v1.0/balance-inquiry
+  - Fungsi: Mengecek saldo transaksi/settlement merchant
+  - Payload ringkasan: partnerReferenceNo, accountNo, balanceTypes
+  - Response: referenceNo, partnerReferenceNo, accountInfos (balanceType, amount)
+  - Response codes (partial): 2001100 Success, 4011100 Invalid signature
+
+6. Transaction List
+  - Service Code: 12
+  - Path: /v1.0/transaction-history-list
+  - Fungsi: Mengambil list transaksi dalam rentang waktu
+  - Payload ringkasan: partnerReferenceNo, fromDateTime, toDateTime (max 1 month range), pageSize, pageNumber
+  - Response includes: detailData array with dateTime, amount, status, type, additionalInfo
+
+7. Bank Statement
+  - Service Code: 14
+  - Path: /v1.0/bank-statement
+  - Fungsi: Mendapatkan mutasi bank
+  - Payload ringkasan: partnerReferenceNo, bankCardToken, accountNo, fromDateTime, toDateTime, additionalInfo
+  - Response includes detailed balance and mutation records
+
+Handle Payment Callback
+------------------------
+- Service Code: 25
+- Method: POST
+- Path: {{yoururl}}/v1.0/transfer-va/payment
+- Header wajib pada callback:
+  - Content-Type: application/json
+  - X-Timestamp: ISO8601
+  - X-Partner-ID
+  - X-Signature
+  - X-External-ID
+  - Channel-ID
+- Callback payload includes: partnerServiceId, customerNo, virtualAccountNo, virtualAccountName, trxId, paymentRequestId, paidAmount {value, currency}, trxDateTime, referenceNo, additionalInfo, channel, contractId
+- Expected merchant response (success): {"responseCode":"2002500","responseMessage":"Successful"}
+
+Response Codes (general)
+------------------------
+- 200xxxx: Success (e.g., 2002700 Create VA success)
+- 400xxxx: Invalid request / Biller error
+- 401xxxx: Invalid signature
+- 404xxxx: Not found (partner or transaction)
+- 409xxxx: Duplicate / Conflict (external-id/trxId)
+- 500xxxx: Server error / missing resources
+
+Catatan Tambahan
+-----------------
+- Semua request terkait VA wajib menyertakan header keamanan (X-TIMESTAMP, X-SIGNATURE, X-PARTNER-ID, X-EXTERNAL-ID, CHANNEL-ID).
+- `expiredDate` saat membuat VA harus berada dalam rentang 1 menit - 3 bulan dari waktu request tergantung jenis VA.
+- Periksa responseCode pada setiap response untuk handling error yang tepat.
+
+Referensi & Link Tambahan
+-------------------------
+- Virtual Account doc: https://docs.winpay.id/docs/payments/snap-api/virtual-account
+- WinPay Docs: https://docs.winpay.id/
+
+
+URL Production : https://snap.winpay.id (jika sebelumnya pada
+development yaitu https://sandbox-api.bmstaging.id/snap maka pada
+production tanpa path /snap)

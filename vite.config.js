@@ -35,7 +35,7 @@ export default defineConfig({
         changeOrigin: true
       },
       '/winpay-api': {
-        target: 'https://api.winpay.id',
+        target: 'https://snap.winpay.id',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/winpay-api/, ''),
         headers: {
