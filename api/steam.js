@@ -5,10 +5,13 @@ const lastRequestTime = { value: 0 }
 const pendingRequests = new Map()
 
 export default async function handler(req, res) {
-  // Enable CORS
+  // Enable CORS and Edge Caching
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+
+  // Cache response aggressively at the CDN Edge since inventory isn't real-time down to the second
+  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120')
 
   // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
@@ -35,12 +38,12 @@ export default async function handler(req, res) {
     }
   }
 
-  // Simple rate limiting - wait 3 seconds between API calls
+  // Simple rate limiting - wait 2 seconds between API calls to upstream
   const now = Date.now()
   const timeSinceLastRequest = now - lastRequestTime.value
-  if (timeSinceLastRequest < 3000) {
-    const waitTime = 3000 - timeSinceLastRequest
-    console.log(`⏳ Rate limiting: waiting ${waitTime}ms`)
+  if (timeSinceLastRequest < 2000) {
+    const waitTime = 2000 - timeSinceLastRequest
+    console.log(`⏳ Rate limiting upstream: waiting ${waitTime}ms`)
     await new Promise(resolve => setTimeout(resolve, waitTime))
   }
   lastRequestTime.value = Date.now()

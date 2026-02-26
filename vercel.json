@@ -30,19 +30,12 @@
     },
     "api/battlenet.js": {
       "maxDuration": 30
-    },
-    "api/winpay/**/*.js": {
-      "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/api/lzt-proxy/(.*)",
       "destination": "/api/lzt-proxy?path=$1"
-    },
-    {
-      "source": "/api/winpay/(.*)",
-      "destination": "/api/winpay/$1"
     },
     {
       "source": "/(.*)",

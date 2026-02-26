@@ -2,6 +2,7 @@ import { Icon } from '@iconify/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, Route, Routes, useNavigate, useSearchParams } from 'react-router-dom'
 import AccountDetailPage from './components/AccountDetailPage'
+import AdminPage from './components/AdminPage'
 import BattleNetFilters from './components/BattleNetFilters'
 import CartModal from './components/CartModal'
 // Commented out - not in 12 chosen categories
@@ -1705,6 +1706,7 @@ function App() {
         <Route path='/origin' element={<OriginPage />} />
         {/* Commented out - not in 12 chosen categories */}
         {/* <Route path='/discord' element={<DiscordPage />} /> */}
+        <Route path='/admin' element={<AdminPage />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route

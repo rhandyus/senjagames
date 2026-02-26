@@ -3,23 +3,23 @@ require('dotenv/config')
 const express = require('express')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
-const lztMarket = require('./.api/apis/lzt-market')
-const winpayCallbackRouter = require('./src/api/winpayCallback.js')
+// const lztMarket = require('./.api/apis/lzt-market')
+// const winpayCallbackRouter = require('./src/api/winpayCallback.js')
 
 const app = express()
-const PORT = process.env.PORT || 3002
+const PORT = process.env.PORT || 3010
 
 // Initialize LZT Market SDK with token fallback
-const lztToken =
-  process.env.LZT_TOKEN || process.env.ZELENKA_TOKEN || process.env.VITE_ZELENKA_TOKEN
+// const lztToken =
+//   process.env.LZT_TOKEN || process.env.ZELENKA_TOKEN || process.env.VITE_ZELENKA_TOKEN
 
-if (!lztToken) {
-  console.error('❌ No LZT Market token found. Set LZT_TOKEN, ZELENKA_TOKEN, or VITE_ZELENKA_TOKEN')
-  process.exit(1)
-} else {
-  lztMarket.auth(lztToken)
-  console.log('✅ LZT Market SDK initialized successfully')
-}
+// if (!lztToken) {
+//   console.error('❌ No LZT Market token found. Set LZT_TOKEN, ZELENKA_TOKEN, or VITE_ZELENKA_TOKEN')
+//   process.exit(1)
+// } else {
+//   lztMarket.auth(lztToken)
+//   console.log('✅ LZT Market SDK initialized successfully')
+// }
 
 // Security middleware
 app.use(helmet())
@@ -63,10 +63,14 @@ app.use((req, res, next) => {
 })
 
 // Routes
-app.use('/api/winpay', winpayCallbackRouter)
+// app.use('/api/winpay', winpayCallbackRouter)
+const paymentRouter = require('./api/payment')
+const dokuCallbackRouter = require('./api/doku-callback')
+app.use('/api/payment', paymentRouter)
+app.use('/api/doku', dokuCallbackRouter)
 
 // LZT Market API Proxy with Official SDK
-app.use('/api/lzt', async (req, res) => {
+// app.use('/api/lzt', async (req, res) => {
   try {
     const { path, method, query, body } = req
     const cleanPath = path.replace('/api/lzt', '')
@@ -166,6 +170,7 @@ app.use('/api/lzt', async (req, res) => {
 })
 
 // Steam API endpoints using LZT Market SDK
+/*
 app.get('/api/steam', async (req, res) => {
   try {
     console.log('📥 /api/steam endpoint called with query:', req.query)
@@ -370,5 +375,7 @@ app.listen(PORT, () => {
   )
   console.log(`🏥 Health Check: http://localhost:${PORT}/health`)
 })
+
+*/
 
 export default app

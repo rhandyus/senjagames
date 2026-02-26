@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import steamGamesData from '../assets/steam-game.json'
 import SearchableGameDropdown from './SearchableGameDropdown'
 
@@ -189,6 +189,9 @@ const SteamFilters = ({ onFilterChange, loading }) => {
   const [apiGames, setApiGames] = useState([])
   const [gamesLoading, setGamesLoading] = useState(false)
 
+  // Ref to prevent initial render firing debounce
+  const isFirstRender = useRef(true)
+
   // Fetch games from server API on component mount
   useEffect(() => {
     const fetchGames = async () => {
@@ -319,6 +322,20 @@ const SteamFilters = ({ onFilterChange, loading }) => {
     onFilterChange(apiParams)
   }
 
+  // Debounce effect to auto-apply filters when they change
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+
+    const handler = setTimeout(() => {
+      handleApplyFilters()
+    }, 600)
+
+    return () => clearTimeout(handler)
+  }, [filters])
+
   const toggleSection = section => {
     setExpandedSections(prev => ({
       ...prev,
@@ -350,9 +367,6 @@ const SteamFilters = ({ onFilterChange, loading }) => {
 
     // Set the game filter
     handleFilterChange('game', newGames)
-
-    // Auto-apply the filter
-    setTimeout(() => handleApplyFilters(), 100)
   }
 
   const clearAllFilters = () => {
@@ -381,9 +395,6 @@ const SteamFilters = ({ onFilterChange, loading }) => {
       nsb: undefined,
       rust: false
     })
-
-    // Auto-apply to show all accounts
-    setTimeout(() => handleApplyFilters(), 100)
   }
 
   return (

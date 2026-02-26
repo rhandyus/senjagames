@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SenjaGames Cart Testing</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        min-height: 100vh;
+      }
+      .container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 2.5em;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        border-left: 4px solid #4ecdc4;
+      }
+      .command {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        margin: 5px 0;
+        display: inline-block;
+      }
+      .code-block {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 15px;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        white-space: pre-wrap;
+        margin: 10px 0;
+        overflow-x: auto;
+      }
+      .btn {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 10px 5px;
+        transition: transform 0.2s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .warning {
+        background: rgba(255, 193, 7, 0.2);
+        border-left-color: #ffc107;
+        border: 1px solid rgba(255, 193, 7, 0.3);
+      }
+      .success {
+        background: rgba(40, 167, 69, 0.2);
+        border-left-color: #28a745;
+      }
+      .info {
+        background: rgba(23, 162, 184, 0.2);
+        border-left-color: #17a2b8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🎮 SenjaGames Cart Testing</h1>
+        <p>Test WinPay Virtual Account creation with sample cart items</p>
+      </div>
+
+      <div class="section info">
+        <h2>🚀 Quick Start</h2>
+        <p>Open your browser console (F12) and run:</p>
+        <div class="code-block">
+          // Load the testing script import('./cart-test-script.js') // Then use these commands:
+          testPayment() // Quick setup for payment testing listCartItems() // See available test
+          items addRandomToCart(3) // Add 3 random items showCart() // Check cart contents
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>📋 Available Commands</h2>
+        <div class="code-block">
+          listCartItems() - List all available test items addToCart('item-id') - Add specific item
+          by ID addRandomToCart(n) - Add n random items to cart showCart() - Show current cart
+          status clearCart() - Clear all items from cart testPayment() - Quick payment test setup
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>🎯 Sample Items Available</h2>
+        <div class="code-block">
+          // Battle.net Accounts addToCart('battlenet-1') // World of Warcraft - $15.99
+          addToCart('battlenet-2') // Diablo IV - $25.99 addToCart('battlenet-3') // Overwatch 2 -
+          $12.99 // Steam Accounts addToCart('steam-1') // CS2 Prime - $8.99 addToCart('steam-2') //
+          Dota 2 - $5.99 addToCart('steam-3') // PUBG - $7.99 // Epic Games Accounts
+          addToCart('epic-1') // Fortnite - $18.99 addToCart('epic-2') // Rocket League - $14.99 //
+          Minecraft Accounts addToCart('minecraft-1') // Java Edition - $9.99
+          addToCart('minecraft-2') // Bedrock Edition - $7.99 // Social Club Accounts
+          addToCart('socialclub-1') // GTA V - $22.99
+        </div>
+      </div>
+
+      <div class="section success">
+        <h2>💳 Payment Testing Flow</h2>
+        <ol>
+          <li>Open SenjaGames in browser</li>
+          <li>Open Developer Console (F12)</li>
+          <li>Run: <code class="command">testPayment()</code></li>
+          <li>Go to cart/checkout page</li>
+          <li>Click "Pay with WinPay VA"</li>
+          <li>Check console for Virtual Account creation logs</li>
+        </ol>
+      </div>
+
+      <div class="section warning">
+        <h2>⚠️ Important Notes</h2>
+        <ul>
+          <li>This script manipulates localStorage directly</li>
+          <li>Items are for testing only - not real accounts</li>
+          <li>WinPay VA creation will use real API calls</li>
+          <li>Make sure your .env has correct WinPay credentials</li>
+          <li>Test on development server first</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>🔧 Manual Testing</h2>
+        <p>If you prefer manual testing:</p>
+        <div class="code-block">
+          // Add items manually window.CartTester.addItem('steam-1')
+          window.CartTester.addItem('epic-1') window.CartTester.showCartStatus() // Or use the quick
+          commands addToCart('battlenet-1') addRandomToCart(2) showCart()
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 30px">
+        <button class="btn" onclick="loadScript()">Load Testing Script</button>
+        <button class="btn" onclick="runQuickTest()">Run Quick Test</button>
+      </div>
+    </div>
+
+    <script>
+      function loadScript() {
+        // Load the testing script
+        import('./cart-test-script.js')
+          .then(() => {
+            alert('✅ Testing script loaded! Check console for commands.')
+          })
+          .catch(error => {
+            console.error('Failed to load script:', error)
+            alert('❌ Failed to load testing script. Check console.')
+          })
+      }
+
+      function runQuickTest() {
+        // Quick test - assumes script is already loaded
+        if (window.CartTester) {
+          window.testPayment()
+          alert('✅ Quick test started! Check console and cart.')
+        } else {
+          alert('❌ Testing script not loaded. Click "Load Testing Script" first.')
+        }
+      }
+
+      // Auto-load script when page loads
+      window.addEventListener('load', () => {
+        console.log('🎮 SenjaGames Cart Testing Page Loaded')
+        console.log('💡 Click "Load Testing Script" to get started')
+      })
+    </script>
+  </body>
+</html>

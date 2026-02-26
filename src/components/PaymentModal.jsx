@@ -1,19 +1,24 @@
 import { Icon } from '@iconify/react'
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import { arrayUnion, doc, setDoc, updateDoc } from 'firebase/firestore'
 import { useState } from 'react'
 import { db } from '../config/firebase'
 import { useAuth } from '../context/AuthContext'
-import WinPayAPI from '../services/winpayAPI'
 
 const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
   const { user } = useAuth()
-  const [selectedChannel, setSelectedChannel] = useState('BCA')
   const [isProcessing, setIsProcessing] = useState(false)
   const [paymentResult, setPaymentResult] = useState(null)
-
-  const winpay = new WinPayAPI()
+  const [transferProof, setTransferProof] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   if (!isOpen || !item) return null
+
+  // Bank Transfer Details
+  const bankDetails = {
+    bank: 'BCA',
+    accountNumber: '7410468225',
+    accountName: 'Rhandy'
+  }
 
   // Handle price parsing - prioritize price field over priceWithSellerFeeLabel (for Steam multiplier)
   const getPriceValue = () => {
@@ -42,9 +47,7 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
   const priceIDR = convertToIDR(priceUSD)
   const totalAmountIDR = priceIDR * quantity
 
-  const supportedChannels = winpay.getSupportedChannels()
-
-  const handlePayment = async () => {
+  const handleCreateOrder = async () => {
     if (!user?.uid) {
       alert('User tidak terautentikasi')
       return
@@ -53,77 +56,150 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
     setIsProcessing(true)
 
     try {
-      const paymentData = {
-        customerName: user.uid, // Use user ID instead of name
-        amount: totalAmountIDR, // Use IDR amount instead of USD
-        channel: selectedChannel,
-        itemId: item.id,
-        itemTitle: item.title || 'Gaming Account',
-        quantity: quantity,
-        originalPriceUSD: priceUSD, // Keep original price for reference
-        exchangeRate: import.meta.env.VITE_USD_TO_IDR_RATE
-      }
+      const trxId = `TRX${Date.now()}`
 
-      const result = await winpay.createVirtualAccount(paymentData)
-
-      // Check for success codes: '2000000' (demo) or '2002700' (real API)
-      if (result.responseCode === '2000000' || result.responseCode === '2002700') {
-        const transactionData = {
-          success: true,
-          virtualAccountNo:
-            result.virtualAccountData.virtualAccountNumber ||
-            result.virtualAccountData.virtualAccountNo,
-          virtualAccountName: result.virtualAccountData.virtualAccountName,
-          expiredDate: result.virtualAccountData.expiredDate,
-          amount: result.virtualAccountData.totalAmount.value,
-          contractId: result.virtualAccountData.additionalInfo?.contractId,
-          trxId: result.virtualAccountData.trxId,
-          channel: selectedChannel,
-          instructions: result.virtualAccountData.additionalInfo?.instructions,
-          bankCode: result.virtualAccountData.additionalInfo?.bankCode
-        }
-
-        setPaymentResult(transactionData)
-
-        // Add transaction to ongoing transactions in user's profile
-        if (user?.uid) {
-          try {
-            const userRef = doc(db, 'users', user.uid)
-            const ongoingTransaction = {
-              trxId: transactionData.trxId,
-              virtualAccountNo: transactionData.virtualAccountNo,
-              virtualAccountName: transactionData.virtualAccountName,
-              amount: transactionData.amount,
-              channel: selectedChannel,
-              status: 'pending',
-              createdAt: new Date().toISOString(),
-              expiredDate: transactionData.expiredDate,
-              item: {
-                id: item.id,
-                title: item.title || 'Gaming Account',
-                price: priceUSD,
-                quantity: quantity
-              }
+      // Helper to remove any undefined fields before saving to Firestore
+      const removeUndefined = obj => {
+        return Object.entries(obj).reduce((acc, [key, varValue]) => {
+          if (varValue !== undefined) {
+            if (varValue && typeof varValue === 'object' && !(varValue instanceof Date)) {
+              acc[key] = removeUndefined(varValue)
+            } else {
+              acc[key] = varValue
             }
-
-            await updateDoc(userRef, {
-              ongoingTransactions: arrayUnion(ongoingTransaction)
-            })
-          } catch (error) {
-            console.error('Error adding transaction to ongoing list:', error)
           }
-        }
-      } else {
-        throw new Error(result.responseMessage || 'Payment creation failed')
+          return acc
+        }, {})
       }
+
+      // Create bank transfer order directly in Firestore
+      const rawOrderData = {
+        orderId: trxId,
+        customerName: user.displayName || `SENJA${user.uid.slice(0, 6).toUpperCase()}`,
+        customerEmail: user.email || `${user.uid}@senjagames.id`,
+        customerUid: user.uid,
+        amount: totalAmountIDR,
+        items: [
+          {
+            id: item.id || item.item_id || 'unknown_item',
+            title: item.title || 'Gaming Account',
+            price: priceUSD,
+            quantity: quantity,
+            priceIDR: priceIDR
+          }
+        ],
+        paymentMethod: 'bank_transfer',
+        bankDetails: bankDetails,
+        status: 'waiting_for_payment',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        proofUploaded: false
+      }
+
+      const orderData = removeUndefined(rawOrderData)
+
+      await setDoc(doc(db, 'orders', trxId), orderData)
+
+      // Add transaction to ongoing transactions in user's profile
+      if (user?.uid) {
+        try {
+          const userRef = doc(db, 'users', user.uid)
+          const rawOngoingTransaction = {
+            trxId: trxId,
+            orderId: trxId,
+            amount: totalAmountIDR,
+            status: 'waiting_for_payment',
+            createdAt: new Date().toISOString(),
+            item: {
+              id: item.id || item.item_id || 'unknown_item',
+              title: item.title || 'Gaming Account',
+              price: priceUSD,
+              quantity: quantity
+            },
+            bankDetails: bankDetails
+          }
+
+          const ongoingTransaction = removeUndefined(rawOngoingTransaction)
+
+          await updateDoc(userRef, {
+            ongoingTransactions: arrayUnion(ongoingTransaction)
+          })
+        } catch (error) {
+          console.error('Error adding transaction to ongoing list:', error)
+        }
+      }
+
+      setPaymentResult({
+        success: true,
+        ...orderData,
+        trxId: trxId
+      })
     } catch (error) {
-      console.error('Payment error:', error)
+      console.error('Order creation error:', error)
       setPaymentResult({
         success: false,
-        error: error.message || 'Terjadi kesalahan dalam pembuatan pembayaran'
+        error: error.message || 'Terjadi kesalahan dalam pembuatan pesanan'
       })
     } finally {
       setIsProcessing(false)
+    }
+  }
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        alert('File terlalu besar. Maksimal 5MB.')
+        return
+      }
+      if (!file.type.startsWith('image/')) {
+        alert('Hanya file gambar yang diperbolehkan.')
+        return
+      }
+      setTransferProof(file)
+    }
+  }
+
+  const handleUploadProof = async () => {
+    if (!transferProof || !paymentResult?.orderId) {
+      alert('Pilih file bukti transfer terlebih dahulu')
+      return
+    }
+
+    setIsUploading(true)
+
+    try {
+      // Read the file as a base64 string
+      const base64String = await new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(transferProof)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = error => reject(error)
+      })
+
+      // Update the order in Firestore directly
+      const orderRef = doc(db, 'orders', paymentResult.orderId)
+      await updateDoc(orderRef, {
+        transferProofDataUrl: base64String,
+        status: 'waiting_for_confirmation',
+        proofUploadedAt: new Date(),
+        updatedAt: new Date(),
+        proofUploaded: true
+      })
+
+      // Update payment result with upload success
+      setPaymentResult(prev => ({
+        ...prev,
+        proofUploaded: true,
+        proofUrl: base64String
+      }))
+
+      alert('Bukti transfer berhasil diupload! Admin akan memverifikasi dalam 1-2 jam.')
+    } catch (error) {
+      console.error('Upload error:', error)
+      alert('Gagal upload bukti transfer: ' + error.message)
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -143,21 +219,6 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
     }).format(amount)
   }
 
-  const getChannelIcon = channel => {
-    const iconMap = {
-      BCA: 'simple-icons:bca',
-      BNI: 'simple-icons:bni',
-      BRI: 'simple-icons:bri',
-      MANDIRI: 'simple-icons:mandiri',
-      PERMATA: 'simple-icons:permata',
-      BSI: 'simple-icons:bsi',
-      CIMB: 'simple-icons:cimb',
-      INDOMARET: 'simple-icons:indomaret',
-      ALFAMART: 'simple-icons:alfamart'
-    }
-    return iconMap[channel] || 'mdi:bank'
-  }
-
   return (
     <div className='fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
       <div className='bg-gray-900/95 backdrop-blur-md border border-gray-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl'>
@@ -172,7 +233,7 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
         </div>
 
         {!paymentResult ? (
-          // Payment Form
+          // Order Creation Form
           <div className='p-6 space-y-6'>
             {/* Item Details */}
             <div className='bg-gray-800/50 rounded-lg p-4 border border-gray-700'>
@@ -216,159 +277,134 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
               </div>
             </div>
 
-            {/* Payment Channel Selection */}
-            <div>
-              <label className='block text-sm font-medium text-gray-300 mb-3'>
-                Pilih Metode Pembayaran
-              </label>
-              <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
-                {supportedChannels.map(channel => (
-                  <label
-                    key={channel.code}
-                    className={`flex items-center p-4 rounded-lg border transition-all cursor-pointer ${
-                      selectedChannel === channel.code
-                        ? 'border-purple-500 bg-purple-600/20'
-                        : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
-                    }`}
-                  >
-                    <input
-                      type='radio'
-                      name='paymentChannel'
-                      value={channel.code}
-                      checked={selectedChannel === channel.code}
-                      onChange={e => setSelectedChannel(e.target.value)}
-                      className='sr-only'
-                    />
-                    <Icon
-                      icon={getChannelIcon(channel.code)}
-                      className='text-2xl mr-3 text-blue-400'
-                    />
-                    <div>
-                      <div className='font-medium text-white'>{channel.name}</div>
-                      <div className='text-xs text-gray-400'>{channel.type}</div>
-                    </div>
-                    {selectedChannel === channel.code && (
-                      <Icon icon='mdi:check-circle' className='text-purple-400 ml-auto text-xl' />
-                    )}
-                  </label>
-                ))}
+            {/* Payment Method Info */}
+            <div className='bg-green-600/20 border border-green-500/30 rounded-lg p-4 mb-4'>
+              <div className='text-sm text-green-300'>
+                <Icon icon='mdi:bank-transfer' className='inline mr-1' />
+                Pembayaran via Bank Transfer BCA
               </div>
             </div>
 
-            {/* Payment Button */}
             <button
-              onClick={handlePayment}
+              onClick={handleCreateOrder}
               disabled={isProcessing || !user?.uid}
               className='w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-4 rounded-lg font-medium hover:from-purple-700 hover:to-purple-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-purple-500/25'
             >
               {isProcessing ? (
                 <div className='flex items-center justify-center'>
                   <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2'></div>
-                  Memproses Pembayaran...
+                  Membuat Pesanan...
                 </div>
               ) : (
-                `Bayar ${formatCurrency(totalAmountIDR)}`
+                `Buat Pesanan ${formatCurrency(totalAmountIDR)}`
               )}
             </button>
           </div>
         ) : (
-          // Payment Result
+          // Payment Result / Transfer Instructions
           <div className='p-6'>
             {paymentResult.success ? (
               <div className='text-center space-y-6'>
-                {/* Demo Mode Indicator */}
-                {import.meta.env.VITE_WINPAY_DEMO_MODE === 'true' && (
-                  <div className='bg-blue-900/20 border border-blue-500/30 rounded-lg p-3'>
-                    <div className='text-sm text-blue-300'>
-                      <Icon icon='mdi:information' className='inline mr-1' />
-                      🎭 Mode Demo - Tidak ada pembayaran sesungguhnya yang diproses
-                    </div>
-                  </div>
-                )}
-
                 <div className='bg-green-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto'>
                   <Icon icon='mdi:check-circle' className='text-3xl text-green-400' />
                 </div>
 
                 <div>
-                  <h3 className='text-xl font-bold text-white mb-2'>
-                    Virtual Account Berhasil Dibuat!
-                  </h3>
-                  <p className='text-gray-400'>
-                    Silakan transfer ke nomor virtual account berikut:
-                  </p>
+                  <h3 className='text-xl font-bold text-white mb-2'>Pesanan Berhasil Dibuat!</h3>
+                  <p className='text-gray-400'>Silakan transfer ke rekening berikut</p>
                 </div>
 
+                {/* Bank Transfer Details */}
                 <div className='bg-gray-800/50 rounded-lg p-6 border border-gray-700 space-y-4'>
                   <div className='text-center'>
-                    <div className='text-sm text-gray-400 mb-1'>Nomor Virtual Account</div>
-                    <div className='text-2xl font-mono font-bold text-purple-400 bg-gray-900 rounded-lg py-3 px-4 border border-gray-700'>
-                      {paymentResult.virtualAccountNo}
+                    <div className='text-2xl font-bold text-white mb-2'>BANK {bankDetails.bank}</div>
+                    <div className='text-3xl font-mono font-bold text-purple-400 mb-2'>
+                      {bankDetails.accountNumber}
                     </div>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(paymentResult.virtualAccountNo)}
-                      className='text-sm text-gray-400 hover:text-purple-400 mt-2 transition-colors'
-                    >
-                      <Icon icon='mdi:content-copy' className='inline mr-1' />
-                      Salin Nomor
-                    </button>
+                    <div className='text-lg text-gray-300'>a.n {bankDetails.accountName}</div>
                   </div>
 
-                  <div className='grid grid-cols-2 gap-4 text-sm'>
-                    <div>
-                      <div className='text-gray-400'>Nama</div>
-                      <div className='text-white font-medium'>
-                        {paymentResult.virtualAccountName}
-                      </div>
-                    </div>
-                    <div>
-                      <div className='text-gray-400'>Jumlah</div>
-                      <div className='text-white font-medium'>
+                  <div className='border-t border-gray-600 pt-4'>
+                    <div className='text-center'>
+                      <div className='text-gray-400 text-sm'>Jumlah Transfer</div>
+                      <div className='text-2xl font-bold text-green-400'>
                         {formatCurrency(paymentResult.amount)}
                       </div>
                     </div>
-                    <div>
-                      <div className='text-gray-400'>Bank</div>
-                      <div className='text-white font-medium'>{paymentResult.channel}</div>
-                    </div>
-                    <div>
-                      <div className='text-gray-400'>Berlaku Hingga</div>
-                      <div className='text-white font-medium'>
-                        {new Date(paymentResult.expiredDate).toLocaleString('id-ID')}
-                      </div>
+                  </div>
+
+                  <div className='text-center'>
+                    <div className='text-gray-400 text-sm'>Order ID</div>
+                    <div className='text-white font-mono font-medium'>{paymentResult.trxId}</div>
+                  </div>
+                </div>
+
+                <div className='bg-blue-600/20 border border-blue-500/30 rounded-lg p-4 mt-6'>
+                  <div className='flex items-start'>
+                    <Icon icon='mdi:information' className='text-blue-400 text-xl mr-3 mt-0.5 flex-shrink-0' />
+                    <div className='text-sm text-blue-200 w-full'>
+                      <div className='font-medium mb-3'>Cara Transfer:</div>
+                      <ol className='space-y-1.5 text-blue-300 list-decimal ml-4 pl-1'>
+                        <li className='pl-1'>Buka aplikasi banking BCA Anda</li>
+                        <li className='pl-1'>Pilih menu Transfer</li>
+                        <li className='pl-1'>Masukkan nomor rekening: <span className='font-mono text-purple-300'>{bankDetails.accountNumber}</span></li>
+                        <li className='pl-1'>Masukkan jumlah: <span className='font-medium text-green-300'>{formatCurrency(paymentResult.amount).replace('Rp', '')}</span></li>
+                        <li className='pl-1'>Konfirmasi dan transfer</li>
+                        <li className='pl-1'>Upload bukti transfer di bawah ini</li>
+                      </ol>
                     </div>
                   </div>
                 </div>
 
-                <div className='bg-blue-600/20 border border-blue-500/30 rounded-lg p-4'>
-                  <div className='flex items-start'>
-                    <Icon icon='mdi:information' className='text-blue-400 text-xl mr-3 mt-0.5' />
-                    <div className='text-sm text-blue-200'>
-                      <div className='font-medium mb-2'>
-                        Cara Pembayaran {paymentResult.channel}:
-                      </div>
-                      {paymentResult.instructions ? (
-                        <ol className='space-y-1 text-blue-300 list-decimal list-inside'>
-                          {paymentResult.instructions.map((instruction, index) => (
-                            <li key={index}>{instruction}</li>
-                          ))}
-                        </ol>
-                      ) : (
-                        <ul className='space-y-1 text-blue-300'>
-                          <li>• Transfer ke nomor virtual account di atas</li>
-                          <li>• Pembayaran akan otomatis terverifikasi</li>
-                          <li>• Akun akan dikirim setelah pembayaran berhasil</li>
-                        </ul>
+                {/* Transfer Proof Upload */}
+                {!paymentResult.proofUploaded ? (
+                  <div className='bg-gray-800/50 rounded-lg p-4 border border-gray-700'>
+                    <h4 className='font-medium text-white mb-3'>Upload Bukti Transfer</h4>
+
+                    <div className='space-y-3'>
+                      <input
+                        type='file'
+                        accept='image/*'
+                        onChange={handleFileChange}
+                        className='w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-600 file:text-white hover:file:bg-purple-700'
+                      />
+
+                      {transferProof && (
+                        <div className='text-sm text-gray-400'>
+                          File: {transferProof.name} ({(transferProof.size / 1024 / 1024).toFixed(2)} MB)
+                        </div>
                       )}
+
+                      <button
+                        onClick={handleUploadProof}
+                        disabled={!transferProof || isUploading}
+                        className='w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-medium hover:from-green-700 hover:to-green-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                      >
+                        {isUploading ? (
+                          <div className='flex items-center justify-center'>
+                            <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
+                            Mengupload...
+                          </div>
+                        ) : (
+                          'Upload Bukti Transfer'
+                        )}
+                      </button>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className='bg-green-600/20 border border-green-500/30 rounded-lg p-4'>
+                    <div className='flex items-center justify-center text-green-300'>
+                      <Icon icon='mdi:check-circle' className='text-xl mr-2' />
+                      Bukti transfer berhasil diupload! Menunggu konfirmasi admin.
+                    </div>
+                  </div>
+                )}
 
                 <button
                   onClick={onClose}
                   className='w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-medium hover:from-green-700 hover:to-green-800 transition-all duration-200'
                 >
-                  Mengerti
+                  Selesai
                 </button>
               </div>
             ) : (
@@ -379,7 +415,7 @@ const PaymentModal = ({ isOpen, onClose, item, quantity = 1 }) => {
                 </div>
 
                 <div>
-                  <h3 className='text-xl font-bold text-white mb-2'>Pembayaran Gagal</h3>
+                  <h3 className='text-xl font-bold text-white mb-2'>Pembuatan Pesanan Gagal</h3>
                   <p className='text-gray-400'>{paymentResult.error}</p>
                 </div>
 

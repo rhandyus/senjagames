@@ -1,5 +1,5 @@
-simport Oas from 'oas';
-import APICore from 'api/dist/core';
+import Oas from 'oas';
+import APICore from 'api/dist/core/index.js';
 import definition from './openapi.json';
 class SDK {
     constructor() {

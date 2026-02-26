@@ -31,17 +31,8 @@ export default defineConfig({
     historyApiFallback: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:3002',
+        target: 'http://localhost:3010',
         changeOrigin: true
-      },
-      '/winpay-api': {
-        target: 'https://snap.winpay.id',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/winpay-api/, ''),
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
       }
     }
   },

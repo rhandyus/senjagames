@@ -3,26 +3,26 @@ require('dotenv/config')
 const express = require('express')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
-const lztMarket = require('./.api/apis/lzt-market')
-const winpayCallbackRouter = require('./src/api/winpayCallback.cjs')
+// const lztMarket = require('./.api/apis/lzt-market')
+// const winpayCallbackRouter = require('./src/api/winpayCallback.cjs')
 
 const app = express()
-const PORT = process.env.PORT || 3002
+const PORT = process.env.PORT || 12345
 
 // Initialize LZT Market SDK with token fallback
-const lztToken =
-  process.env.LZT_TOKEN ||
-  process.env.ZELENKA_TOKEN ||
-  process.env.VITE_ZELENKA_TOKEN ||
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOjg0NDY3ODIsImlzcyI6Imx6dCIsImlhdCI6MTc1Mzc5NTkyNSwianRpIjoiODIyMDc2Iiwic2NvcGUiOiJiYXNpYyByZWFkIHBvc3QgY29udmVyc2F0ZSBwYXltZW50IGludm9pY2UgY2hhdGJveCBtYXJrZXQifQ.ChwPNVckvm1n1nw7tgaNLPVtuwCJiSRimrVmM7HFqOi3h7_sbUN9tM_MGz4KYFY9K52cUN68tGYXNnZMby6qlE6H_bNqkiol1zCM4_AEPEKkHIa0ljBe4VdG_Wz1PnRqfykmYu43Rf2oDpiC4uMAgtC5CvGJpSR8RIl8n7Pq42c'
+// const lztToken =
+//   process.env.LZT_TOKEN ||
+//   process.env.ZELENKA_TOKEN ||
+//   process.env.VITE_ZELENKA_TOKEN ||
+//   'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOjg0NDY3ODIsImlzcyI6Imx6dCIsImlhdCI6MTc1Mzc5NTkyNSwianRpIjoiODIyMDc2Iiwic2NvcGUiOiJiYXNpYyByZWFkIHBvc3QgY29udmVyc2F0ZSBwYXltZW50IGludm9pY2UgY2hhdGJveCBtYXJrZXQifQ.ChwPNVckvm1n1nw7tgaNLPVtuwCJiSRimrVmM7HFqOi3h7_sbUN9tM_MGz4KYFY9K52cUN68tGYXNnZMby6qlE6H_bNqkiol1zCM4_AEPEKkHIa0ljBe4VdG_Wz1PnRqfykmYu43Rf2oDpiC4uMAgtC5CvGJpSR8RIl8n7Pq42c'
 
-if (!lztToken) {
-  console.error('❌ No LZT Market token found. Set LZT_TOKEN, ZELENKA_TOKEN, or VITE_ZELENKA_TOKEN')
-  process.exit(1)
-} else {
-  lztMarket.auth(lztToken)
-  console.log('✅ LZT Market SDK initialized successfully')
-}
+// if (!lztToken) {
+//   console.error('❌ No LZT Market token found. Set LZT_TOKEN, ZELENKA_TOKEN, or VITE_ZELENKA_TOKEN')
+//   process.exit(1)
+// } else {
+//   lztMarket.auth(lztToken)
+//   console.log('✅ LZT Market SDK initialized successfully')
+// }
 
 // Security middleware
 app.use(helmet())
@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 })
 
 // Routes
-app.use('/api/winpay', winpayCallbackRouter)
+// app.use('/api/winpay', winpayCallbackRouter)
 
 // Specific LZT endpoints - MUST be before the general proxy
 app.get('/api/lzt/steam/games', async (req, res) => {

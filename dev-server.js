@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express()
-const PORT = 3002
+const PORT = 3010
 
 // Middleware
 app.use(express.json())
@@ -111,7 +111,9 @@ app.all('/api/*', async (req, res) => {
     battlenet: 'api/battlenet.js',
     // vpn: 'api/vpn.js', // disabled
     'lzt-proxy': 'api/lzt-proxy.js',
-    unify: 'api/unify.js'
+    unify: 'api/unify.js',
+    payment: 'api/payment.js',
+    doku: 'api/doku-callback.js'
   }
 
   // Handle nested LZT routes
@@ -140,7 +142,13 @@ app.all('/api/*', async (req, res) => {
       functionPath = 'api/lzt/[...category].js'
     } else {
       // Single level LZT paths
-      functionPath = routeMappings[lztPath] || 'api/lzt/[...category].js'
+      const exactFile = `api/lzt/${lztPath}.js`
+      const fs = await import('fs')
+      if (fs.existsSync(path.join(__dirname, exactFile))) {
+        functionPath = exactFile
+      } else {
+        functionPath = routeMappings[lztPath] || 'api/lzt/[...category].js'
+      }
     }
   } else {
     // Direct API routes

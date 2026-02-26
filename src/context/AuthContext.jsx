@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import {
-  onAuthStateChanged,
-  signOut as firebaseSignOut,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut
 } from 'firebase/auth'
-import { doc, setDoc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { auth, db } from '../config/firebase'
 
 const AuthContext = createContext()
@@ -214,6 +215,15 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const resetPassword = async email => {
+    try {
+      await sendPasswordResetEmail(auth, email)
+    } catch (error) {
+      console.error('Reset password error:', error)
+      throw error
+    }
+  }
+
   const updateUserProfile = async fullName => {
     if (!user) return
 
@@ -249,6 +259,7 @@ export const AuthProvider = ({ children }) => {
     signUp,
     signIn,
     signOut,
+    resetPassword,
     updateUserProfile
   }
 
