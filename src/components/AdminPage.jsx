@@ -44,7 +44,11 @@ const AdminPage = () => {
         id: doc.id,
         ...doc.data()
       }))
-      setOrders(ordersData.sort((a, b) => b.createdAt?.toDate() - a.createdAt?.toDate()))
+      setOrders(ordersData.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0)
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0)
+        return dateB - dateA
+      }))
     } catch (error) {
       console.error('Error loading orders:', error)
       alert('Gagal memuat data pesanan')
