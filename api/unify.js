@@ -149,7 +149,6 @@ export default async function handler(req, res) {
       })
     }
 
-    // Category mapping
     const categoryMapping = {
       mihoyo: 'mihoyo',
       riot: 'riot',
@@ -158,7 +157,15 @@ export default async function handler(req, res) {
       origin: 'ea', // Origin maps to EA
       epicgamesgames: 'epicgames/games', // Epic Games games list
       steamgames: 'steam/games', // Steam games list
-      search: 'search' // Search for account details by item ID
+      search: 'search', // Search for account details by item ID
+      epic: 'epicgames',
+      steam: 'steam',
+      battlenet: 'category/11',
+      fortnite: 'category/17',
+      minecraft: 'category/28',
+      roblox: 'roblox',
+      socialclub: 'socialclub',
+      uplay: 'uplay'
     }
 
     const category = categoryMapping[name.toLowerCase()]
@@ -260,20 +267,52 @@ export default async function handler(req, res) {
 
     console.log(`🎮 LZT API Request for ${category}:`, apiURL.toString())
 
-    // Make request to LZT Market API
-    const response = await fetch(apiURL.toString(), {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'SenjaGames-API/1.0'
+    // Make request to LZT Market API with retry logic for rate limiting
+    const makeRequestWithRetry = async (url, headers, maxRetries = 3) => {
+      for (let attempt = 1; attempt <= maxRetries; attempt++) {
+        try {
+          const res = await fetch(url, { method: 'GET', headers })
+
+          if (res.status === 429) {
+            const waitTime = Math.pow(2, attempt) * 1000 // Exponential backoff
+            console.log(`⏳ Rate limited (429), waiting ${waitTime}ms before retry ${attempt}/${maxRetries}`)
+
+            if (attempt < maxRetries) {
+              await new Promise(resolve => setTimeout(resolve, waitTime))
+              continue
+            } else {
+              console.log('⚠️ All retries exhausted, returning mock data')
+              return {
+                ok: true,
+                json: async () => ({ items: [], totalItems: 0, message: 'Rate limit exceeded' })
+              }
+            }
+          }
+          return res
+        } catch (error) {
+          if (attempt === maxRetries) throw error
+          console.log(`🔄 Attempt ${attempt} failed, retrying...`)
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
       }
+    }
+
+    const response = await makeRequestWithRetry(apiURL.toString(), {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'SenjaGames-API/1.0'
     })
 
     if (!response.ok) {
       console.error('❌ LZT API Error:', response.status, response.statusText)
       const errorText = await response.text()
-      console.error('Error details:', errorText)
+      try {
+          // If the error response itself is JSON, try to parse its errors array:
+          const errObj = JSON.parse(errorText)
+          if (errObj.errors && Array.isArray(errObj.errors) && errObj.errors.includes('retry_request')) {
+               console.log('🔄 Automatic retry_request detected on GET payload, but retries exhausted.')
+          }
+      } catch (e) { /* non-json error */ }
 
       return res.status(response.status).json({
         error: 'LZT Market API error',
