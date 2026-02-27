@@ -112,8 +112,7 @@ app.all('/api/*', async (req, res) => {
     // vpn: 'api/vpn.js', // disabled
     'lzt-proxy': 'api/lzt-proxy.js',
     unify: 'api/unify.js',
-    payment: 'api/payment.js',
-    doku: 'api/doku-callback.js'
+    payment: 'api/payment.js'
   }
 
   // Handle nested LZT routes

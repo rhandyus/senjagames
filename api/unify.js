@@ -1,4 +1,7 @@
-// Unified API endpoint for multiple LZT categories (mihoyo, riot, telegram, ea, epicgamesgames)
+// Unified API endpoint for multiple LZT categories + LZT market operations + Doku callbacks
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -11,13 +14,117 @@ export default async function handler(req, res) {
     return
   }
 
-  // Only allow GET requests
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' })
-  }
-
   try {
     const { name, ...queryParams } = req.query
+
+    // ─── POST-based routes ───────────────────────────────────────────
+    if (req.method === 'POST') {
+      if (!name) {
+        return res.status(400).json({ error: 'Missing name parameter for POST request' })
+      }
+
+      const postAction = name.toLowerCase()
+
+      // ── LZT Preview (GET item details, safe) ──
+      if (postAction === 'lzt-preview') {
+        const { item_id } = req.body
+        if (!item_id) return res.status(400).json({ error: 'item_id is required' })
+
+        const token = process.env.LZT_TOKEN
+        if (!token) return res.status(500).json({ error: 'Missing API token' })
+
+        console.log(`🔍 [unify] Previewing LZT item: ${item_id}`)
+
+        const response = await fetch(`https://prod-api.lzt.market/${item_id}`, {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+        })
+        const data = await response.json()
+        return res.status(response.status).json(data)
+      }
+
+      // ── LZT Check Account (POST /check-account) ──
+      if (postAction === 'lzt-check') {
+        const { item_id } = req.body
+        if (!item_id) return res.status(400).json({ error: 'item_id is required' })
+
+        const token = process.env.LZT_TOKEN
+        if (!token) return res.status(500).json({ error: 'Missing API token' })
+
+        console.log(`✅ [unify] Checking account validity for LZT item: ${item_id}`)
+
+        let data = null
+        let lastStatus = 500
+        const MAX_RETRIES = 10
+
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+          const response = await fetch(`https://prod-api.lzt.market/${item_id}/check-account`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }
+          })
+          lastStatus = response.status
+          data = await response.json()
+
+          if (data.errors && Array.isArray(data.errors) && data.errors.includes('retry_request')) {
+            console.log(`🔄 Retry request received (attempt ${attempt}/${MAX_RETRIES})`)
+            await new Promise(resolve => setTimeout(resolve, 500))
+            continue
+          }
+          break
+        }
+        return res.status(lastStatus).json(data)
+      }
+
+      // ── LZT Fast-Buy (POST /fast-buy) ──
+      if (postAction === 'lzt-fastbuy') {
+        const { item_id, price } = req.body
+        if (!item_id) return res.status(400).json({ error: 'item_id is required' })
+
+        const token = process.env.LZT_TOKEN
+        if (!token) return res.status(500).json({ error: 'Missing API token' })
+
+        console.log(`🛒 [unify] Initiating Fast-Buy for LZT item: ${item_id}`)
+
+        let data = null
+        let lastStatus = 500
+        const MAX_RETRIES = 10
+
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+          const bodyPayload = price ? JSON.stringify({ price }) : undefined
+          const response = await fetch(`https://prod-api.lzt.market/${item_id}/fast-buy`, {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+              Accept: 'application/json'
+            },
+            ...(bodyPayload ? { body: bodyPayload } : {})
+          })
+          lastStatus = response.status
+          data = await response.json()
+
+          if (data.errors && Array.isArray(data.errors) && data.errors.includes('retry_request')) {
+            console.log(`🔄 Retry request received (attempt ${attempt}/${MAX_RETRIES})`)
+            await new Promise(resolve => setTimeout(resolve, 500))
+            continue
+          }
+          break
+        }
+        return res.status(lastStatus).json(data)
+      }
+
+      // ── Doku Callback (notification / inquiry) ──
+      if (postAction === 'doku-notification' || postAction === 'doku-inquiry') {
+        return await handleDokuCallback(postAction, req, res)
+      }
+
+      return res.status(400).json({ error: `Unsupported POST action: ${name}` })
+    }
+
+    // ─── GET-based routes (existing logic) ───────────────────────────
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: 'Method not allowed' })
+    }
 
     console.log(
       `🔍 Unified API Request - name: ${name}, queryParams: ${JSON.stringify(queryParams)}`
@@ -180,8 +287,6 @@ export default async function handler(req, res) {
     const data = await response.json()
 
     // Special handling for Steam games endpoint
-    // The steam/games endpoint returns { games: [...], system_info: {...} }
-    // but we need to transform it to { "app_id": {...}, ... } format
     if (name.toLowerCase() === 'steamgames' && data.games && Array.isArray(data.games)) {
       console.log(`✅ LZT API Success for ${category}: ${data.games.length} games returned`)
 
@@ -216,4 +321,118 @@ export default async function handler(req, res) {
       requestedName: req.query.name
     })
   }
+}
+
+// ─── Doku Callback Handler ──────────────────────────────────────────
+async function handleDokuCallback(action, req, res) {
+  const {
+    doc,
+    updateDoc,
+    arrayRemove,
+    arrayUnion,
+    collection,
+    getDocs
+  } = require('firebase/firestore')
+  const { db } = require('../src/config/firebase')
+
+  if (action === 'doku-notification') {
+    console.log('Doku notification received:', req.body)
+
+    const {
+      trxId,
+      paymentAmount,
+      paymentDate,
+      paymentStatus
+    } = req.body
+
+    // Find user with this transaction
+    const usersRef = collection(db, 'users')
+    const usersSnapshot = await getDocs(usersRef)
+
+    let foundUser = null
+    let foundTransaction = null
+
+    for (const userDoc of usersSnapshot.docs) {
+      const userData = userDoc.data()
+      const ongoingTransactions = userData.ongoingTransactions || []
+      const transaction = ongoingTransactions.find(t => t.trxId === trxId)
+      if (transaction) {
+        foundUser = { id: userDoc.id, ...userData }
+        foundTransaction = transaction
+        break
+      }
+    }
+
+    if (paymentStatus === '00' || paymentStatus === 'SUCCESS') {
+      if (foundUser && foundTransaction) {
+        const userRef = doc(db, 'users', foundUser.id)
+        await updateDoc(userRef, { ongoingTransactions: arrayRemove(foundTransaction) })
+
+        const completedTransaction = {
+          ...foundTransaction,
+          status: 'completed',
+          completedAt: new Date().toISOString(),
+          paymentDate: paymentDate,
+          paymentAmount: paymentAmount
+        }
+        await updateDoc(userRef, { paymentHistory: arrayUnion(completedTransaction) })
+
+        if (foundTransaction.item) {
+          const purchasedAccount = {
+            ...foundTransaction.item,
+            purchasedAt: new Date().toISOString(),
+            trxId: trxId
+          }
+          await updateDoc(userRef, { purchasedAccounts: arrayUnion(purchasedAccount) })
+        }
+        console.log('Payment successful and transaction updated for trxId:', trxId)
+      }
+      return res.json({ responseCode: '2002400', responseMessage: 'Success' })
+    } else {
+      if (foundUser && foundTransaction) {
+        const userRef = doc(db, 'users', foundUser.id)
+        const updatedTransaction = {
+          ...foundTransaction,
+          status: paymentStatus === '01' ? 'failed' : 'pending',
+          lastUpdated: new Date().toISOString()
+        }
+        await updateDoc(userRef, {
+          ongoingTransactions: arrayRemove(foundTransaction)
+        })
+        await updateDoc(userRef, {
+          ongoingTransactions: arrayUnion(updatedTransaction)
+        })
+      }
+      console.log('Payment status:', paymentStatus, 'for trxId:', trxId)
+      return res.json({ responseCode: '2002400', responseMessage: 'Notification received' })
+    }
+  }
+
+  if (action === 'doku-inquiry') {
+    console.log('Doku inquiry received:', req.body)
+    const { partnerServiceId, customerNo, virtualAccountNo } = req.body
+
+    return res.json({
+      responseCode: '2002400',
+      responseMessage: 'Success',
+      virtualAccountData: {
+        partnerServiceId,
+        customerNo,
+        virtualAccountNo,
+        virtualAccountName: 'SENJAGAMES PAYMENT',
+        virtualAccountEmail: 'payment@senjagames.id',
+        trxId: `TRX${Date.now()}`,
+        totalAmount: { value: '10000.00', currency: 'IDR' },
+        additionalInfo: {
+          channel: 'VIRTUAL_ACCOUNT_BANK_CIMB',
+          trxId: `TRX${Date.now()}`,
+          virtualAccountConfig: { reusableStatus: false, maxAmount: '1000000.00', minAmount: '1000.00' }
+        },
+        inquiryStatus: '00',
+        inquiryReason: { english: 'Success', indonesia: 'Sukses' }
+      }
+    })
+  }
+
+  return res.status(404).json({ error: 'Unknown doku action' })
 }

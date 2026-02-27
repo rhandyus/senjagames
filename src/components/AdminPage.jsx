@@ -150,7 +150,7 @@ const AdminPage = () => {
       }
 
       // Call our Vercel fastbuy proxy
-      const response = await fetch('/api/lzt/fast-buy', {
+      const response = await fetch('/api/unify?name=lzt-fastbuy', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ item_id: lztItemId })
@@ -254,7 +254,7 @@ const AdminPage = () => {
           return
       }
 
-      const response = await fetch('/api/lzt/check-buy', {
+      const response = await fetch('/api/unify?name=lzt-check', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ item_id: lztItemId })
@@ -289,7 +289,7 @@ const AdminPage = () => {
           return
       }
 
-      const response = await fetch('/api/lzt/preview', {
+      const response = await fetch('/api/unify?name=lzt-preview', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ item_id: lztItemId })
