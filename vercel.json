@@ -6,36 +6,16 @@
   "functions": {
     "api/unify.js": {
       "maxDuration": 30
-    },
-    "api/roblox.js": {
-      "maxDuration": 30
-    },
-    "api/steam.js": {
-      "maxDuration": 30
-    },
-    "api/epic.js": {
-      "maxDuration": 30
-    },
-    "api/fortnite.js": {
-      "maxDuration": 30
-    },
-    "api/minecraft.js": {
-      "maxDuration": 30
-    },
-    "api/socialclub.js": {
-      "maxDuration": 30
-    },
-    "api/uplay.js": {
-      "maxDuration": 30
-    },
-    "api/battlenet.js": {
-      "maxDuration": 30
     }
   },
   "rewrites": [
     {
-      "source": "/api/lzt-proxy/(.*)",
-      "destination": "/api/lzt-proxy?path=$1"
+      "source": "/api/payment/:action",
+      "destination": "/api/unify?name=payment-:action"
+    },
+    {
+      "source": "/api/:name",
+      "destination": "/api/unify?name=:name"
     },
     {
       "source": "/(.*)",

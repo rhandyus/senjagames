@@ -18,12 +18,20 @@ const useInfiniteRobloxAccounts = filters => {
       try {
         console.log('Fetching Roblox accounts for page:', pageNum, 'with filters:', filters)
 
-        const queryParams = new URLSearchParams({
-          page: pageNum.toString(),
-          ...filters
+        const queryParams = new URLSearchParams()
+        queryParams.append('name', 'roblox')
+        queryParams.append('page', pageNum.toString())
+        
+        // Add filters, mapping min_price/max_price to pmin/pmax for LZT
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== '' && value !== null && value !== undefined) {
+            if (key === 'min_price') queryParams.append('pmin', value)
+            else if (key === 'max_price') queryParams.append('pmax', value)
+            else queryParams.append(key, value)
+          }
         })
 
-        const response = await fetch(`/api/roblox?${queryParams}`)
+        const response = await fetch(`/api/unify?${queryParams.toString()}`)
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -32,10 +40,11 @@ const useInfiniteRobloxAccounts = filters => {
         const data = await response.json()
         console.log('Roblox API Response:', data)
 
-        if (data && (data.items || data.data?.items)) {
-          const newAccounts = data.items || data.data?.items || []
-          const total = data.totalItems || data.data?.totalItems || newAccounts.length
+        // Try to find items in different possible response locations
+        const newAccounts = data.items || data.data?.items || (Array.isArray(data) ? data : [])
+        const total = data.totalItems || data.total_items || data.data?.totalItems || newAccounts.length
 
+        if (Array.isArray(newAccounts)) {
           console.log(`🎮 Roblox accounts fetched:`, {
             page: pageNum,
             newCount: newAccounts.length,
@@ -50,12 +59,11 @@ const useInfiniteRobloxAccounts = filters => {
           }
 
           setTotalPages(Math.ceil(total / 20) || 1)
-          setHasMore(newAccounts.length === 20 && accounts.length + newAccounts.length < total)
+          // LZT often uses 40 per page, but we'll be flexible
+          setHasMore(newAccounts.length > 0 && accounts.length + newAccounts.length < total)
         } else {
           console.warn('🎮 Unexpected Roblox API response format:', data)
-          if (pageNum === 1) {
-            setAccounts([])
-          }
+          if (pageNum === 1) setAccounts([])
           setHasMore(false)
         }
       } catch (err) {

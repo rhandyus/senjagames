@@ -51,7 +51,7 @@ const loadServerlessFunction = async functionPath => {
     // Delete from require cache to allow hot reloading
     delete require.cache[require.resolve(fullPath)]
 
-    const { default: handler } = await import(`file://${fullPath}`)
+    const { default: handler } = await import(`file://${fullPath}?update=${Date.now()}`)
     return handler
   } catch (error) {
     console.error(
@@ -93,26 +93,18 @@ app.all('/api/*', async (req, res) => {
   console.log(`Incoming request: ${req.method} ${req.path}`)
 
   // Map API paths to serverless function files (only active functions)
+  // Map API paths to the unified serverless function
   const routeMappings = {
-    steam: 'api/steam.js',
-    epic: 'api/epic.js',
-    fortnite: 'api/fortnite.js',
-    roblox: 'api/roblox.js',
-    // Disabled functions - will fall back to dynamic routes:
-    // discord: 'api/discord.js', // disabled
-    // gifts: 'api/gifts.js', // disabled
-    minecraft: 'api/minecraft.js',
-    // escapefromtarkov: 'api/escapefromtarkov.js', // disabled
-    socialclub: 'api/socialclub.js',
-    uplay: 'api/uplay.js',
-    // tiktok: 'api/tiktok.js', // disabled
-    // instagram: 'api/instagram.js', // disabled
-    // chatgpt: 'api/chatgpt.js', // disabled
-    battlenet: 'api/battlenet.js',
-    // vpn: 'api/vpn.js', // disabled
-    'lzt-proxy': 'api/lzt-proxy.js',
+    steam: 'api/unify.js',
+    epic: 'api/unify.js',
+    fortnite: 'api/unify.js',
+    roblox: 'api/unify.js',
+    minecraft: 'api/unify.js',
+    socialclub: 'api/unify.js',
+    uplay: 'api/unify.js',
+    battlenet: 'api/unify.js',
     unify: 'api/unify.js',
-    payment: 'api/payment.js'
+    payment: 'api/unify.js'
   }
 
   // Handle nested LZT routes
@@ -153,6 +145,17 @@ app.all('/api/*', async (req, res) => {
     // Direct API routes
     const mainPath = apiPath.split('?')[0].split('/')[0]
     functionPath = routeMappings[mainPath]
+
+    // If calling via /api/steam, /api/epic, etc., set the 'name' query param
+    // to match what api/unify.js expects
+    if (functionPath === 'api/unify.js' && mainPath !== 'unify') {
+      if (mainPath === 'payment') {
+        const action = apiPath.split('/')[1]
+        req.query.name = `payment-${action}`
+      } else {
+        req.query.name = mainPath
+      }
+    }
   }
 
   if (!functionPath) {

@@ -120,7 +120,7 @@ export const useInfiniteSteamAccounts = (filters = {}) => {
       // Set default Steam filters for initial load
       const defaultSteamFilters = {
         'game[]': [578080], // PUBG - popular game to ensure accounts have games
-        order_by: 'price_to_up', // Show cheapest first
+        order_by: 'pdate_to_up_upload', // Show newest first
         page: 1,
         per_page: 20 // Limit to 20 items per page for better UX
       }
@@ -129,7 +129,7 @@ export const useInfiniteSteamAccounts = (filters = {}) => {
       const steamParams =
         Object.keys(filters).length === 0
           ? defaultSteamFilters
-          : { ...defaultSteamFilters, ...filters, page: 1 }
+          : { ...defaultSteamFilters, ...filters, order_by: filters.order_by || 'pdate_to_up_upload', page: 1 }
 
       // Use server endpoint instead of ZelenkaAPI
       const params = new URLSearchParams(steamParams)
@@ -205,7 +205,7 @@ export const useInfiniteSteamAccounts = (filters = {}) => {
       // Set default Steam filters
       const defaultSteamFilters = {
         'game[]': [578080], // PUBG
-        order_by: 'price_to_up',
+        order_by: 'pdate_to_up_upload',
         page: nextPage,
         per_page: 20 // Limit to 20 items per page
       }
@@ -214,7 +214,7 @@ export const useInfiniteSteamAccounts = (filters = {}) => {
       const steamParams =
         Object.keys(filters).length === 0
           ? defaultSteamFilters
-          : { ...defaultSteamFilters, ...filters, page: nextPage }
+          : { ...defaultSteamFilters, ...filters, order_by: filters.order_by || 'pdate_to_up_upload', page: nextPage }
 
       // Use server endpoint instead of ZelenkaAPI
       const params = new URLSearchParams(steamParams)

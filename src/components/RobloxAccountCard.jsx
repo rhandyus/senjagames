@@ -7,7 +7,7 @@ const RobloxAccountCard = ({ account }) => {
     
     // Remove or filter out brute/resale related fields from any text fields
     const cleanText = (text) => {
-      if (!text) return text
+      if (!text || typeof text !== 'string') return text
       return text
         .replace(/\(brute\)/gi, '')
         .replace(/\(resale\)/gi, '')
@@ -24,8 +24,9 @@ const RobloxAccountCard = ({ account }) => {
     if (cleaned.subcategory) cleaned.subcategory = cleanText(cleaned.subcategory)
     
     // Remove brute/resale from any tags or categories
-    if (cleaned.tags) {
+    if (cleaned.tags && Array.isArray(cleaned.tags)) {
       cleaned.tags = cleaned.tags.filter(tag => 
+        tag && typeof tag === 'string' &&
         !tag.toLowerCase().includes('brute') && 
         !tag.toLowerCase().includes('resale')
       )

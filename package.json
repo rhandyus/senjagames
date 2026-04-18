@@ -2,9 +2,10 @@
   "name": "senjagamesid",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:vite\"",
-    "dev:api": "node dev-server.js",
+    "dev:api": "nodemon dev-server.js",
     "dev:vite": "vite",
     "dev:vercel": "vercel dev",
     "build": "vite build",

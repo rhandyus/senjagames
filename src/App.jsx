@@ -93,7 +93,7 @@ function MainPage() {
   const [socialClubFilters, setSocialClubFilters] = useState({}) // State for Social Club filters
   const [uplayFilters, setUplayFilters] = useState({}) // State for Uplay filters
   // Commented out - not in 12 chosen categories
-  // const [discordFilters, setDiscordFilters] = useState({}) // State for Discord filters
+  const [discordFilters, setDiscordFilters] = useState({}) // State for Discord filters
   // const [tiktokFilters, setTiktokFilters] = useState({}) // State for TikTok filters
   // const [instagramFilters, setInstagramFilters] = useState({}) // State for Instagram filters
   // const [chatgptFilters, setChatgptFilters] = useState({}) // State for ChatGPT filters
@@ -141,9 +141,9 @@ function MainPage() {
   }
 
   // Commented out - not in 12 chosen categories
-  // const updateDiscordFilters = newFilters => {
-  //   setDiscordFilters(newFilters)
-  // }
+  const updateDiscordFilters = useCallback(newFilters => {
+    setDiscordFilters(newFilters)
+  }, [])
 
   // const updateTiktokFilters = newFilters => {
   //   setTiktokFilters(newFilters)
@@ -1107,44 +1107,6 @@ function MainPage() {
         {isSupercellCategory(selectedCategory) && <SupercellPage />}
 
         {/* Origin Page - Show only when Origin category is selected */}
-        {isOriginCategory(selectedCategory) && <OriginPage />}
-
-        {/* Discord Page - Show only when Discord category is selected */}
-        {isDiscordCategory(selectedCategory) && <InfiniteDiscordAccountsContainer />}
-
-        {/* Instagram Page - Show only when Instagram category is selected */}
-        {isInstagramCategory(selectedCategory) && (
-          <InfiniteInstagramAccountsContainer filters={instagramFilters} />
-        )}
-
-        {/* ChatGPT Page - Show only when ChatGPT category is selected */}
-        {isChatGPTCategory(selectedCategory) && (
-          <InfiniteChatGPTAccountsContainer filters={chatgptFilters} />
-        )}
-
-        {/* TikTok Page - Show only when TikTok category is selected */}
-        {isTikTokCategory(selectedCategory) && (
-          <InfiniteTikTokAccountsContainer filters={tiktokFilters} />
-        )}
-
-        {/* Roblox Page - Show only when Roblox category is selected */}
-        {isRobloxCategory(selectedCategory) && (
-          <InfiniteRobloxAccountsContainer filters={robloxFilters} />
-        )}
-
-        {/* Battle.net Page - Show only when Battle.net category is selected */}
-        {isBattleNetCategory(selectedCategory) && (
-          <InfiniteBattleNetAccountsContainer filters={battlenetFilters} />
-        )}
-
-        {/* VPN Page - Show only when VPN category is selected */}
-        {isVPNCategory(selectedCategory) && <InfiniteVPNAccountsContainer filters={vpnFilters} />}
-
-        {/* VPN Page - Show only when VPN category is selected */}
-        {isVPNCategory(selectedCategory) && <InfiniteVPNAccountsContainer filters={vpnFilters} />}
-
-        {/* World of Tanks Page - Show only when World of Tanks category is selected */}
-        {isWotCategory(selectedCategory) && <InfiniteWotAccountsContainer />}
 
         {/* Error State - Only for non-Steam, non-Epic Games, non-Gifts, non-Fortnite, non-MiHoYo, non-Riot, non-Telegram, non-Supercell, non-Discord, non-Instagram, non-Minecraft, non-TikTok, non-Roblox, non-Battle.net, and non-WOT categories */}
         {selectedCategory !== 'Steam' &&
@@ -1224,8 +1186,6 @@ function MainPage() {
           <InfiniteSteamAccountsContainer filters={steamFilters} />
         ) : selectedCategory === 'Epic Games' || isEpicGamesCategory(selectedCategory) ? (
           <InfiniteEpicAccountsContainer filters={epicFilters} />
-        ) : selectedCategory === 'Gifts' ? (
-          <InfiniteGiftsAccountsContainer filters={giftsFilters} />
         ) : selectedCategory === 'Fortnite' ? (
           <InfiniteFortniteAccountsContainer filters={fortniteFilters} />
         ) : isMiHoyoCategory(selectedCategory) ? (
@@ -1234,26 +1194,24 @@ function MainPage() {
           <InfiniteRiotAccountsContainer filters={riotFilters} />
         ) : isMinecraftCategory(selectedCategory) ? (
           <InfiniteMinecraftAccountsContainer filters={minecraftFilters} />
-        ) : isEscapeFromTarkovCategory(selectedCategory) ? (
-          <InfiniteEscapeFromTarkovAccountsContainer filters={escapeFromTarkovFilters} />
         ) : isSocialClubCategory(selectedCategory) ? (
           <InfiniteSocialClubAccountsContainer filters={socialClubFilters} />
         ) : selectedCategory === 'Uplay' ? (
           <InfiniteUplayAccountsContainer filters={uplayFilters} />
         ) : isDiscordCategory(selectedCategory) ? (
           <InfiniteDiscordAccountsContainer filters={discordFilters} />
-        ) : isTelegramCategory(selectedCategory) ? null : isSupercellCategory(
-            // Telegram accounts are handled by TelegramPage component above
-            selectedCategory
-          ) ? null : isInstagramCategory(selectedCategory) ? null : isChatGPTCategory(
-            selectedCategory
-          ) ? null : isTikTokCategory(selectedCategory) ? null : isRobloxCategory(
-            selectedCategory
-          ) ? null : isBattleNetCategory(selectedCategory) ? null : isVPNCategory(
-            selectedCategory
-          ) ? null : isOriginCategory(selectedCategory) ? null : isWotCategory(
-            selectedCategory
-          ) ? null : ( // Supercell accounts are handled by SupercellPage component above // Discord accounts are handled by InfiniteDiscordAccountsContainer component above // Instagram accounts are handled by InfiniteInstagramAccountsContainer component above // Minecraft accounts are handled by InfiniteMinecraftAccountsContainer component above // TikTok accounts are handled by InfiniteTikTokAccountsContainer component above // Roblox accounts are handled by InfiniteRobloxAccountsContainer component above // Battle.net accounts are handled by InfiniteBattleNetAccountsContainer component above // World of Tanks accounts are handled by InfiniteWotAccountsContainer component above
+        ) : isRobloxCategory(selectedCategory) ? (
+          <InfiniteRobloxAccountsContainer filters={robloxFilters} />
+        ) : isBattleNetCategory(selectedCategory) ? (
+          <InfiniteBattleNetAccountsContainer filters={battlenetFilters} />
+        ) : isOriginCategory(selectedCategory) ? (
+          <OriginPage />
+        ) : isSupercellCategory(selectedCategory) ? (
+          <SupercellPage />
+        ) : isTelegramCategory(selectedCategory) ? (
+          <TelegramPage />
+        ) : (
+
           // Only show LZT accounts for categories that are NOT our custom platforms
           !loading &&
           !error &&
@@ -1271,7 +1229,7 @@ function MainPage() {
           selectedCategory !== 'Steam' &&
           selectedCategory !== 'Fortnite' &&
           !isMiHoyoCategory(selectedCategory) &&
-          !isRiotCategory(selectedCategory) && (
+          !isRiotCategory(selectedCategory) &&
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
               {filteredAccounts.map(account => (
                 <div
@@ -1456,8 +1414,7 @@ function MainPage() {
                 </div>
               ))}
             </div>
-          )
-        )}
+          )}
 
         {/* Empty State - Show only for non-Steam, non-Fortnite, non-MiHoYo, non-Riot, non-Telegram, and non-Supercell categories */}
         {selectedCategory !== 'Steam' &&
@@ -1466,6 +1423,11 @@ function MainPage() {
           !isRiotCategory(selectedCategory) &&
           !isTelegramCategory(selectedCategory) &&
           !isSupercellCategory(selectedCategory) &&
+          !isRobloxCategory(selectedCategory) &&
+          !isBattleNetCategory(selectedCategory) &&
+          !isDiscordCategory(selectedCategory) &&
+          !isInstagramCategory(selectedCategory) &&
+          !isOriginCategory(selectedCategory) &&
           !loading &&
           !error &&
           filteredAccounts.length === 0 && (

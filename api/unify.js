@@ -1,6 +1,36 @@
 // Unified API endpoint for multiple LZT categories + LZT market operations + Doku callbacks
 import { createRequire } from 'module'
+import {
+  doc,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  getDocs,
+  getDoc,
+  setDoc,
+  serverTimestamp
+} from 'firebase/firestore'
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from 'firebase/storage'
+import { db, storage } from '../src/config/firebase.js'
+import formidable from 'formidable'
+import fs from 'fs'
+
 const require = createRequire(import.meta.url)
+
+// ─── Global State ──────────────────────────────────────────────────
+const pendingRequests = new Map()
+const lastRequestTime = { value: 0 }
+
+const BANK_DETAILS = {
+  bank: 'BCA',
+  accountNumber: '7410468225',
+  accountName: 'Rhandy'
+}
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -118,12 +148,106 @@ export default async function handler(req, res) {
         return await handleDokuCallback(postAction, req, res)
       }
 
+      // ── Bank Transfer: Create Order ──
+      if (postAction === 'payment-create-order') {
+        const { customerName, customerEmail, amount, items, trxId } = req.body
+        if (!customerName || !amount || !trxId) {
+          return res.status(400).json({ error: 'Missing required fields: customerName, amount, trxId' })
+        }
+        
+        const orderRef = doc(db, 'orders', trxId)
+        const order = {
+          id: trxId,
+          customerName,
+          customerEmail,
+          amount,
+          items,
+          paymentMethod: 'bank_transfer',
+          bankDetails: BANK_DETAILS,
+          status: 'waiting_for_confirmation',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        }
+        await setDoc(orderRef, order)
+        
+        return res.json({
+          success: true,
+          data: {
+            orderId: trxId,
+            bankDetails: BANK_DETAILS,
+            amount,
+            status: 'waiting_for_confirmation',
+            instructions: [
+              `Transfer ke rekening ${BANK_DETAILS.bank}`,
+              `Nomor rekening: ${BANK_DETAILS.accountNumber}`,
+              `Atas nama: ${BANK_DETAILS.accountName}`,
+              `Jumlah: Rp ${amount.toLocaleString('id-ID')}`,
+              'Upload bukti transfer setelah melakukan pembayaran',
+              'Admin akan memverifikasi pembayaran dalam 1-2 jam'
+            ]
+          }
+        })
+      }
+
+      // ── Bank Transfer: Upload Proof ──
+      if (postAction === 'payment-upload-proof') {
+        const form = formidable({ multiples: false })
+        return new Promise((resolve) => {
+          form.parse(req, async (err, fields, files) => {
+            if (err) return resolve(res.status(500).json({ error: 'File upload failed' }))
+            
+            try {
+              const orderId = fields.orderId?.[0] || fields.orderId
+              const imageFile = files.image?.[0] || files.image || files.transferProof?.[0] || files.transferProof
+              
+              if (!orderId || !imageFile) {
+                return resolve(res.status(400).json({ error: 'Missing orderId or image file' }))
+              }
+
+              const imageBuffer = fs.readFileSync(imageFile.filepath)
+              const fileName = `transfer-proofs/${orderId}/${Date.now()}-${imageFile.originalFilename || 'proof.jpg'}`
+              const storageRef = ref(storage, fileName)
+              
+              await uploadBytes(storageRef, imageBuffer, { contentType: 'image/jpeg' })
+              const url = await getDownloadURL(storageRef)
+
+              const orderRef = doc(db, 'orders', orderId)
+              await updateDoc(orderRef, {
+                transferProofUrl: url,
+                transferProofUploadedAt: serverTimestamp(),
+                status: 'waiting_for_confirmation',
+                updatedAt: serverTimestamp()
+              })
+
+              resolve(res.json({
+                success: true,
+                data: { imageUrl: url, message: 'Bukti transfer berhasil diupload.' }
+              }))
+            } catch (error) {
+              resolve(res.status(500).json({ error: error.message }))
+            }
+          })
+        })
+      }
+
       return res.status(400).json({ error: `Unsupported POST action: ${name}` })
     }
 
-    // ─── GET-based routes (existing logic) ───────────────────────────
+    // ─── GET-based routes (existing logic + payment status) ──────────
     if (req.method !== 'GET') {
       return res.status(405).json({ error: 'Method not allowed' })
+    }
+
+    // ── Bank Transfer: Status ──
+    if (name?.toLowerCase() === 'payment-status') {
+      const { orderId } = req.query
+      if (!orderId) return res.status(400).json({ error: 'Missing orderId' })
+      
+      const orderRef = doc(db, 'orders', orderId)
+      const orderDoc = await getDoc(orderRef)
+      if (!orderDoc.exists()) return res.status(404).json({ error: 'Order not found' })
+      
+      return res.json({ success: true, data: orderDoc.data() })
     }
 
     console.log(
@@ -160,9 +284,9 @@ export default async function handler(req, res) {
       search: 'search', // Search for account details by item ID
       epic: 'epicgames',
       steam: 'steam',
-      battlenet: 'category/11',
-      fortnite: 'category/17',
-      minecraft: 'category/28',
+      battlenet: 'battlenet',
+      fortnite: 'fortnite',
+      minecraft: 'minecraft',
       roblox: 'roblox',
       socialclub: 'socialclub',
       uplay: 'uplay'
@@ -249,7 +373,22 @@ export default async function handler(req, res) {
 
     // Add all query parameters (except 'name')
     Object.entries(queryParams).forEach(([key, value]) => {
-      if (value && value !== '') {
+      // Handle nested objects (often from game[] or category[] params when using qs)
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+        Object.values(value).forEach(v => {
+          if (v !== undefined && v !== null && v !== '') {
+            const cleanKey = key.includes('[') ? key : `${key}[]`
+            apiURL.searchParams.append(cleanKey, v)
+          }
+        })
+      } else if (Array.isArray(value)) {
+        value.forEach(v => {
+          if (v !== undefined && v !== null && v !== '') {
+            const cleanKey = key.includes('[') ? key : `${key}[]`
+            apiURL.searchParams.append(cleanKey, v)
+          }
+        })
+      } else if (value !== undefined && value !== null && value !== '') {
         apiURL.searchParams.append(key, value)
       }
     })
@@ -267,33 +406,59 @@ export default async function handler(req, res) {
 
     console.log(`🎮 LZT API Request for ${category}:`, apiURL.toString())
 
+    // ─── Deduplication & Rate Limiting ──────────────────────────────
+    const requestKey = apiURL.toString()
+    if (pendingRequests.has(requestKey)) {
+      console.log('⏳ Waiting for duplicate request to complete...')
+      const result = await pendingRequests.get(requestKey)
+      return res.status(200).json(result)
+    }
+
+    const now = Date.now()
+    const timeSinceLastRequest = now - lastRequestTime.value
+    if (timeSinceLastRequest < 1000) {
+      const waitTime = 1000 - timeSinceLastRequest
+      await new Promise(resolve => setTimeout(resolve, waitTime))
+    }
+    lastRequestTime.value = Date.now()
+
     // Make request to LZT Market API with retry logic for rate limiting
     const makeRequestWithRetry = async (url, headers, maxRetries = 3) => {
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          const res = await fetch(url, { method: 'GET', headers })
+      const fetchPromise = (async () => {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            const res = await fetch(url, { method: 'GET', headers })
 
-          if (res.status === 429) {
-            const waitTime = Math.pow(2, attempt) * 1000 // Exponential backoff
-            console.log(`⏳ Rate limited (429), waiting ${waitTime}ms before retry ${attempt}/${maxRetries}`)
+            if (res.status === 429) {
+              const waitTime = Math.pow(2, attempt) * 1000 // Exponential backoff
+              console.log(`⏳ Rate limited (429), waiting ${waitTime}ms before retry ${attempt}/${maxRetries}`)
 
-            if (attempt < maxRetries) {
-              await new Promise(resolve => setTimeout(resolve, waitTime))
-              continue
-            } else {
-              console.log('⚠️ All retries exhausted, returning mock data')
-              return {
-                ok: true,
-                json: async () => ({ items: [], totalItems: 0, message: 'Rate limit exceeded' })
+              if (attempt < maxRetries) {
+                await new Promise(resolve => setTimeout(resolve, waitTime))
+                continue
+              } else {
+                console.log('⚠️ All retries exhausted, returning mock data')
+                return {
+                  ok: true,
+                  json: async () => ({ items: [], totalItems: 0, message: 'Rate limit exceeded' })
+                }
               }
             }
+            return res
+          } catch (error) {
+            if (attempt === maxRetries) throw error
+            console.log(`🔄 Attempt ${attempt} failed, retrying...`)
+            await new Promise(resolve => setTimeout(resolve, 1000))
           }
-          return res
-        } catch (error) {
-          if (attempt === maxRetries) throw error
-          console.log(`🔄 Attempt ${attempt} failed, retrying...`)
-          await new Promise(resolve => setTimeout(resolve, 1000))
         }
+      })()
+
+      pendingRequests.set(requestKey, fetchPromise)
+      try {
+        const response = await fetchPromise
+        return response
+      } finally {
+        pendingRequests.delete(requestKey)
       }
     }
 
@@ -364,15 +529,6 @@ export default async function handler(req, res) {
 
 // ─── Doku Callback Handler ──────────────────────────────────────────
 async function handleDokuCallback(action, req, res) {
-  const {
-    doc,
-    updateDoc,
-    arrayRemove,
-    arrayUnion,
-    collection,
-    getDocs
-  } = require('firebase/firestore')
-  const { db } = require('../src/config/firebase')
 
   if (action === 'doku-notification') {
     console.log('Doku notification received:', req.body)
